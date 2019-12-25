@@ -22,6 +22,9 @@ async def change_status():
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(f'Invalid command. See {prefix}help')
+    
+    if isinstance(error, commands.MissingPermissions):
+            await ctx.send('Insufficient permissions')
 
 @dictator.command()
 async def ping (ctx):
