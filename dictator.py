@@ -17,6 +17,11 @@ async def on_ready():
 async def changeStatus():
     await dictator.change_presence(activity=discord.Game(next(status)))
 
+@dictator.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send(f'Invalid command. See {prefix}help')
+
 @dictator.command()
 async def ping (ctx):
     await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
