@@ -13,16 +13,15 @@ async def on_ready():
 
 @dictator.event
 async def on_message(message):
-    if message.content.startswith('-ping'):
-        logging.debug('Ive been pinged!')
-        await message.channel.send('Pong!')
-        return
-
     if message.author == dictator.user:
         return
 
     if message.channel.name != ('bot-channel'):
         return
+
+    if message.content.startswith('-ping'):
+        logging.debug('Ive been pinged!')
+        await message.channel.send('Pong!')
 
 token = open('token.txt', 'r')
 dictator.run(token.readline())
