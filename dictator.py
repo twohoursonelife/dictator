@@ -4,17 +4,18 @@ from itertools import cycle
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 
-dictator = commands.Bot(command_prefix='-')
-status = cycle(['Dictatorship', f'{dictator.command_prefix}help', 'Bullying Colin', 'Griefing Newport', 'Praising Sam'])
+prefix = '-'
+dictator = commands.Bot(command_prefix=prefix)
+status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin', 'Griefing Newport', 'Praising Sam', 'Resetting Amanis score'])
 
 @dictator.event
 async def on_ready():
     print('The 2HOL Dictator has risen!')
-    changeStatus.start()
+    change_status.start()
     
 
 @tasks.loop(seconds=10)
-async def changeStatus():
+async def change_status():
     await dictator.change_presence(activity=discord.Game(next(status)))
 
 @dictator.event
