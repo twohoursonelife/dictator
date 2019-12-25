@@ -6,7 +6,7 @@ from itertools import cycle
 
 prefix = '-'
 dictator = commands.Bot(command_prefix=prefix)
-status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin', 'Guarding Newport', 'Praising Sam', 'Resetting Amanis score'])
+status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin', 'Guarding Newport', 'Praising Sam', 'Resetting Amanis score', 'Baking the pies'])
 
 @dictator.event
 async def on_ready():
