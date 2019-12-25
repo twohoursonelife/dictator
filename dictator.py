@@ -22,4 +22,6 @@ async def on_message(message):
     if message.channel.name != ('bot-channel'):
         return
 
-dictator.run('Key here')
+token = open('token.txt', 'r')
+dictator.run(token.readline())
+token.close
