@@ -8,6 +8,7 @@ dictator = commands.Bot(command_prefix='-')
 @dictator.event
 async def on_ready():
     print('The 2HOL Dictator has risen!')
+    await dictator.change_presence(activity=discord.Game(f'Dictator | {dictator.command_prefix}help'))
 
 @dictator.command()
 async def ping (ctx):
