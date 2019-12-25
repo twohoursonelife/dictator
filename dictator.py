@@ -6,28 +6,32 @@ from itertools import cycle
 
 prefix = '-'
 dictator = commands.Bot(command_prefix=prefix)
-status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin', 'Guarding Newport', 'Praising Sam', 'Resetting Amanis score', 'Baking the pies'])
+status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin',
+                'Guarding Newport', 'Praising Sam', 'Resetting Amanis score', 'Baking the pies'])
+
 
 @dictator.event
 async def on_ready():
     print('The 2HOL Dictator has risen!')
     change_status.start()
-    
+
 
 @tasks.loop(seconds=10)
 async def change_status():
     await dictator.change_presence(activity=discord.Game(next(status)))
 
+
 @dictator.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(f'Invalid command. See {prefix}help')
-    
+
     if isinstance(error, commands.MissingPermissions):
-            await ctx.send('Insufficient permissions')
+        await ctx.send('Insufficient permissions')
+
 
 @dictator.command()
-async def ping (ctx):
+async def ping(ctx):
     await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
 
 token = open('token.txt', 'r')
