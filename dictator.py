@@ -25,9 +25,17 @@ async def change_status():
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(f'Invalid command. See {prefix}help')
+        return
 
     if isinstance(error, commands.MissingPermissions):
         await ctx.send('Insufficient permissions')
+        return
+
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f'Missing argument. See {prefix}help')
+        return
+
+    print(error)
 
 
 @dictator.command()
