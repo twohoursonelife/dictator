@@ -1,9 +1,10 @@
 import discord
+from discord.ext import commands
 import logging
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 
-dictator = discord.Client()
+dictator = commands.Bot(command_prefix='-')
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.WARNING)
 
@@ -11,17 +12,9 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=lo
 async def on_ready():
     print('The 2HOL Dictator has risen!')
 
-@dictator.event
-async def on_message(message):
-    if message.author == dictator.user:
-        return
-
-    if message.channel.name != ('bot-channel'):
-        return
-
-    if message.content.startswith('-ping'):
-        logging.debug('Ive been pinged!')
-        await message.channel.send('Pong!')
+@dictator.command()
+async def ping (ctx):
+    await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
 
 token = open('token.txt', 'r')
 dictator.run(token.readline())
