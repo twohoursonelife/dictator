@@ -42,6 +42,12 @@ async def on_command_error(ctx, error):
 async def ping(ctx):
     await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
 
+
+@dictator.command()
+@commands.has_role('Leader')
+async def ban(ctx, user):
+    await ctx.send(f'{ctx.author} tried to ban {user}')
+
 token = open('token.txt', 'r')
 dictator.run(token.readline())
 token.close
