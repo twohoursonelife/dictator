@@ -1,12 +1,9 @@
 import discord
 from discord.ext import commands
-import logging
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 
 dictator = commands.Bot(command_prefix='-')
-
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.WARNING)
 
 @dictator.event
 async def on_ready():
