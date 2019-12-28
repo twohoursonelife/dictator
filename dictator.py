@@ -6,7 +6,7 @@ from itertools import cycle
 
 # These values should be in a config file
 prefix = '-'
-checkVerification = False
+checkVerification = True
 verificationMSGID = 0
 dictator = commands.Bot(command_prefix=prefix)
 status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin',
@@ -19,6 +19,8 @@ async def on_ready():
     print('The 2HOL Dictator has risen!')
 
     change_status.start()
+
+    await verification()
 
 
 @tasks.loop(seconds=10)
@@ -48,11 +50,7 @@ async def ping(ctx):
     await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
 
 
-@dictator.command()
-@commands.has_role('Leader')
-async def a(ctx):
-
-    await ctx.message.delete()
+async def verification():
 
     # This needs to be in a config
     # This is the verification channel
@@ -68,9 +66,6 @@ async def a(ctx):
 
     global verificationMSGID
     verificationMSGID = verifyMessage.id
-
-    global checkVerification
-    checkVerification = True
 
     await verifyMessage.add_reaction('✅')
     await verifyMessage.add_reaction('❌')
