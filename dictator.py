@@ -12,7 +12,9 @@ status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin',
 
 @dictator.event
 async def on_ready():
+
     print('The 2HOL Dictator has risen!')
+
     change_status.start()
 
 
