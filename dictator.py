@@ -72,22 +72,26 @@ async def verification():
 
 # Activates when a user has reacted to verification message and processes the user.
 @dictator.event
-async def on_raw_reaction_add(reaction):
+async def on_reaction_add(reaction, user):
     global checkVerification
     global verificationMSGID
 
     # ID of bot should be in a config file
-    if reaction.message_id == verificationMSGID and checkVerification and reaction.user_id != 658883039761399859:
-        if reaction.emoji.name == '✅':
-            print('User verified')
-            # verify user
-        elif reaction.emoji.name == '❌':
-            print('User kicked')
-            # Kick user and send them message with join link
+    if reaction.message.id == verificationMSGID and checkVerification and user.id != 658883039761399859:
+        
+        if reaction.emoji == '✅':
+            await reaction.remove(user)
+            role = get(user.guild.roles, name='Verified')
+            await user.add_roles(role, reason='User agreed to rules')
+
+        elif reaction.emoji == '❌':
+            await reaction.remove(user)
+            invite = await reaction.message.channel.create_invite(max_uses=1, reason=f'Sent to {user.name}{user.discriminator}, user kicked after did not agree to rules')
+            await user.send(content=f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
+            await reaction.message.guild.kick(user, reason='You did not accept the rules.')
+
         else:
-            print('invalid reaction')
-            print(reaction)
-            # remove reaction
+            await reaction.remove(user)
 
 
 token = open('token.txt', 'r')
