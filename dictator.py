@@ -70,7 +70,7 @@ async def verification():
     await verifyMessage.add_reaction('✅')
     await verifyMessage.add_reaction('❌')
 
-
+# Activates when a user has reacted to verification message and processes the user.
 @dictator.event
 async def on_raw_reaction_add(reaction):
     global checkVerification
