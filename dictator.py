@@ -50,11 +50,15 @@ async def ping(ctx):
 @dictator.command()
 @commands.has_role('Leader')
 async def a(ctx):
-    # Must delete previous messages in channel
 
     await ctx.message.delete()
 
-    channel = dictator.get_channel(648080619146051623)
+    channel = dictator.get_channel(660359992410636288)
+
+    # Delete message history
+    async for message in channel.history(limit=10):
+        await message.delete()
+
     await channel.send(file=discord.File('img/2HOL-600px.png'))
     verifyMessage = await channel.send('Welcome to 2HOL.\nTo join our community, you must agree to the #rules\nThese rules can be adjusted at any time, you will be notified of this in #notices\n\nTo confirm you have read and agreed to our rules please type `!verify`')
 
