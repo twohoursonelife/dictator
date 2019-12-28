@@ -10,7 +10,7 @@ checkVerification = True
 verificationMSGID = 0
 dictator = commands.Bot(command_prefix=prefix)
 status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin',
-                'Guarding Newport', 'Praising Sam', 'Baking the pies', 'Cheesing Uno'])
+                'Guarding Newport', 'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
 
 
 @dictator.event
