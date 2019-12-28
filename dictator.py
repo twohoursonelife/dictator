@@ -22,7 +22,7 @@ async def on_ready():
 async def change_status():
     await dictator.change_presence(activity=discord.Game(next(status)))
 
-
+# Global error handling
 @dictator.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
