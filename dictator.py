@@ -71,13 +71,14 @@ async def a(ctx):
     await verifyMessage.add_reaction('✅')
     await verifyMessage.add_reaction('❌')
 
-# Need a check so we dont verify or kick this bot
+
 @dictator.event
 async def on_raw_reaction_add(reaction):
     global checkVerification
     global verificationMSGID
 
-    if reaction.message_id == verificationMSGID and checkVerification:
+    # ID of bot should be in a config file
+    if reaction.message_id == verificationMSGID and checkVerification and reaction.user_id != 658883039761399859:
         if reaction.emoji.name == '✅':
             print('User verified')
             # verify user
