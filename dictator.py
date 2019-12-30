@@ -1,8 +1,7 @@
 import discord
 import os
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.utils import get
-from itertools import cycle
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 
@@ -11,8 +10,6 @@ prefix = '-'
 checkVerification = True
 verificationMSGID = 0
 dictator = commands.Bot(command_prefix=prefix)
-status = cycle(['Dictatorship', f'{prefix}help', 'Bullying Colin',
-                'Guarding Newport', 'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
 
 
 @dictator.event
@@ -20,14 +17,7 @@ async def on_ready():
 
     print('The 2HOL Dictator has risen!')
 
-    change_status.start()
-
     await verification()
-
-
-@tasks.loop(seconds=10)
-async def change_status():
-    await dictator.change_presence(activity=discord.Game(next(status)))
 
 # Global error handling
 @dictator.event
