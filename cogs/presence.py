@@ -6,7 +6,12 @@ from itertools import cycle
 class Presence(commands.Cog):
 
     def __init__(self, dictator):
+
         self.dictator = dictator
+
+        # Value should be in a config
+        self.status = cycle(['Dictatorship', '-help', 'Bullying Colin', 'Guarding Newport',
+                             'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -16,11 +21,7 @@ class Presence(commands.Cog):
     @tasks.loop(seconds=10)
     async def change_status(self):
 
-        # Value should be in a config
-        status = cycle(['Dictatorship', '-help', 'Bullying Colin', 'Guarding Newport',
-                        'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
-
-        await self.dictator.change_presence(activity=discord.Game(next(status)))
+        await self.dictator.change_presence(activity=discord.Game(next(self.status)))
 
 
 def setup(dictator):
