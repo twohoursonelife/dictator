@@ -47,11 +47,6 @@ async def on_command_error(ctx, error):
     print(error)
 
 
-@dictator.command()
-async def ping(ctx):
-    await ctx.send(f'Pong! {round(dictator.latency * 1000)}ms')
-
-
 async def verification():
 
     # This needs to be in a config
