@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands, tasks
 from discord.utils import get
 from itertools import cycle
@@ -89,6 +90,10 @@ async def on_reaction_add(reaction, user):
             await user.send(content=f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
             await reaction.message.guild.kick(user, reason='You did not accept the rules.')
 
+
+for filename in os.listdir(f'./cogs'):
+    if filename.endswith('.py'):
+        dictator.load_extension(f'cogs.{filename[:-3]}')
 
 token = open('token.txt', 'r')
 dictator.run(token.readline())
