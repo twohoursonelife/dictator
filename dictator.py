@@ -31,7 +31,7 @@ async def on_command_error(ctx, error):
 
     print(error)
 
-
+# Loading of all cog files in the cogs directory
 for filename in os.listdir(f'./cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
