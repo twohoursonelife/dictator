@@ -2,8 +2,6 @@ import discord
 import os
 from discord.ext import commands
 
-# Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
-
 # These values should be in a config file
 prefix = '-'
 dictator = commands.Bot(command_prefix=prefix)
@@ -36,6 +34,7 @@ for filename in os.listdir(f'./cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
+# Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 token = open('token.txt', 'r')
 dictator.run(token.readline())
 token.close
