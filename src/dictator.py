@@ -40,6 +40,5 @@ with open('src/conf.yaml', 'r') as file:
     conf = yaml.load(file)
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
-token = open('src/token.txt', 'r')
-dictator.run(token.readline())
-token.close
+with open('src/token.txt', 'r') as file:
+    dictator.run(file.readline())
