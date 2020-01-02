@@ -6,7 +6,7 @@ from discord.ext import commands
 # Load config
 with open('src/conf.yaml', 'r') as file:
     global conf
-    conf = yaml.load(file)
+    conf = yaml.load(file, Loader=yaml.FullLoader)
 
 # Use prefix as variable for f string compatability
 prefix = conf['prefix']
