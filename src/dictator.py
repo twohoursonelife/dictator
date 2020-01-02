@@ -31,13 +31,13 @@ async def on_command_error(ctx, error):
     print(error)
 
 # Loading of all cog files in the cogs directory
-for filename in os.listdir(f'./cogs'):
+for filename in os.listdir(f'src/cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
 # Load config
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
-token = open('token.txt', 'r')
+token = open('src/token.txt', 'r')
 dictator.run(token.readline())
 token.close
