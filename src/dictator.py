@@ -14,15 +14,11 @@ prefix = conf['prefix']
 # Create bot
 dictator = commands.Bot(command_prefix=conf['prefix'])
 
-# Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
-# Reads token of bot
-with open('src/token.txt', 'r') as file:
-    dictator.run(file.readline())
-
 # Loading of all cog files in the cogs directory
 for filename in os.listdir(f'src/cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
+
 
 @dictator.event
 async def on_ready():
@@ -45,3 +41,8 @@ async def on_command_error(ctx, error):
         return
 
     print(error)
+
+# Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
+# Reads token of bot
+with open('src/token.txt', 'r') as file:
+    dictator.run(file.readline())
