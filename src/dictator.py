@@ -36,6 +36,8 @@ for filename in os.listdir(f'src/cogs'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
 # Load config
+with open('src/conf.yaml', 'r') as file:
+    conf = yaml.load(file)
 
 # Ensure to create a token.txt file in the same directory as this file which contains only the token of the bot.
 token = open('src/token.txt', 'r')
