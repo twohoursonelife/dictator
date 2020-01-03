@@ -27,7 +27,7 @@ class Verification(commands.Cog):
             await message.delete()
 
         # These messages should be in a config file
-        await channel.send(file=discord.File('media/2HOL-600px.png'))
+        await channel.send(file=discord.File('src/media/2HOL-600px.png'))
         verifyMessage = await channel.send('Welcome to 2HOL!\nTo join our community, you must agree to the #rules\nThese rules can be changed at any time, but we\'ll be sure to tell you this in #notices\n\nTo tell use that you accept and will follow our rules react to this message with ✅\nIf you do not accept these rules, react to this message with ❌')
 
         global verificationMSGID
