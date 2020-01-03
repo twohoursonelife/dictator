@@ -9,7 +9,6 @@ class Presence(commands.Cog):
 
         self.dictator = dictator
 
-        # Value should be in a config
         self.status = cycle(['Dictatorship', '-help', 'Bullying Colin', 'Guarding Newport',
                              'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
 
