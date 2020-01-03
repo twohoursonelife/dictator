@@ -1,6 +1,5 @@
 import discord
 import os
-import yaml
 from discord.ext import commands
 
 prefix = '-'
