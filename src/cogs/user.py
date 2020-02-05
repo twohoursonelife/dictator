@@ -21,9 +21,8 @@ class User(commands.Cog):
         try:
             db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
-            author_id = ctx.author.id
             cursor.execute(
-                f"SELECT email, l_key FROM `users` WHERE discord_id = {author_id}")
+                f"SELECT email, l_key FROM `users` WHERE discord_id = {ctx.author.id}")
             row = cursor.fetchone()
 
             # Catch if user doens't have an account
