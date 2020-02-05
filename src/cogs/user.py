@@ -16,8 +16,7 @@ class User(commands.Cog):
     @commands.command()
     async def key(self, ctx):
         try:
-            db = mysql.connector.connect(host=config.read('DB_host'), database=config.read(
-                'DB_db'), user=config.read('DB_user'), password=config.read('DB_pass'))
+            db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
             author_id = ctx.author.id
             cursor.execute(

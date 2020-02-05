@@ -18,3 +18,11 @@ def read(setting):
     config = configparser.ConfigParser()
     config.read('src/config.ini')
     return(config['Settings'][setting])
+
+
+def db_config():
+    db_config = {'host': str(read('DB_host')),
+                 'database': str(read('DB_db')),
+                 'user': str(read('DB_user')),
+                 'password': str(read('DB_pass'))}
+    return(db_config)
