@@ -13,7 +13,7 @@ class User(commands.Cog):
         pass
 
     # Retrieve and send a users key information to themselves
-    @commands.command()
+    @commands.command(aliases=['mykey'])
     async def key(self, ctx):
         try:
             db = mysql.connector.connect(**config.db_config())
