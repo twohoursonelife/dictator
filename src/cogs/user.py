@@ -9,7 +9,10 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    async def createKey(self, user, user_id):
+    async def createUser(self, user, user_id):
+        pass
+
+    async def createKey(self):
         pass
 
     # Retrieve and send a users key information to themselves
@@ -26,7 +29,7 @@ class User(commands.Cog):
             # Catch if user doens't have an account
             if row is None:
                 await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
-                await self.createKey(ctx.author, ctx.author.id)
+                await self.createUser(ctx.author, ctx.author.id)
                 print(
                     f'{ctx.author} attempted to retrieve their key, but didn\'t have one.')
                 return
