@@ -25,6 +25,7 @@ class User(commands.Cog):
     async def create_key(self):
         pass
 
+    # Search whether a user exists, return username and key if they do
     async def search_user(self, user_id):
         try:
             db = mysql.connector.connect(**config.db_config())
