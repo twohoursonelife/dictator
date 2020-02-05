@@ -7,8 +7,15 @@ def check_config():
         return('Using existing config.')
     else:
         config = configparser.ConfigParser()
-        config['Settings'] = {'Bot_token': 'token', 'Bot_prefix': '-', 'DB_host': 'localhost',
-                              'DB_db': 'database', 'DB_user': 'username', 'DB_pass': 'password'}
+        config['Settings'] = {'Bot_token': 'token',
+                              'Bot_prefix': '-',
+                              'DB_host': 'localhost',
+                              'DB_db': 'database',
+                              'DB_user': 'username',
+                              'DB_pass': 'password',
+                              'bot_id': '658883039761399859',
+                              'verify_discord_users': '1',
+                              'verify_channel_id': '660359992410636288'}
         with open('src/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')
