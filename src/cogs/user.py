@@ -37,8 +37,8 @@ class User(commands.Cog):
 
         if user is None:
             await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
-            await self.create_user(ctx.author, ctx.author.id)
-            print(f'{ctx.author} attempted to retrieve their key, but didn\'t have an account. We\'ll create them one.')
+            await self.create_user(ctx.author)
+            print(f'{ctx.author} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
 
         else:
             username = user[0]
