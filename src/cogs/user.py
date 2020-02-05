@@ -40,6 +40,24 @@ class User(commands.Cog):
         finally:
             db.close
 
+    # Search whether a username already exists
+    async def search_username(self, user):
+        
+        
+        try:
+            db = mysql.connector.connect(**config.db_config())
+            cursor = db.cursor()
+            cursor.execute(f'SELECT email FROM `users` WHERE email = {user}')
+            row = cursor.fetchone()
+            return row
+
+        except mysql.connector.Error as e:
+            print(f'\n\nMySQL Connection Error\n{e}\n\n')
+            return
+
+        finally:
+            db.close
+
     # Retrieve and send a users login information to themselves
     @commands.command(aliases=['mykey'])
     async def key(self, ctx):
