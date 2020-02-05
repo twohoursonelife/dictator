@@ -9,7 +9,7 @@ class Ping(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send(f'Pong! {round(self.dictator.latency * 1000)}ms')
+        await ctx.send(f'Pong! That took me {round(self.dictator.latency * 1000)}ms!')
 
 
 def setup(dictator):
