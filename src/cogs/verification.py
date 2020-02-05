@@ -1,8 +1,11 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+import config_manager as config
 
-checkVerification = True
+# Do we enable user verification?
+checkVerification = bool(config.read('verify_discord_users'))
+
 verificationMSGID = 0
 
 
@@ -18,9 +21,8 @@ class Verification(commands.Cog):
 
     async def verification(self):
 
-        # This needs to be in a config
         # This is the verification channel
-        channel = self.dictator.get_channel(660359992410636288)
+        channel = self.dictator.get_channel(int(config.read('verify_channel_id')))
 
         # Delete message history
         async for message in channel.history(limit=10):
@@ -42,8 +44,7 @@ class Verification(commands.Cog):
         global checkVerification
         global verificationMSGID
 
-        # ID of bot should be in a config file
-        if reaction.message.id == verificationMSGID and checkVerification and user.id != 658883039761399859:
+        if reaction.message.id == verificationMSGID and checkVerification and user.id != int(config.read('bot_id')):
             await reaction.remove(user)
             if reaction.emoji == '✅':
                 role = get(user.guild.roles, name='Verified')
