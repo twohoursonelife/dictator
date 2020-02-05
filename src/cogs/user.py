@@ -9,7 +9,7 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    async def createKey(parameter_list):
+    async def createKey(self, user, user_id):
         pass
 
     # Retrieve and send a users key information to themselves
@@ -22,6 +22,14 @@ class User(commands.Cog):
             cursor.execute(
                 f"SELECT email, l_key FROM `users` WHERE discord_id = {author_id}")
             row = cursor.fetchone()
+
+            # Catch if user doens't have an account
+            if row is None:
+                await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
+                await self.createKey(ctx.author, ctx.author.id)
+                print(
+                    f'{ctx.author} attempted to retrieve their key, but didn\'t have one.')
+                return
 
             username = row[0]
             key = row[1]
