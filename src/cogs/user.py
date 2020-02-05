@@ -14,8 +14,8 @@ class User(commands.Cog):
         check_user = await self.search_user(user.id)
 
         if check_user is not None:
-            username = user[0]
-            key = user[1]
+            username = check_user[0]
+            key = check_user[1]
             await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
         
