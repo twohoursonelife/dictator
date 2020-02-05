@@ -15,18 +15,17 @@ async def on_ready():
 @dictator.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send(f'Invalid command. See {prefix}help')
-        return
+        await ctx.send(f'Invalid command. See {dictator.get_prefix}help')
 
-    if isinstance(error, commands.MissingPermissions):
+    elif isinstance(error, commands.MissingPermissions):
         await ctx.send('Insufficient permissions')
-        return
 
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f'Missing argument. See {prefix}help')
-        return
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f'Missing argument. See {dictator.get_prefix}help')
 
-    print(error)
+    else:
+        await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
+        print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 # Loading of all cog files in the cogs directory
 for filename in os.listdir('src/cogs'):
