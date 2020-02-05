@@ -6,7 +6,7 @@ def check_config():
         return('Using existing config.')
     else:
         config = configparser.ConfigParser()
-        config['Settings'] = {'Bot_token': 'token', 'Bot_prefix': '-', 'DB_host': 'localhost', 'DB_database': 'database', 'DB_user': 'username', 'DB_pass': 'password'}
+        config['Settings'] = {'Bot_token': 'token', 'Bot_prefix': '-', 'DB_host': 'localhost', 'DB_db': 'database', 'DB_user': 'username', 'DB_pass': 'password'}
         with open('src/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')
