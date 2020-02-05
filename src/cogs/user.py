@@ -18,9 +18,12 @@ class User(commands.Cog):
             key = check_user[1]
             await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
+            return
+
+        # Check if username is already in use
+        check_name = await self.search_username()
         
-        else:
-            #create the account
+        #if check
 
     async def create_key(self):
         pass
