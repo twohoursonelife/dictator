@@ -49,6 +49,7 @@ class Verification(commands.Cog):
                 role = get(user.guild.roles, name='Verified')
                 await user.add_roles(role, reason='User agreed to rules')
                 await user.send(content=f'Hey {user.name},\nGreat to have you here!\n**I\'ll be sending you some information soon so you can log in and play the game.**\n\nIf you have any trouble downloading, setting up or joining the game please ask for help\nin our help channel and wait patiently for someone to come to your rescue!')
+                #Initiate post verification actions, create user account if not already existing and message user info on where to download, how to play and where to find help
 
             elif reaction.emoji == '❌':
                 invite = await reaction.message.channel.create_invite(max_uses=1, reason=f'Sent to {user.name}{user.discriminator}, user kicked after did not agree to rules')
