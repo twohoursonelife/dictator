@@ -9,10 +9,20 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    async def createUser(self, user, user_id):
-        pass
+    async def create_user(self, user):
+        # Check if user already has an account before creating one
+        check_user = await self.search_user(user.id)
 
-    async def createKey(self):
+        if check_user is not None:
+            username = user[0]
+            key = user[1]
+            await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
+            print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
+        
+        else:
+            #create the account
+
+    async def create_key(self):
         pass
 
     async def search_user(self, user_id):
