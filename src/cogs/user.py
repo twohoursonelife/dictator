@@ -32,13 +32,10 @@ class User(commands.Cog):
 
             print(f'Supplied username and key to {ctx.author}')
 
-        except mysql.connector.Error as err:
-            if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
-            elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
-            else:
-                print(err)
+        except mysql.connector.Error as e:
+            print(e)
+            colin = ctx.guild.owner.mention
+            await ctx.send(f'Uh oh... {colin} broke something again. Stand by.')
 
         else:
             db.close()
