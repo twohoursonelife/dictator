@@ -15,38 +15,37 @@ class User(commands.Cog):
     async def createKey(self):
         pass
 
-    # Retrieve and send a users key information to themselves
-    @commands.command(aliases=['mykey'])
-    async def key(self, ctx):
+    async def search_user(self, user_id):
         try:
             db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
-            cursor.execute(
-                f"SELECT email, l_key FROM `users` WHERE discord_id = {ctx.author.id}")
+            cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = {user_id}')
             row = cursor.fetchone()
-
-            # Catch if user doens't have an account
-            if row is None:
-                await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
-                await self.createUser(ctx.author, ctx.author.id)
-                print(
-                    f'{ctx.author} attempted to retrieve their key, but didn\'t have one.')
-                return
-
-            username = row[0]
-            key = row[1]
-
-            await ctx.author.send(f'Hey {ctx.author.mention}! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
-            await ctx.send(f'{ctx.author.mention} I\'ve sent you a message with your login information.')
-
-            print(f'Supplied username and key to {ctx.author}')
+            return row
 
         except mysql.connector.Error as e:
-            print(e)
-            await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
+            print(f'\n\nMySQL Connection Error at user.py, check_user_exists()\n{e}\n\n')
+            return
+
+        finally:
+            db.close
+
+    # Retrieve and send a users login information to themselves
+    @commands.command(aliases=['mykey'])
+    async def key(self, ctx):
+        user = await self.search_user(ctx.author.id)
+
+        if user is None:
+            await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
+            await self.create_user(ctx.author, ctx.author.id)
+            print(f'{ctx.author} attempted to retrieve their key, but didn\'t have an account. We\'ll create them one.')
 
         else:
-            db.close()
+            username = user[0]
+            key = user[1]
+            await ctx.send(f'{ctx.author.mention} I\'ll send you a message with your login information.')
+            await ctx.author.send(f'Hey {ctx.author.mention}! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
+            print(f'Supplied username and key to {ctx.author}')
 
 
 def setup(dictator):
