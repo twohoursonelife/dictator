@@ -3,10 +3,9 @@ import os
 from discord.ext import commands
 import config_manager as config
 
-prefix = '-'
-dictator = commands.Bot(command_prefix=prefix)
-
 print(config.check_config())
+
+dictator = commands.Bot(command_prefix=config.read('bot_prefix'))
 
 @dictator.event
 async def on_ready():
