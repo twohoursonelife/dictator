@@ -1,14 +1,15 @@
 import discord
 import os
 from discord.ext import commands
+import config_manager as config
 
 prefix = '-'
 dictator = commands.Bot(command_prefix=prefix)
 
+print(config.check_config())
 
 @dictator.event
 async def on_ready():
-
     print('The 2HOL Dictator has risen!')
 
 # Global error handling
@@ -34,5 +35,6 @@ for filename in os.listdir('src/cogs'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
 # Ensure the bot's token is stored in token.txt for the bot to work
-with open('src/token.txt', 'r') as file:
-    dictator.run(file.readline())
+#with open('src/token.txt', 'r') as file:
+ #   dictator.run(file.readline())
+dictator.run(config.read('bot_token'))
