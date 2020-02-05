@@ -24,7 +24,7 @@ class User(commands.Cog):
             return row
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Connection Error at user.py, check_user_exists()\n{e}\n\n')
+            print(f'\n\nMySQL Connection Error\n{e}\n\n')
             return
 
         finally:
