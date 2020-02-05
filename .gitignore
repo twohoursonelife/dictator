@@ -1,6 +1,7 @@
 # Other
 token.txt
 .vscode
+src/config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
