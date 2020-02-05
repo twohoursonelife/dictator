@@ -33,8 +33,7 @@ class User(commands.Cog):
 
         except mysql.connector.Error as e:
             print(e)
-            colin = ctx.guild.owner.mention
-            await ctx.send(f'Uh oh... {colin} broke something again. Stand by.')
+            await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
 
         else:
             db.close()
