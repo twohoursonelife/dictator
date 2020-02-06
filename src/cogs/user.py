@@ -12,6 +12,7 @@ class User(commands.Cog):
 
     # Retrieve and send a users login information to themselves
     @commands.command(aliases=['mykey'])
+    @commands.guild_only()
     async def key(self, ctx):
         user = await self.search_user(ctx.author.id)
 
