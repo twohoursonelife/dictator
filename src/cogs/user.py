@@ -56,10 +56,15 @@ class User(commands.Cog):
             # Username already in use
             print(f'We tried to create an account for {user} but their username is already in use, prompting them for one.')
             await user.send(f'Hey {user.mention}, your username is already in use. What should I use instead?')
-            username = ""# function call to listen for next message from user
-            username += f"-{user.discriminator}"
-            await self.create_user(user, username)
-            return
+            try:
+                message = await self.dictator.wait_for('message', timeout=60.0)
+                username = message.content
+                username += f"-{user.discriminator}"
+                await self.create_user(user, username)
+                return
+            except asyncio.TimeoutError:
+                print(f'{user} took too long to tell me what they wanted to set their username as.')
+                user.send('You didn\'t tell me what I should use as your username instead. You\'ll need to type -key to start again.')
 
         # Create the users accounnt, calling on create_key for a key
 
