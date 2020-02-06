@@ -53,9 +53,16 @@ class Verification(commands.Cog):
                 #Initiate post verification actions, create user account if not already existing and message user info on where to download, how to play and where to find help
 
             elif reaction.emoji == '❌':
-                invite = await reaction.message.channel.create_invite(max_uses=1, reason=f'Sent to {user.name}{user.discriminator}, user kicked after did not agree to rules')
-                await user.send(content=f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
-                await reaction.message.guild.kick(user, reason='User did not accept the rules.')
+                try:                    
+                    await reaction.message.guild.kick(user, reason='User did not accept the rules.')
+                
+                except discord.Forbidden as e:
+                    await user.send(f'Where do you think you\'re going, {user.mention}?\nYour soul is bound to 2HOL, remember?')
+                    print(f'{user} tried to escape, but failed miserably.')
+
+                else:
+                    invite = await reaction.message.channel.create_invite(max_uses=1, reason=f'Sent to {user.name}{user.discriminator}, user kicked after did not agree to rules')
+                    await user.send(f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
 
 
 def setup(dictator):
