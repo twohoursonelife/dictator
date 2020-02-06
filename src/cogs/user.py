@@ -34,7 +34,7 @@ class User(commands.Cog):
         try:
             db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
-            cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = {user_id}')
+            cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
             row = cursor.fetchone()
             return row
 
@@ -50,7 +50,7 @@ class User(commands.Cog):
         try:
             db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
-            cursor.execute(f'SELECT email FROM `users` WHERE email = {user}')
+            cursor.execute(f'SELECT email FROM `users` WHERE email = \'{user}\'')
             row = cursor.fetchone()
             return row
 
