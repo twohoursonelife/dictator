@@ -15,13 +15,13 @@ async def on_ready():
 @dictator.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send(f'Invalid command. See {dictator.get_prefix}help')
+        await ctx.send(f'Invalid command. See {await dictator.get_prefix(ctx)}help')
 
     elif isinstance(error, commands.MissingPermissions):
         await ctx.send('Insufficient permissions')
 
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f'Missing argument. See {dictator.get_prefix}help')
+        await ctx.send(f'Missing argument. See {await dictator.get_prefix(ctx)}help')
 
     elif isinstance(error, commands.NoPrivateMessage):
         await ctx.send(f'{ctx.author.mention}, you can\'t use this command in a private message. Head to the bot channel.')
