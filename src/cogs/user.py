@@ -14,10 +14,11 @@ class User(commands.Cog):
         check_user = await self.search_user(user.id)
 
         if check_user is not None:
+            # User already has an account
             username = check_user[0]
             key = check_user[1]
-            await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
+            await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             return
 
         # Check if username is already in use
@@ -38,7 +39,7 @@ class User(commands.Cog):
             return row
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Connection Error\n{e}\n\n')
+            print(f'\n\nMySQL Error\n{e}\n\n')
             return
 
         finally:
@@ -46,8 +47,6 @@ class User(commands.Cog):
 
     # Search whether a username already exists
     async def search_username(self, user):
-        
-        
         try:
             db = mysql.connector.connect(**config.db_config())
             cursor = db.cursor()
@@ -56,7 +55,7 @@ class User(commands.Cog):
             return row
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Connection Error\n{e}\n\n')
+            print(f'\n\nMySQL Error\n{e}\n\n')
             return
 
         finally:
@@ -69,8 +68,8 @@ class User(commands.Cog):
 
         if user is None:
             await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
-            await self.create_user(ctx.author)
             print(f'{ctx.author} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
+            await self.create_user(ctx.author)
 
         else:
             username = user[0]
