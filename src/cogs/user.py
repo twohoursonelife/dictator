@@ -30,13 +30,11 @@ class User(commands.Cog):
 
     async def create_user(self, user, username=None):
         if username is None:
-            username = user
+            username = user.name
 
         # Filter username, can't have any nasty characters
-        # Replaces # at beginning of discord discriminator with - 
-        username = str(username).replace('#', '-')
         # Then replaces any non whitlisted (regex) characters with empty string
-        username = re.sub('[^a-zA-Z0-9-]', '', username)
+        username = (re.sub('[^a-zA-Z0-9]', '', username))
 
         # Check if user already has an account before creating one
         check_user = await self.search_user(user.id)
@@ -48,6 +46,12 @@ class User(commands.Cog):
             print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
             await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             return
+
+        # Can't be having usernames too long, database allows for up to 255 but, seriously?
+        if len(username) > 45:
+            username = username[0:45]
+        
+        username += '-' + user.discriminator
 
         # Check if username is already in use
         check_name = await self.search_username(username)
@@ -62,9 +66,7 @@ class User(commands.Cog):
                     return m.author == user and isinstance(m.channel, discord.DMChannel)
                 
                 msg = await self.dictator.wait_for('message', timeout=60.0, check=check)
-                username = msg.content
-                username += f"-{user.discriminator}"
-                await self.create_user(user, username)
+                await self.create_user(user, msg.content)
                 return
 
             except:
