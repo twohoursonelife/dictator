@@ -10,6 +10,23 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
+    # Retrieve and send a users login information to themselves
+    @commands.command(aliases=['mykey'])
+    async def key(self, ctx):
+        user = await self.search_user(ctx.author.id)
+
+        if user is None:
+            await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
+            print(f'{ctx.author} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
+            await self.create_user(ctx.author)
+
+        else:
+            username = user[0]
+            key = user[1]
+            await ctx.send(f'{ctx.author.mention} I\'ll send you a message with your login information.')
+            await ctx.author.send(f'Hey {ctx.author.mention}! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
+            print(f'Supplied username and key to {ctx.author}')
+
     async def create_user(self, user, username=None):
         if username is None:
             username = user
@@ -79,23 +96,6 @@ class User(commands.Cog):
 
         finally:
             db.close
-
-    # Retrieve and send a users login information to themselves
-    @commands.command(aliases=['mykey'])
-    async def key(self, ctx):
-        user = await self.search_user(ctx.author.id)
-
-        if user is None:
-            await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!')
-            print(f'{ctx.author} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
-            await self.create_user(ctx.author)
-
-        else:
-            username = user[0]
-            key = user[1]
-            await ctx.send(f'{ctx.author.mention} I\'ll send you a message with your login information.')
-            await ctx.author.send(f'Hey {ctx.author.mention}! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
-            print(f'Supplied username and key to {ctx.author}')
 
 
 def setup(dictator):
