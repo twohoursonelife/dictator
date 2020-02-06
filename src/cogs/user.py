@@ -34,9 +34,9 @@ class User(commands.Cog):
 
         # Filter username, can't have any nasty characters
         # Replaces # at beginning of discord discriminator with - 
-        formatted_username = str(username).replace('#', '-')
+        username = str(username).replace('#', '-')
         # Then replaces any non whitlisted (regex) characters with empty string
-        formatted_username = re.sub('[^a-zA-Z0-9-]', '', formatted_username)
+        username = re.sub('[^a-zA-Z0-9-]', '', username)
 
         # Check if user already has an account before creating one
         check_user = await self.search_user(user.id)
@@ -50,7 +50,7 @@ class User(commands.Cog):
             return
 
         # Check if username is already in use
-        check_name = await self.search_username(formatted_username)
+        check_name = await self.search_username(username)
 
         if check_name is not None:
             # Username already in use
