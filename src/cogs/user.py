@@ -1,6 +1,8 @@
 import discord
 import mysql.connector
 import re
+import random
+from textwrap import wrap
 from discord.ext import commands
 import config_manager as config
 
@@ -100,8 +102,16 @@ class User(commands.Cog):
             cursor.close()
             db.close()
 
+    # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
     async def create_key(self):
-        pass
+        readable_base_32_digit_array = ["2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        key = ""
+        while len(key) != 20:
+            key += readable_base_32_digit_array[random.randint(0, len(readable_base_32_digit_array) - 1)]
+
+        key_chunks = wrap(key, 5)
+        key = '-'.join(key_chunks)
+        return key
 
     # Search whether a user exists, return username and key if they do
     async def search_user(self, user_id):
