@@ -23,6 +23,9 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'Missing argument. See {dictator.get_prefix}help')
 
+    elif isinstance(error, commands.NoPrivateMessage):
+        await ctx.send(f'{ctx.author.mention}, you can\'t use this command in a private message. Head to the bot channel.')
+
     else:
         await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
