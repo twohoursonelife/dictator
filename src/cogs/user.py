@@ -1,5 +1,6 @@
 import discord
 import mysql.connector
+import re
 from discord.ext import commands
 import config_manager as config
 
@@ -9,7 +10,16 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    async def create_user(self, user):
+    async def create_user(self, user, username=None):
+        if username is None:
+            username = user
+
+        # Filter username, can't have any nasty characters
+        # Replaces # at beginning of discord discriminator with - 
+        formatted_username = str(username).replace('#', '-')
+        # Then replaces any non whitlisted (regex) characters with empty string
+        formatted_username = re.sub('[^a-zA-Z0-9-]', '', formatted_username)
+
         # Check if user already has an account before creating one
         check_user = await self.search_user(user.id)
 
@@ -22,9 +32,18 @@ class User(commands.Cog):
             return
 
         # Check if username is already in use
-        check_name = await self.search_username()
-        
-        #if check
+        check_name = await self.search_username(formatted_username)
+
+        if check_name is not None:
+            # Username already in use
+            print(f'We tried to create an account for {user} but their username is already in use, prompting them for one.')
+            await user.send(f'Hey {user.mention}, your username is already in use. What should I use instead?')
+            username = ""# function call to listen for next message from user
+            username += f"-{user.discriminator}"
+            await self.create_user(user, username)
+            return
+
+        # Create the users accounnt, calling on create_key for a key
 
     async def create_key(self):
         pass
