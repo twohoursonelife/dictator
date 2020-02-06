@@ -35,7 +35,5 @@ for filename in os.listdir('src/cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
-# Ensure the bot's token is stored in token.txt for the bot to work
-#with open('src/token.txt', 'r') as file:
- #   dictator.run(file.readline())
+
 dictator.run(config.read('bot_token'))
