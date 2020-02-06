@@ -93,7 +93,8 @@ class User(commands.Cog):
             return
 
         finally:
-            db.close
+            cursor.close()
+            db.close()
 
     # Search whether a username already exists
     async def search_username(self, user):
@@ -109,7 +110,8 @@ class User(commands.Cog):
             return
 
         finally:
-            db.close
+            cursor.close()
+            db.close()
 
 
 def setup(dictator):
