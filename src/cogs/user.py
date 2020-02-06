@@ -50,7 +50,7 @@ class User(commands.Cog):
         # Can't be having usernames too long, database allows for up to 255 but, seriously?
         if len(username) > 45:
             username = username[0:45]
-        
+
         username += '-' + user.discriminator
 
         # Check if username is already in use
@@ -66,12 +66,14 @@ class User(commands.Cog):
                     return m.author == user and isinstance(m.channel, discord.DMChannel)
                 
                 msg = await self.dictator.wait_for('message', timeout=60.0, check=check)
-                await self.create_user(user, msg.content)
-                return
 
             except:
                 print(f'{user} took too long to tell me what they wanted to set their username as.')
                 await user.send('You didn\'t tell me what I should use as your username.')
+                return
+
+            else:
+                await self.create_user(user, msg.content)
                 return
 
         # Create the users accounnt, calling on create_key for a key
