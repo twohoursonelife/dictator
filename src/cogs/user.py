@@ -57,14 +57,20 @@ class User(commands.Cog):
             print(f'We tried to create an account for {user} but their username is already in use, prompting them for one.')
             await user.send(f'Hey {user.mention}, your username is already in use. What should I use instead?')
             try:
-                message = await self.dictator.wait_for('message', timeout=60.0)
-                username = message.content
+                def check(m):
+                    # Make sure we're only listening for a message from the relevant user via DM
+                    return m.author == user and isinstance(m.channel, discord.DMChannel)
+                
+                msg = await self.dictator.wait_for('message', timeout=60.0, check=check)
+                username = msg.content
                 username += f"-{user.discriminator}"
                 await self.create_user(user, username)
                 return
-            except asyncio.TimeoutError:
+
+            except:
                 print(f'{user} took too long to tell me what they wanted to set their username as.')
-                user.send('You didn\'t tell me what I should use as your username instead. You\'ll need to type -key to start again.')
+                await user.send('You didn\'t tell me what I should use as your username.')
+                return
 
         # Create the users accounnt, calling on create_key for a key
 
