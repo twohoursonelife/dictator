@@ -50,7 +50,8 @@ class Verification(commands.Cog):
                 role = get(user.guild.roles, name='Verified')
                 await user.add_roles(role, reason='User agreed to rules')
                 await user.send(content=f'Hey {user.mention},\nGreat to have you here!\nI\'ll send you some information soon so you can play the game.')
-                #Initiate post verification actions, create user account if not already existing and message user info on where to download, how to play and where to find help
+                # Finally, create a game account for the user
+                await self.dictator.get_cog('User').create_user(user)
 
             elif reaction.emoji == '❌':
                 try:                    
