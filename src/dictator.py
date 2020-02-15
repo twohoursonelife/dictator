@@ -32,6 +32,9 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.CommandOnCooldown):
         await ctx.send('{ctx.author.mention} You must wait a minute to use this command again.')
 
+    elif isinstance(error, commands.MaxConcurrencyReached):
+        await ctx.send(f'{ctx.author.mention} You can only run this command once at a time.')
+
     else:
         await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
