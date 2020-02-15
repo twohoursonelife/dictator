@@ -67,6 +67,9 @@ class Verification(commands.Cog):
                     await user.send(f'Where do you think you\'re going, {user.mention}?\nYour soul is bound to 2HOL, remember?')
                     print(f'{user} tried to escape, but failed miserably.')
 
+                else:
+                    print(f'{user.name}#{user.discriminator} failed verification and has been kicked from the discord.')
+
 
 def setup(dictator):
     dictator.add_cog(Verification(dictator))
