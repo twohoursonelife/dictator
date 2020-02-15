@@ -93,8 +93,8 @@ class User(commands.Cog):
             return
         
         else:
-            print(f'Successfully created an account for {user.name}.')
-            await user.send(f'Awesome, I\'ve created an account for you!\nFor information on how to download and play the game, head to https://twohoursonelife.com/first-time-playing \n**Username:** {username}\n**Key:** {key}')
+            print(f'Successfully created an account for {user.name}#{user.discriminator}.')
+            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nYou can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
             return
 
         finally:
