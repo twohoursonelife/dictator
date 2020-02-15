@@ -26,6 +26,9 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.NoPrivateMessage):
         await ctx.send(f'{ctx.author.mention}, you can\'t use this command in a private message. Head to the bot channel.')
 
+    elif isinstance(error, commands.MissingRole):
+        await ctx.send('You don\'t have the required role.')
+
     else:
         await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
