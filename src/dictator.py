@@ -29,6 +29,9 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingRole):
         await ctx.send('You don\'t have the required role.')
 
+    elif isinstance(error, commands.CommandOnCooldown):
+        await ctx.send('You must wait a minute to use this command again.')
+
     else:
         await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
