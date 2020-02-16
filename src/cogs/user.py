@@ -117,7 +117,7 @@ class User(commands.Cog):
     async def search_user(self, user_id):
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
+            cursor = db.cursor(buffered=True)
             cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
             row = cursor.fetchone()
             return row
