@@ -8,7 +8,6 @@ class Server(commands.Cog):
         self.dictator = dictator
 
     @commands.command(aliases=['status'])
-    @commands.command()
     async def online(self, ctx):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
