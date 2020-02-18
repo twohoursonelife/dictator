@@ -84,7 +84,8 @@ class Admin(commands.Cog):
 
         except commands.CommandError:
             print(f'{ctx.author} tried to unban {user} but they\'re not a valid user.')
-            ctx.author.send('You can only unban valid users.')
+            await ctx.author.send('You can only unban valid users.')
+            return
 
         # Check that user is banned
         try:
