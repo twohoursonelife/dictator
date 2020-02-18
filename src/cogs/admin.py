@@ -20,8 +20,8 @@ class Admin(commands.Cog):
         try:
             user = await commands.UserConverter().convert(ctx, user)
 
-        except commands.CommandError:
-            print(f'{ctx.author} tried to ban {user} but they\'re not a valid user.')
+        except commands.CommandError as e:
+            print(f'{ctx.author} tried to ban {user} but they\'re not a valid user.\n{e}')
             await ctx.author.send('You can only ban valid users.')
             return
 
@@ -82,8 +82,8 @@ class Admin(commands.Cog):
         try:
             user = await commands.UserConverter().convert(ctx, user)
 
-        except commands.CommandError:
-            print(f'{ctx.author} tried to unban {user} but they\'re not a valid user.')
+        except commands.CommandError as e:
+            print(f'{ctx.author} tried to unban {user} but they\'re not a valid user.\n{e}')
             await ctx.author.send('You can only unban valid users.')
             return
 
