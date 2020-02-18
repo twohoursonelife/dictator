@@ -22,7 +22,8 @@ class Admin(commands.Cog):
 
         except commands.CommandError:
             print(f'{ctx.author} tried to ban {user} but they\'re not a valid user.')
-            ctx.author.send('You can only ban valid users.')
+            await ctx.author.send('You can only ban valid users.')
+            return
 
         # Check if user is already banned
         try:
