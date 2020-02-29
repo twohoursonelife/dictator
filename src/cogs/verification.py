@@ -3,9 +3,6 @@ from discord.ext import commands
 from discord.utils import get
 import config_manager as config
 
-# Do we enable user verification?
-checkVerification = bool(config.read('verify_discord_users'))
-
 verificationMSGID = 0
 
 
@@ -40,7 +37,6 @@ class Verification(commands.Cog):
     # Activates when a user has reacted to verification message and processes the user.
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, event):
-        global checkVerification
         global verificationMSGID
 
         channel = self.dictator.get_channel(int(config.read('verify_channel_id')))
@@ -48,7 +44,7 @@ class Verification(commands.Cog):
         message = await channel.fetch_message(verificationMSGID)
         emoji = event.emoji.name
 
-        if event.message_id == verificationMSGID and checkVerification and member.id != int(config.read('bot_id')):
+        if event.message_id == verificationMSGID and member.id != int(config.read('bot_id')):
             await message.remove_reaction(emoji, member)
             if emoji == '✅':
                 role = get(channel.guild.roles, name='Verified')
