@@ -50,9 +50,6 @@ class Verification(commands.Cog):
         emoji = event.emoji.name
 
         if event.message_id == verificationMSGID and checkVerification and member.id != int(config.read('bot_id')):
-            
-            #Need to find a way to get the specific reaction and remove it using raw payload data
-            #await reaction.remove(user)
             await message.remove_reaction(emoji, member)
             if emoji == '✅':
                 role = get(channel.guild.roles, name='Verified')
