@@ -22,7 +22,7 @@ class Verification(commands.Cog):
         channel = self.dictator.get_channel(int(config.read('verify_channel_id')))
 
         # Delete message history
-        async for message in channel.history(limit=10):
+        async for message in channel.history(limit=2):
             await message.delete()
 
         # These messages should be in a config file
