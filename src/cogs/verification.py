@@ -40,35 +40,43 @@ class Verification(commands.Cog):
 
     # Activates when a user has reacted to verification message and processes the user.
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
+    async def on_raw_reaction_add(self, event):
         global checkVerification
         global verificationMSGID
 
-        if reaction.message.id == verificationMSGID and checkVerification and user.id != int(config.read('bot_id')):
-            await reaction.remove(user)
-            if reaction.emoji == '✅':
-                role = get(user.guild.roles, name='Verified')
-                await user.add_roles(role, reason='User successfully verified.')
-                # Finally, create a game account for the user
-                await self.dictator.get_cog('User').create_user(user)
+        channel = self.dictator.get_channel(int(config.read('verify_channel_id')))
+        member = channel.guild.get_member(event.user_id)
+        message = await channel.fetch_message(verificationMSGID)
+        emoji = event.emoji.name
 
-            elif reaction.emoji == '❌':
+        if event.message_id == verificationMSGID and checkVerification and member.id != int(config.read('bot_id')):
+            
+            #Need to find a way to get the specific reaction and remove it using raw payload data
+            #await reaction.remove(user)
+            await message.remove_reaction(emoji, member)
+            if emoji == '✅':
+                role = get(channel.guild.roles, name='Verified')
+                await member.add_roles(role, reason='User successfully verified.')
+                # Finally, create a game account for the user
+                await self.dictator.get_cog('User').create_user(member)
+
+            elif emoji == '❌':
                 try:
-                    invite = await reaction.message.channel.create_invite(max_uses=1, reason=f'Sent to {user.name}{user.discriminator}, user kicked after did not agree to rules')
-                    await user.send(f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
+                    invite = await channel.create_invite(max_uses=1, reason=f'Sent to {member.name}{member.discriminator}, user kicked after did not agree to rules')
+                    await member.send(f'Sorry to see you go!\nIf you change your mind, you can use this link to jump back in.\n{invite}')
                 
                 except:
-                    print(f'Unable to message {user.name}#{user.discriminator} an invite after they failed verification.')
+                    print(f'Unable to message {member.name}#{member.discriminator} an invite after they failed verification.')
                 
                 try:                    
-                    await reaction.message.guild.kick(user, reason='User did not accept the rules.')
+                    await channel.guild.kick(member, reason='User did not accept the rules.')
                 
                 except discord.Forbidden as e:
-                    await user.send(f'Where do you think you\'re going, {user.mention}?\nYour soul is bound to 2HOL, remember?')
-                    print(f'{user} tried to escape, but failed miserably.')
+                    await member.send(f'Where do you think you\'re going, {member.mention}?\nYour soul is bound to 2HOL, remember?')
+                    print(f'{member} tried to escape, but failed miserably.')
 
                 else:
-                    print(f'{user.name}#{user.discriminator} failed verification and has been kicked from the discord.')
+                    print(f'{member.name}#{member.discriminator} failed verification and has been kicked from the discord.')
 
 
 def setup(dictator):
