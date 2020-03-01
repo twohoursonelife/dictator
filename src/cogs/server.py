@@ -16,7 +16,7 @@ class Server(commands.Cog):
             fd = sock.makefile()
 
         except:
-            embed = discord.Embed(title='Failed to check players online')
+            embed = discord.Embed(title='Failed to check players online', description='Is the server offline?')
             await ctx.send(embed=embed)
 
         else:
