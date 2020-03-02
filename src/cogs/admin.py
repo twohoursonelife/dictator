@@ -28,34 +28,37 @@ class Admin(commands.Cog):
         # Check if user is already banned
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
-            row = cursor.fetchone()
-            if row[0] is 1:
-                print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
-                await ctx.author.send(f'{user.mention} is already banned.')
-                return
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+                row = cursor.fetchone()
+                if row[0] is 1:
+                    print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
+                    await ctx.author.send(f'{user.mention} is already banned.')
+                    return
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
-        finally:
+        else:
             cursor.close()
             db.close()
 
         # Ban the user
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
-            db.commit()
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
+                db.commit()
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
         else:
+
             print(f'{ctx.author} banned {user} for: {reason}')
             await ctx.author.send(f'You have **banned** {user.mention} for: {reason}')
             await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact a leader.')
@@ -66,9 +69,7 @@ class Admin(commands.Cog):
             embed.add_field(name='Reason:', value=f'{reason}', inline=True)
             embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
             await log_channel.send(embed=embed)
-            return
 
-        finally:
             cursor.close()
             db.close()
 
@@ -90,32 +91,34 @@ class Admin(commands.Cog):
         # Check that user is banned
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
-            row = cursor.fetchone()
-            if row[0] is 0:
-                print(f'{ctx.author} tried to unban {user} but they\'re not already banned.')
-                await ctx.author.send(f'{user.mention} is not already banned.')
-                return
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+                row = cursor.fetchone()
+                if row[0] is 0:
+                    print(f'{ctx.author} tried to unban {user} but they\'re not already banned.')
+                    await ctx.author.send(f'{user.mention} is not already banned.')
+                    return
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
         
-        finally:
+        else:
             cursor.close()
             db.close()
 
         # Unban the user
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
-            db.commit()
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
+                db.commit()
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
         else:
             print(f'{ctx.author} unbanned {user} for: {reason}')
@@ -128,9 +131,7 @@ class Admin(commands.Cog):
             embed.add_field(name='Reason:', value=f'{reason}', inline=True)
             embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
             await log_channel.send(embed=embed)
-            return
 
-        finally:
             cursor.close()
             db.close()
 
@@ -144,23 +145,24 @@ class Admin(commands.Cog):
 
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
         else:
             users = cursor.fetchall()
+            
+            cursor.close()
+            db.close()
+
             if not users:
                 embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
                 await ctx.send(embed=embed)
                 return
-
-        finally:
-            cursor.close()
-            db.close()
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)

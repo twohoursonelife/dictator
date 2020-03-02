@@ -85,22 +85,20 @@ class User(commands.Cog):
         username = str(username)
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
-            db.commit()
+            
+            if db.is_connected:
+                cursor = db.cursor()
+                cursor.execute(f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
+                db.commit()
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
         
         else:
-            print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
-            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nYou can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
-            return
-
-        finally:
             cursor.close()
             db.close()
+            print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
+            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nYou can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
 
     # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
     async def create_key(self):
@@ -117,16 +115,17 @@ class User(commands.Cog):
     async def search_user(self, user_id):
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor(buffered=True)
-            cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
-            row = cursor.fetchone()
-            return row
+            
+            if db.is_connected():
+                cursor = db.cursor(buffered=True)
+                cursor.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
+                row = cursor.fetchone()
+                return row
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
-        finally:
+        else:
             cursor.close()
             db.close()
 
@@ -134,16 +133,17 @@ class User(commands.Cog):
     async def search_username(self, user):
         try:
             db = mysql.connector.connect(**config.db_config())
-            cursor = db.cursor()
-            cursor.execute(f'SELECT email FROM `users` WHERE email = \'{user}\'')
-            row = cursor.fetchone()
-            return row
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'SELECT email FROM `users` WHERE email = \'{user}\'')
+                row = cursor.fetchone()
+                return row
 
         except mysql.connector.Error as e:
-            print(f'\n\nMySQL Error\n{e}\n\n')
-            return
+            raise e
 
-        finally:
+        else:
             cursor.close()
             db.close()
 
