@@ -7,7 +7,7 @@ class Server(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(aliases=['status'])
+    @commands.command(aliases=['status'], brief='Check how many players are in game.')
     async def online(self, ctx):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

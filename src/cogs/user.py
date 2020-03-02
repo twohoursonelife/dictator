@@ -13,7 +13,7 @@ class User(commands.Cog):
         self.dictator = dictator
 
     # Retrieve and send a users login information to themselves
-    @commands.command(aliases=['mykey'])
+    @commands.command(aliases=['mykey'], brief='Retireve your login information for the game.', help='Retireve your login information for the game. If you don\'t have an account, one will be created for you.')
     @commands.guild_only()
     @commands.max_concurrency(1, per=commands.BucketType.user, wait=False)
     async def key(self, ctx):

@@ -10,7 +10,7 @@ class Admin(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command()
+    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified.', usage='<user> [reason]')
     @commands.has_role('Leader')
     async def ban(self, ctx, user, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
@@ -73,7 +73,7 @@ class Admin(commands.Cog):
             cursor.close()
             db.close()
 
-    @commands.command()
+    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified.', usage='<user> [reason]')
     @commands.has_role('Leader')
     async def unban(self, ctx, user, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
@@ -135,9 +135,9 @@ class Admin(commands.Cog):
             cursor.close()
             db.close()
 
-    @commands.command(aliases=['hois', 'who'])
+    @commands.command(aliases=['hois', 'who'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
     @commands.has_role('Leader')
-    async def whois(self, ctx, *, character):
+    async def whois(self, ctx, *, player):
         
         # How many results to lookup.
         # Due to embed length limitations, the maxium is 8.
@@ -148,7 +148,7 @@ class Admin(commands.Cog):
             
             if db.is_connected():
                 cursor = db.cursor()
-                cursor.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
+                cursor.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{player}\' ORDER BY death_time DESC LIMIT {history}')
 
         except mysql.connector.Error as e:
             raise e
@@ -160,13 +160,13 @@ class Admin(commands.Cog):
             db.close()
 
             if not users:
-                embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
+                embed = discord.Embed(title=f'No results for the character \'{player}\'.', colour=0xffbb35)
                 await ctx.send(embed=embed)
                 return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
-        embed = discord.Embed(title=f'Latest {history} results for the character \'{character}\':', colour=0xffbb35)
+        embed = discord.Embed(title=f'Latest {history} results for the character \'{player}\':', colour=0xffbb35)
 
         for u in users:
             try:
