@@ -17,7 +17,8 @@ def check_config():
                               'verify_channel_id': '660359992410636288',
                               'log_channel_id': '660359992410636288',
                               'stats_channel_id': '687671123604930607',
-                              'bot_channel_id': '604287242529407006'}
+                              'bot_channel_id': '604287242529407006',
+                              'general_channel_id': '423293333864054837'}
         with open('src/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')
