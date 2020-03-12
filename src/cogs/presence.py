@@ -10,7 +10,7 @@ class Presence(commands.Cog):
         self.dictator = dictator
 
         self.status = cycle(['Dictatorship', '-help', 'Bullying Colin', 'Guarding Newport',
-                             'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho'])
+                             'Praising Sam', 'Baking the pies', 'Cheesing Uno', 'Hidei ho ho ho', 'Celebrating Two Years'])
 
     @commands.Cog.listener()
     async def on_ready(self):
