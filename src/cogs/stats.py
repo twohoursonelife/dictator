@@ -18,11 +18,12 @@ class Stats(commands.Cog):
             self.dictator.unload_extension('cogs.stats')
             return
 
-        async for message in self.channel.history(limit=1):
-            await message.delete()
+        #async for message in self.channel.history(limit=1):
+            #await message.delete()
 
-        embed = discord.Embed(title='Loading stats...', colour=0xffbb35)
-        self.message = await self.channel.send(embed=embed)
+        #embed = discord.Embed(title='Loading stats...', colour=0xffbb35)
+        #self.message = await self.channel.send(embed=embed)
+        await self.channel.edit(reason='Update player count', name='Online: Loading...')
 
         self.stats.start()
 
@@ -30,9 +31,10 @@ class Stats(commands.Cog):
     async def stats(self):
         online = await self.get_population()
 
-        embed = discord.Embed(title='Stats', colour=0xffbb35)
-        embed.add_field(name='In game:', value=f'{online}')
-        await self.message.edit(embed=embed)
+        #embed = discord.Embed(title='Stats', colour=0xffbb35)
+        #embed.add_field(name='In game:', value=f'{online}')
+        #await self.message.edit(embed=embed)
+        await self.channel.edit(reason='Update player count', name=f'Online: {online}')
 
     async def get_population(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
