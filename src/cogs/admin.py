@@ -192,6 +192,44 @@ class Admin(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(brief='See info about a user.', help='Sends you a message containing relevant information about a user.', usage='<user>')
+    @commands.has_role('Moderator')
+    async def info(self, ctx, user: discord.User):
+        await ctx.message.delete()
+
+        try:
+            db = mysql.connector.connect(**config.db_config())
+            
+            if db.is_connected():
+                cursor = db.cursor()
+                cursor.execute(f'SELECT email, banned FROM users WHERE discord_id = \'{user.id}\'')
+
+        except mysql.connector.Error as e:
+            raise e
+
+        else:
+            user_info = cursor.fetchone()
+            
+            cursor.close()
+            db.close()
+
+            if not user_info:
+                embed = discord.Embed(title=f'No results for the user \'{user.mention}\'.', colour=0xffbb35)
+                await ctx.author.send(embed=embed)
+                return
+
+        # Convert banned data into readable string
+        if user_info[1]:
+            banned = 'Yes'
+        else:
+            banned = 'No'
+
+        embed = discord.Embed(title=f'Results for the user \'{user.name}#{user.discriminator}\':', colour=0xffbb35)
+        embed.add_field(name='Username:', value=f'{user_info[0]}')
+        embed.add_field(name='Banned:', value=f'{banned}')
+        await ctx.author.send(embed=embed)
+        print(f'Supplied info of {user.name}#{user.discriminator} to {ctx.author.name}#{ctx.author.discriminator}')
+
 
 def setup(dictator):
     dictator.add_cog(Admin(dictator))
