@@ -5,7 +5,7 @@ import config_manager as config
 
 print(config.check_config())
 
-dictator = commands.Bot(command_prefix=config.read('bot_prefix'))
+dictator = commands.Bot(command_prefix=config.read('bot_prefix'), case_insensitive=True)
 
 @dictator.event
 async def on_ready():
