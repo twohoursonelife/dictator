@@ -11,18 +11,14 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.channel = self.dictator.get_channel(int(config.read('general_channel_id')))
+        self.channel = self.dictator.get_channel(
+            int(config.read('general_channel_id')))
 
         if self.channel is None:
             print('Unable to find channel, disabling stats extension.')
             self.dictator.unload_extension('cogs.stats')
             return
 
-        #async for message in self.channel.history(limit=1):
-            #await message.delete()
-
-        #embed = discord.Embed(title='Loading stats...', colour=0xffbb35)
-        #self.message = await self.channel.send(embed=embed)
         await self.channel.edit(reason='Update player count', topic='Players in game: Loading...')
 
         self.stats.start()
@@ -31,9 +27,6 @@ class Stats(commands.Cog):
     async def stats(self):
         online = await self.get_population()
 
-        #embed = discord.Embed(title='Stats', colour=0xffbb35)
-        #embed.add_field(name='In game:', value=f'{online}')
-        #await self.message.edit(embed=embed)
         await self.channel.edit(reason='Update player count', topic=f'Players in game: {online}')
 
     async def get_population(self):
