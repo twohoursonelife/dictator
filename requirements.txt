@@ -14,5 +14,5 @@ protobuf==3.6.1
 pycodestyle==2.5.0
 PyYAML==5.2
 six==1.14.0
-websockets==6.0
+websockets==8.1
 yarl==1.4.2
