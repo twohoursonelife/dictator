@@ -10,7 +10,7 @@ dnspython==1.16.0
 idna==2.9
 multidict==4.7.5
 mysql-connector-python==8.0.19
-protobuf==3.6.1
+protobuf==3.11.3
 pycodestyle==2.5.0
 PyYAML==5.2
 six==1.14.0
