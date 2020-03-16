@@ -23,7 +23,7 @@ class Stats(commands.Cog):
 
         self.stats_loop.start()
 
-    @tasks.loop(minutes=15)
+    @tasks.loop(minutes=5)
     async def stats_loop(self):
         await self.update_stats()
 
@@ -31,7 +31,7 @@ class Stats(commands.Cog):
     async def stats(self, ctx):
         await ctx.message.delete()
         await self.update_stats()
-        embed = discord.Embed(title='I\'ve update the stats in the #general channel description.', description='They otherwise update every 15 minutes.', colour=0xffbb35)
+        embed = discord.Embed(title='I\'ve update the stats in the #general channel description.', description='They otherwise update every 5 minutes.', colour=0xffbb35)
         await ctx.send(embed=embed, delete_after=5)
 
     async def update_stats(self):
