@@ -65,7 +65,11 @@ class User(commands.Cog):
             # Username is already in use, prompt for one
             chosen_username = await self.prompt_user(user, f'Hey {user.mention}, your username is already in use. What should I use instead?')
             
-            if chosen_username is not None:
+            if chosen_username is None:
+                # Input prompt expired
+                return
+
+            else:
                 await self.create_user(user, chosen_username)
                 return
 
@@ -150,6 +154,7 @@ class User(commands.Cog):
         except:
             print(f'{user} didn\'t reply in time to:\n{msg}')
             await user.send('You didn\'t reply in time.')
+            return
 
         else:
             return reply.content
