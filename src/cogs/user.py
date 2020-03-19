@@ -66,7 +66,7 @@ class User(commands.Cog):
             chosen_username = await self.prompt_user(user, f'Hey {user.mention}, your username is already in use. What should I use instead?')
             
             if chosen_username is None:
-                # Input prompt expired
+                await user.send('You didn\'t tell me what to use instead.')
                 return
 
             else:
@@ -152,8 +152,6 @@ class User(commands.Cog):
             reply = await self.dictator.wait_for('message', timeout=60.0, check=check)
 
         except:
-            print(f'{user} didn\'t reply in time to:\n{msg}')
-            await user.send('You didn\'t reply in time.')
             return
 
         else:
