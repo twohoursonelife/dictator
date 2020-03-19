@@ -62,23 +62,11 @@ class User(commands.Cog):
         check_name = await self.search_username(username)
 
         if check_name is not None:
-            # Username already in use
-            print(f'We tried to create an account for {user} but their username is already in use, prompting them for one.')
-            await user.send(f'Hey {user.mention}, your username is already in use. What should I use instead?')
-            try:
-                def check(m):
-                    # Make sure we're only listening for a message from the relevant user via DM
-                    return m.author == user and isinstance(m.channel, discord.DMChannel)
-                
-                msg = await self.dictator.wait_for('message', timeout=60.0, check=check)
-
-            except:
-                print(f'{user} took too long to tell me what they wanted to set their username as.')
-                await user.send('You didn\'t tell me what I should use as your username.')
-                return
-
-            else:
-                await self.create_user(user, msg.content)
+            # Username is already in use, prompt for one
+            chosen_username = await self.prompt_user(user, f'Hey {user.mention}, your username is already in use. What should I use instead?')
+            
+            if chosen_username is not None:
+                await self.create_user(user, chosen_username)
                 return
 
         # Create the users accounnt, calling on create_key for a key
@@ -148,6 +136,23 @@ class User(commands.Cog):
         else:
             cursor.close()
             db.close()
+
+    # Prompt user to respond to a question via private message
+    async def prompt_user(self, user, msg):
+        await user.send(f'{msg}')
+        try:
+            def check(m):
+                # Make sure we're only listening for a message from the relevant user via DM
+                return m.author == user and isinstance(m.channel, discord.DMChannel)
+            
+            reply = await self.dictator.wait_for('message', timeout=60.0, check=check)
+
+        except:
+            print(f'{user} didn\'t reply in time to:\n{msg}')
+            await user.send('You didn\'t reply in time.')
+
+        else:
+            return reply.content
 
 
 def setup(dictator):
