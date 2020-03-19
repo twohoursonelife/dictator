@@ -41,6 +41,18 @@ class User(commands.Cog):
         # Then replaces any non whitlisted (regex) characters with empty string
         username = (re.sub('[^a-zA-Z0-9]', '', username))
 
+        if len(username) < 3:
+            # Username was only made up of special chracters, prompt for one
+            chosen_username = await self.prompt_user(user, f'Hey {user.mention}, your username doesn\'t contain enough valid characters. What should I use instead?')
+
+            if chosen_username is None:
+                await user.send('You didn\'t tell me what to use instead.')
+                return
+
+            else:
+                await self.create_user(user, chosen_username)
+                return
+
         # Check if user already has an account before creating one
         check_user = await self.search_user(user.id)
 
