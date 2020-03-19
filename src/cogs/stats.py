@@ -38,7 +38,8 @@ class Stats(commands.Cog):
         online = await self.get_population()
 
         await self.channel.edit(reason='Update statistics', topic=f'Players in game: {online}')
-        print(f'Stats updated: Players in game: {online}')
+        # Too much spam for now
+        # print(f'Stats updated: Players in game: {online}')
 
     async def get_population(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
