@@ -36,7 +36,7 @@ async def on_command_error(ctx, error):
         await ctx.send(f'{ctx.author.mention} You can only run this command once at a time.')
 
     else:
-        await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.')
+        await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 # Loading of all cog files in the cogs directory
