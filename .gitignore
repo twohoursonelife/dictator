@@ -1,6 +1,6 @@
 # Other
 .vscode
-src/config.ini
+dictator/config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
