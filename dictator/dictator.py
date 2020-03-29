@@ -45,7 +45,7 @@ async def on_command_error(ctx, error):
             print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 # Loading of all cog files in the cogs directory
-for filename in os.listdir('src/cogs'):
+for filename in os.listdir('dictator/cogs'):
     if filename.endswith('.py'):
         dictator.load_extension(f'cogs.{filename[:-3]}')
 
