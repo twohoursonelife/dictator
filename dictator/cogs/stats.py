@@ -45,10 +45,15 @@ class Stats(commands.Cog):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
+            sock.settimeout(3.0)
             sock.connect(('play.twohoursonelife.com', 8005))
             fd = sock.makefile()
 
-        except:
+        except socket.timeout:
+            app_info = await self.dictator.application_info()
+            owner = await self.dictator.fetch_user(app_info.team.owner_id)
+            await owner.send('Is the game server offline? it did not respond to a stats request.')
+            print('Server failed stats request, pinged my owner.')
             return 'Unknown'
 
         else:
