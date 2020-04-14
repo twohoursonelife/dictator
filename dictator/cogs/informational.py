@@ -11,6 +11,12 @@ class Informational(commands.Cog):
     async def rtfm(self, ctx):
         await ctx.send(f'**Heres the manual to play for the first time**\n<https://twohoursonelife.com/first-time-playing>\n\nCheck your messages from me to find your username and password.')
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.content == '.key' or message.content == '.mykey':
+            await message.delete()
+            await message.channel.send(f'{message.author.mention} You need to use `-key`', delete_after=10)
+
 
 def setup(dictator):
     dictator.add_cog(Informational(dictator))
