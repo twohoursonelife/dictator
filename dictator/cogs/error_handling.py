@@ -30,6 +30,9 @@ class Error_Handling(commands.Cog):
         elif isinstance(error, commands.MaxConcurrencyReached):
             await ctx.send(f'{ctx.author.mention} You can only run this command once at a time.')
 
+        elif isinstance(error, commands.UserInputError):
+            await ctx.send(f'{ctx.author.mention} Invalid input. See {await self.dictator.get_prefix(ctx)}help')
+
         else:
             if isinstance(ctx.channel, discord.TextChannel):
                 await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
