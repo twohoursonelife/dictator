@@ -36,7 +36,7 @@ class Error_Handling(commands.Cog):
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
             
             else:
-                await ctx.send(f'Uh oh... Colin broke something again. Contact admin@twohoursonelife.com for assistance.')
+                await ctx.send(f'Uh oh... Colin broke something again. Contact Colin#9391 or admin@twohoursonelife.com for assistance.')
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 
