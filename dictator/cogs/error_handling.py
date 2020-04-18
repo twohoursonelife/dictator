@@ -14,11 +14,11 @@ class Error_Handling(commands.Cog):
 
         elif isinstance(error, commands.MissingPermissions):
             await ctx.message.delete()
-            await ctx.send('Insufficient permissions', delete_after=10)
+            await ctx.send('{ctx.author.mention}, Insufficient permissions', delete_after=10)
 
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()
-            await ctx.send(f'Missing argument. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
+            await ctx.send(f'{ctx.author.mention}, Missing argument. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
 
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.message.delete()
@@ -26,7 +26,7 @@ class Error_Handling(commands.Cog):
 
         elif isinstance(error, commands.MissingRole):
             await ctx.message.delete()
-            await ctx.send('You don\'t have the required role.', delete_after=10)
+            await ctx.send('{ctx.author.mention}, You don\'t have the required role.', delete_after=10)
 
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.message.delete()
@@ -42,11 +42,11 @@ class Error_Handling(commands.Cog):
 
         else:
             if isinstance(ctx.channel, discord.TextChannel):
-                await ctx.send(f'Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
+                await ctx.send(f'{ctx.author.mention}, Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
             
             else:
-                await ctx.send(f'Uh oh... Colin broke something again. Contact Colin#9391 or admin@twohoursonelife.com for assistance.')
+                await ctx.send(f'{ctx.author.mention}, Uh oh... Colin broke something again. Contact Colin#9391 or admin@twohoursonelife.com for assistance.')
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 
