@@ -2,6 +2,7 @@ import discord
 import socket
 from discord.ext import commands, tasks
 import utility.config_manager as config
+import datetime
 
 
 class Stats(commands.Cog):
@@ -38,8 +39,10 @@ class Stats(commands.Cog):
         online = await self.get_population()
 
         await self.channel.edit(reason='Update statistics', topic=f'Players in game: {online}')
-        # Too much spam for now
-        # print(f'Stats updated: Players in game: {online}')
+        
+        # "Temp" player count logging
+        with open('dictator/utility/player-log.txt', 'a') as f:
+            f.write(f'{online} - {datetime.datetime.now()}\n')
 
     async def get_population(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,6 +1,7 @@
 # Other
 .vscode
 config.ini
+player-log.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
