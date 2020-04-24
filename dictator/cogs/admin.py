@@ -2,7 +2,7 @@ import discord
 import mysql.connector
 import datetime
 from discord.ext import commands
-import config_manager as config
+import utility.config_manager as config
 
 
 class Admin(commands.Cog):

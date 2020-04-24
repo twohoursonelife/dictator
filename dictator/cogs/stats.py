@@ -1,7 +1,7 @@
 import discord
 import socket
 from discord.ext import commands, tasks
-import config_manager as config
+import utility.config_manager as config
 
 
 class Stats(commands.Cog):

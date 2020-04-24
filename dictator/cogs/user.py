@@ -4,7 +4,7 @@ import re
 import random
 from textwrap import wrap
 from discord.ext import commands
-import config_manager as config
+import utility.config_manager as config
 
 
 class User(commands.Cog):

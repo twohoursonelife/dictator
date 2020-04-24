@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
-import config_manager as config
+import utility.config_manager as config
 
 verificationMSGID = 0
 

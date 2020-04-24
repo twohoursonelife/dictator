@@ -1,7 +1,7 @@
 import discord
 import os
 from discord.ext import commands
-import config_manager as config
+import utility.config_manager as config
 
 print(config.check_config())
 
