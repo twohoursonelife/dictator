@@ -48,7 +48,7 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 - `source env/bin/activate`
 
 3. Install the requirements for the bot
-- `python 3.8 -m pip install -r requirements.txt `
+- `python3.8 -m pip install -r requirements.txt `
 
 4. Run the bot once, expect it to tell you an error and crash. This generates a default config.
 - `python3.8 dictator/dictator.py `
