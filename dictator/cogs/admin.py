@@ -33,7 +33,7 @@ class Admin(commands.Cog):
                 cursor = db.cursor()
                 cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
                 row = cursor.fetchone()
-                if row[0] is 1:
+                if row[0] == 1:
                     print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
                     await ctx.author.send(f'{user.mention} is already banned.')
                     return
@@ -96,7 +96,7 @@ class Admin(commands.Cog):
                 cursor = db.cursor()
                 cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
                 row = cursor.fetchone()
-                if row[0] is 0:
+                if row[0] == 0:
                     print(f'{ctx.author} tried to unban {user} but they\'re not already banned.')
                     await ctx.author.send(f'{user.mention} is not already banned.')
                     return
