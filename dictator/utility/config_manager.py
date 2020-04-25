@@ -14,11 +14,12 @@ def check_config():
                               'DB_user': 'username',
                               'DB_pass': 'password',
                               'bot_id': '658883039761399859',
-                              'verify_channel_id': '660359992410636288',
-                              'log_channel_id': '660359992410636288',
-                              'stats_channel_id': '687671123604930607',
+                              'verify_channel_id': '656484598779215872',
+                              'log_channel_id': '620375198251745282',
+                              'stats_channel_id': '423293333864054837',
                               'bot_channel_id': '604287242529407006',
-                              'general_channel_id': '423293333864054837'}
+                              'general_channel_id': '423293333864054837',
+                              'suggestion_channel_id': '703244428172853318'}
         with open('dictator/utility/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')
