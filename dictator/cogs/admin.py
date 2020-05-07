@@ -3,6 +3,7 @@ import mysql.connector
 import datetime
 from discord.ext import commands
 import utility.config_manager as config
+from utility.db_manager import db_connection as db_conn
 
 
 class Admin(commands.Cog):
@@ -26,52 +27,29 @@ class Admin(commands.Cog):
             return
 
         # Check if user is already banned
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
-                row = cursor.fetchone()
-                if row[0] == 1:
+        with db_conn() as db:
+            db.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+            row = db.fetchone()
+
+        if row[0] == 1:
                     print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
                     await ctx.author.send(f'{user.mention} is already banned.')
                     return
 
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            cursor.close()
-            db.close()
-
         # Ban the user
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
-                db.commit()
+        with db_conn() as db:
+            db.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
 
-        except mysql.connector.Error as e:
-            raise e
+        print(f'{ctx.author} banned {user} for: {reason}')
+        await ctx.author.send(f'You have **banned** {user.mention} for: {reason}')
+        await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact a leader.')
 
-        else:
-
-            print(f'{ctx.author} banned {user} for: {reason}')
-            await ctx.author.send(f'You have **banned** {user.mention} for: {reason}')
-            await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact a leader.')
-
-            # Embed log
-            embed = discord.Embed(title='User has been banned from the game', colour=discord.Colour.red())
-            embed.add_field(name='User:', value=f'{user.mention}', inline=True)
-            embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-            embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
-            await log_channel.send(embed=embed)
-
-            cursor.close()
-            db.close()
+        # Embed log
+        embed = discord.Embed(title='User has been banned from the game', colour=discord.Colour.red())
+        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Reason:', value=f'{reason}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified.', usage='<user> [reason]')
     @commands.has_role('Leader')
@@ -89,51 +67,29 @@ class Admin(commands.Cog):
             return
 
         # Check that user is banned
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
-                row = cursor.fetchone()
-                if row[0] == 0:
-                    print(f'{ctx.author} tried to unban {user} but they\'re not already banned.')
-                    await ctx.author.send(f'{user.mention} is not already banned.')
-                    return
+        with db_conn() as db:
+            db.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+            row = db.fetchone()
 
-        except mysql.connector.Error as e:
-            raise e
-        
-        else:
-            cursor.close()
-            db.close()
+        if row[0] == 0:
+            print(f'{ctx.author} tried to unban {user} but they\'re not already banned.')
+            await ctx.author.send(f'{user.mention} is not already banned.')
+            return
 
         # Unban the user
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
-                db.commit()
+        with db_conn() as db:
+            db.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
 
-        except mysql.connector.Error as e:
-            raise e
+        print(f'{ctx.author} unbanned {user} for: {reason}')
+        await ctx.author.send(f'You have **unbanned** {user.mention} for: {reason}')
+        await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
 
-        else:
-            print(f'{ctx.author} unbanned {user} for: {reason}')
-            await ctx.author.send(f'You have **unbanned** {user.mention} for: {reason}')
-            await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
-
-            # Embed log
-            embed = discord.Embed(title='User has been unbanned from the game', colour=discord.Colour.green())
-            embed.add_field(name='User:', value=f'{user.mention}', inline=True)
-            embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-            embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
-            await log_channel.send(embed=embed)
-
-            cursor.close()
-            db.close()
+        # Embed log
+        embed = discord.Embed(title='User has been unbanned from the game', colour=discord.Colour.green())
+        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Reason:', value=f'{reason}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        await log_channel.send(embed=embed)
 
     @commands.command(aliases=['hois', 'who'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
     @commands.has_role('Leader')
@@ -143,26 +99,14 @@ class Admin(commands.Cog):
         # Due to embed length limitations, the maxium is 8.
         history = 5
 
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
+        with db_conn() as db:
+            db.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
+            users = db.fetchall()
 
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            users = cursor.fetchall()
-            
-            cursor.close()
-            db.close()
-
-            if not users:
-                embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
-                await ctx.send(embed=embed)
-                return
+        if not users:
+            embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
+            await ctx.send(embed=embed)
+            return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
@@ -196,26 +140,14 @@ class Admin(commands.Cog):
     async def info(self, ctx, user: discord.User):
         await ctx.message.delete()
 
-        try:
-            db = mysql.connector.connect(**config.db_config())
-            
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(f'SELECT email, banned FROM users WHERE discord_id = \'{user.id}\'')
+        with db_conn() as db:
+            db.execute(f'SELECT email, banned FROM users WHERE discord_id = \'{user.id}\'')
+            user_info = db.fetchone()
 
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            user_info = cursor.fetchone()
-            
-            cursor.close()
-            db.close()
-
-            if not user_info:
-                embed = discord.Embed(title=f'No results for the user \'{user.mention}\'.', colour=0xffbb35)
-                await ctx.author.send(embed=embed)
-                return
+        if not user_info:
+            embed = discord.Embed(title=f'No results for the user \'{user.mention}\'.', colour=0xffbb35)
+            await ctx.author.send(embed=embed)
+            return
 
         # Convert banned data into readable string
         if user_info[1]:
