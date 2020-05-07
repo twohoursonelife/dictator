@@ -174,7 +174,6 @@ class Admin(commands.Cog):
 
             except:
                 raise commands.CommandError
-                return
             
             else:
                 # Format death time as timezone aware
