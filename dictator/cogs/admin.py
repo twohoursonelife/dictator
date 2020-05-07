@@ -12,7 +12,7 @@ class Admin(commands.Cog):
         self.dictator = dictator
 
     @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified.', usage='<user> [reason]')
-    @commands.has_role('Leader')
+    @commands.has_role('Admin')
     async def ban(self, ctx, user, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
@@ -42,7 +42,7 @@ class Admin(commands.Cog):
 
         print(f'{ctx.author} banned {user} for: {reason}')
         await ctx.author.send(f'You have **banned** {user.mention} for: {reason}')
-        await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact a leader.')
+        await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact an Admin.')
 
         # Embed log
         embed = discord.Embed(title='User has been banned from the game', colour=discord.Colour.red())
@@ -52,7 +52,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified.', usage='<user> [reason]')
-    @commands.has_role('Leader')
+    @commands.has_role('Admin')
     async def unban(self, ctx, user, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['hois', 'who'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
-    @commands.has_role('Leader')
+    @commands.has_role('Admin')
     async def whois(self, ctx, *, character):
         
         # How many results to lookup.
@@ -136,7 +136,7 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(brief='See info about a user.', help='Sends you a message containing relevant information about a user.', usage='<user>')
-    @commands.has_role('Moderator')
+    @commands.has_role('Mod')
     async def info(self, ctx, user: discord.User):
         await ctx.message.delete()
 
