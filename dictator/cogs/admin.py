@@ -149,15 +149,9 @@ class Admin(commands.Cog):
             await ctx.author.send(embed=embed)
             return
 
-        # Convert banned data into readable string
-        if user_info[1]:
-            banned = 'Yes'
-        else:
-            banned = 'No'
-
         embed = discord.Embed(title=f'Results for the user \'{user.name}#{user.discriminator}\':', colour=0xffbb35)
         embed.add_field(name='Username:', value=f'{user_info[0]}')
-        embed.add_field(name='Banned:', value=f'{banned}')
+        embed.add_field(name='Banned:', value='Yes' if user_info[1] else 'No')
         await ctx.author.send(embed=embed)
         print(f'Supplied info of {user.name}#{user.discriminator} to {ctx.author.name}#{ctx.author.discriminator}')
 
