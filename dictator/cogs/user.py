@@ -5,6 +5,7 @@ import random
 from textwrap import wrap
 from discord.ext import commands
 import utility.config_manager as config
+from utility.db_manager import db_connection as db_conn
 
 
 class User(commands.Cog):
@@ -61,8 +62,7 @@ class User(commands.Cog):
             # User already has an account
             username = check_user[0]
             key = check_user[1]
-            print(
-                f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
+            print(f'We tried to create an account for {user} but they already had one, so we\'ll send them their login information.')
             await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             return
 
@@ -91,24 +91,12 @@ class User(commands.Cog):
         key = str(await self.create_key())
         user_id = int(user.id)
         username = str(username)
-        try:
-            db = mysql.connector.connect(**config.db_config())
+        
+        with db_conn() as db:
+            db.execute(f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
 
-            if db.is_connected:
-                cursor = db.cursor()
-                cursor.execute(
-                    f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
-                db.commit()
-
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            cursor.close()
-            db.close()
-            print(
-                f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
-            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
+        print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
+        await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
 
     # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
     async def create_key(self):
@@ -125,41 +113,17 @@ class User(commands.Cog):
 
     # Search whether a user exists, return username and key if they do
     async def search_user(self, user_id):
-        try:
-            db = mysql.connector.connect(**config.db_config())
-
-            if db.is_connected():
-                cursor = db.cursor(buffered=True)
-                cursor.execute(
-                    f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
-                row = cursor.fetchone()
-                return row
-
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            cursor.close()
-            db.close()
+        with db_conn() as db:
+            db.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
+            row = db.fetchone()
+            return row
 
     # Search whether a username already exists
     async def search_username(self, user):
-        try:
-            db = mysql.connector.connect(**config.db_config())
-
-            if db.is_connected():
-                cursor = db.cursor()
-                cursor.execute(
-                    f'SELECT email FROM `users` WHERE email = \'{user}\'')
-                row = cursor.fetchone()
-                return row
-
-        except mysql.connector.Error as e:
-            raise e
-
-        else:
-            cursor.close()
-            db.close()
+        with db_conn() as db:
+            db.execute(f'SELECT email FROM `users` WHERE email = \'{user}\'')
+            row = db.fetchone()
+            return row
 
     # Prompt user to respond to a question via private message
     async def prompt_user(self, user, msg):
