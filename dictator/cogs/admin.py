@@ -91,7 +91,7 @@ class Admin(commands.Cog):
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(aliases=['hois', 'who'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
+    @commands.command(aliases=['hois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
     @commands.has_role('Admin')
     async def whois(self, ctx, *, character):
         
