@@ -4,7 +4,7 @@ import os.path
 
 def check_config():
     if os.path.isfile('dictator/utility/config.ini'):
-        return('Using existing config.', check_player_log())
+        return('Using existing config.')
     else:
         config = configparser.ConfigParser()
         config['Settings'] = {'Bot_token': 'token',
@@ -23,13 +23,6 @@ def check_config():
         with open('dictator/utility/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')
-    
-def check_player_log():
-    if os.path.isfile('dictator/utility/player-log.txt'):
-        return('Using existing player-log.')
-    else:
-        with open('dictator/utility/player-log.txt', 'w') as f:
-            f.write('Start player log\n')
 
 def read(setting):
     config = configparser.ConfigParser()
