@@ -11,7 +11,7 @@ class Admin(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified.', usage='<user> [reason]')
+    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
     @commands.has_role('Admin')
     async def ban(self, ctx, user, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
@@ -51,7 +51,7 @@ class Admin(commands.Cog):
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified.', usage='<user> [reason]')
+    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
     @commands.has_role('Admin')
     async def unban(self, ctx, user, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
