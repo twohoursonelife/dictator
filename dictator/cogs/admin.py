@@ -41,13 +41,23 @@ class Admin(commands.Cog):
             db.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} banned {user} for: {reason}')
-        await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact an Admin.')
+
+        # Notify the user
+        try:
+            await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact an Admin.')
+        
+        except:
+            notify_user = False
+
+        else:
+            notify_user = True
 
         # Embed log
         embed = discord.Embed(title='User has been banned from the game', colour=discord.Colour.red())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
@@ -80,13 +90,23 @@ class Admin(commands.Cog):
             db.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} unbanned {user} for: {reason}')
-        await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
+
+        # Notify the user
+        try: 
+            await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
+        
+        except:
+            notify_user = False
+
+        else:
+            notify_user = True
 
         # Embed log
         embed = discord.Embed(title='User has been unbanned from the game', colour=discord.Colour.green())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['hois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
