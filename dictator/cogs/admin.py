@@ -53,7 +53,7 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Embed log
-        embed = discord.Embed(title='User has been banned from the game', colour=discord.Colour.red())
+        embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
@@ -102,7 +102,7 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Embed log
-        embed = discord.Embed(title='User has been unbanned from the game', colour=discord.Colour.green())
+        embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
