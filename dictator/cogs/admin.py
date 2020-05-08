@@ -44,7 +44,9 @@ class Admin(commands.Cog):
 
         # Notify the user
         try:
-            await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact an Admin.')
+            embed = discord.Embed(title='You were banned from 2HOL', colour=discord.Colour.red())
+            embed.add_field(name='Reason:', value=f'{reason}', inline=True)
+            await user.send(embed=embed)
         
         except:
             notify_user = False
@@ -93,7 +95,9 @@ class Admin(commands.Cog):
 
         # Notify the user
         try: 
-            await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
+            embed = discord.Embed(title='You were unbanned from 2HOL', colour=discord.Colour.green())
+            embed.add_field(name='Reason:', value=f'{reason}', inline=True)
+            await user.send(embed=embed)
         
         except:
             notify_user = False
