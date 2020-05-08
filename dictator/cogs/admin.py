@@ -41,7 +41,6 @@ class Admin(commands.Cog):
             db.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} banned {user} for: {reason}')
-        await ctx.author.send(f'You have **banned** {user.mention} for: {reason}')
         await user.send(f'Your account to play 2HOL has been **banned** for: {reason}\nIf you believe this has been done in error, contact an Admin.')
 
         # Embed log
@@ -81,7 +80,6 @@ class Admin(commands.Cog):
             db.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} unbanned {user} for: {reason}')
-        await ctx.author.send(f'You have **unbanned** {user.mention} for: {reason}')
         await user.send(f'Your account to play 2HOL has been **unbanned** for: {reason}')
 
         # Embed log
