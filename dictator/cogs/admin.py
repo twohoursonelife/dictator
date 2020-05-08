@@ -32,9 +32,9 @@ class Admin(commands.Cog):
             row = db.fetchone()
 
         if row[0] == 1:
-                    print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
-                    await ctx.author.send(f'{user.mention} is already banned.')
-                    return
+            print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
+            await ctx.author.send(f'{user.mention} is already banned.')
+            return
 
         # Ban the user
         with db_conn() as db:
