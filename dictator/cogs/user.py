@@ -155,6 +155,11 @@ class User(commands.Cog):
             await ctx.author.send(embed=embed)
             return
 
+        # User hasn't lived a single life yet
+        if user_info[0] == None:
+            embed = discord.Embed(title=f'\'{user.name}#{user.discriminator}\' has not lived any lives yet.', colour=0xffbb35)
+            await ctx.author.send(embed=embed)
+
         # Time formatting
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
