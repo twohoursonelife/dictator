@@ -170,6 +170,7 @@ class User(commands.Cog):
         embed.add_field(name='Time played:', value=f'{round(user_info[1] / 60, 1)} hours')
         embed.add_field(name='Last death:', value=diff_formatted)
         embed.add_field(name='Banned:', value='No' if user_info[0] else 'Yes')
+        embed.set_footer(text='Data range: August 2019 - Current')
         await ctx.author.send(embed=embed)
 
 
