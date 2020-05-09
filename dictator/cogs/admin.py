@@ -13,18 +13,9 @@ class Admin(commands.Cog):
 
     @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
     @commands.has_role('Admin')
-    async def ban(self, ctx, user, *, reason='The ban hammer has spoken.'):
+    async def ban(self, ctx, user: discord.User, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
-        
-        # Ensure we're banning a valid user
-        try:
-            user = await commands.UserConverter().convert(ctx, user)
-
-        except commands.CommandError as e:
-            print(f'{ctx.author} tried to ban {user} but they\'re not a valid user.\n{e}')
-            await ctx.author.send('You can only ban valid users.')
-            return
 
         # Check if user is already banned
         with db_conn() as db:
@@ -64,18 +55,9 @@ class Admin(commands.Cog):
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
     @commands.has_role('Admin')
-    async def unban(self, ctx, user, *, reason='It\'s your lucky day!'):
+    async def unban(self, ctx, user: discord.User, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
-        
-        # Ensure we're unbanning a valid user
-        try:
-            user = await commands.UserConverter().convert(ctx, user)
-
-        except commands.CommandError as e:
-            print(f'{ctx.author} tried to unban {user} but they\'re not a valid user.\n{e}')
-            await ctx.author.send('You can only unban valid users.')
-            return
 
         # Check that user is banned
         with db_conn() as db:
