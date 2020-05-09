@@ -141,6 +141,26 @@ class User(commands.Cog):
         else:
             return reply.content
 
+    @commands.command(brief='See info about a user.', help='Sends you a message containing relevant information about a user.', usage='<user>')
+    @commands.has_role('Mod')
+    async def info(self, ctx, user: discord.User):
+        await ctx.message.delete()
+
+        with db_conn() as db:
+            db.execute(f'SELECT email, banned FROM users WHERE discord_id = \'{user.id}\'')
+            user_info = db.fetchone()
+
+        if not user_info:
+            embed = discord.Embed(title=f'No results for the user \'{user.mention}\'.', colour=0xffbb35)
+            await ctx.author.send(embed=embed)
+            return
+
+        embed = discord.Embed(title=f'Results for the user \'{user.name}#{user.discriminator}\':', colour=0xffbb35)
+        embed.add_field(name='Username:', value=f'{user_info[0]}')
+        embed.add_field(name='Banned:', value='Yes' if user_info[1] else 'No')
+        await ctx.author.send(embed=embed)
+        print(f'Supplied info of {user.name}#{user.discriminator} to {ctx.author.name}#{ctx.author.discriminator}')
+
 
 def setup(dictator):
     dictator.add_cog(User(dictator))
