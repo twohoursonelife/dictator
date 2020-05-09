@@ -33,6 +33,7 @@ class Admin(commands.Cog):
 
         print(f'{ctx.author} banned {user} for: {reason}')
 
+        '''
         # Notify the user
         try:
             embed = discord.Embed(title='You were banned from 2HOL', colour=discord.Colour.red())
@@ -44,13 +45,15 @@ class Admin(commands.Cog):
 
         else:
             notify_user = True
+        '''
 
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
-        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        #embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.add_field(name='User notification:', value='Disabled', inline=True)
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
