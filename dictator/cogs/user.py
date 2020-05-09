@@ -142,7 +142,6 @@ class User(commands.Cog):
             return reply.content
 
     @commands.command(brief='See info about a user.', help='Sends you a message containing relevant information about a user.', usage='<user>')
-    @commands.has_role('Mod')
     async def info(self, ctx, user: discord.User):
         await ctx.message.delete()
 
