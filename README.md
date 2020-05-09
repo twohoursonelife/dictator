@@ -27,7 +27,7 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 | rtfm | rtfm | "Read the 'fricken' manual". Sends a link to the first time playing manual in the current channel.  |  Everyone  |
 | whois | whois \<charcter\> | Searches the life log for a specific character and displays their username and a death timestamp. |  Administrator  |
 | unban | unban \<user\> [reason]| Unbans the specified user from the game. Default reason is "It's your lucky day!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Administrator  |
-| info | info \<user\> | Displays username and ban status of the specified user privately to the moderator. |  Moderator  |
+| info | info \<user\> | Sends you infomation about a player. |  Everyone  |
 | ban | ban \<user\> [reason] | Bans the specified user from the game. Default reason is "The ban hammer has spoken!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Administrator  |
 
 ## Setup guide to run the bot
