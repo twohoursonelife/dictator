@@ -160,6 +160,7 @@ class User(commands.Cog):
         if user_info[0] == None:
             embed = discord.Embed(title=f'\'{user.name}#{user.discriminator}\' has not lived any lives yet.', colour=0xffbb35)
             await ctx.author.send(embed=embed)
+            return
 
         # Time formatting
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
