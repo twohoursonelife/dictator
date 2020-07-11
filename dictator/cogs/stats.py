@@ -52,7 +52,7 @@ class Stats(commands.Cog):
             sock.connect(('play.twohoursonelife.com', 8005))
             fd = sock.makefile()
 
-        except socket.timeout:
+        except ConnectionRefusedError:
             app_info = await self.dictator.application_info()
             owner = await self.dictator.fetch_user(app_info.team.owner_id)
             await owner.send('Is the game server offline? it did not respond to a stats request.')
