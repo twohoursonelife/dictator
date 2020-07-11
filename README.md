@@ -1,6 +1,6 @@
 # dictator
 
-The Dictator of 2HOL. This bot takes care of requesting and displaying almost all player information.
+The Dictator of 2HOL. Taking care of displaying user and player information about Two Hours One Life in our Discord guild.
 
 ## Features
 
