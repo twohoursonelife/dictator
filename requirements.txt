@@ -11,4 +11,4 @@ mysql-connector-python==8.0.21
 protobuf==3.12.2
 six==1.15.0
 websockets==8.1
-yarl==1.4.2
+yarl==1.5.0
