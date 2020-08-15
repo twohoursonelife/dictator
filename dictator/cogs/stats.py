@@ -13,14 +13,18 @@ class Stats(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.channel = self.dictator.get_channel(
-            int(config.read('general_channel_id')))
+            int(config.read('stats_channel_id')))
 
         if self.channel is None:
             print('Unable to find channel, disabling stats extension.')
             self.dictator.unload_extension('cogs.stats')
             return
 
-        await self.channel.edit(reason='Update statistics', topic='Loading stats...')
+        async for msg in self.channel.history(limit=3):
+            await msg.delete()
+
+        embed = discord.Embed(title='Loading Server statistics...', colour=0xffbb35)
+        self.stats_msg = await self.channel.send(embed=embed)
 
         self.stats_loop.start()
 
@@ -28,21 +32,18 @@ class Stats(commands.Cog):
     async def stats_loop(self):
         await self.update_stats()
 
-    @commands.command(aliases=['online', 'status'], brief='Updates stats in #general channel description.', help='Updates stats in #general channel description. Replaces online/status command.')
-    async def stats(self, ctx):
-        await ctx.message.delete()
-        await self.update_stats()
-        embed = discord.Embed(title='I\'ve update the stats in the #general channel description.', description='They otherwise update every 5 minutes.', colour=0xffbb35)
-        await ctx.send(embed=embed, delete_after=5)
-
     async def update_stats(self):
         online = await self.get_population()
 
-        await self.channel.edit(reason='Update statistics', topic=f'Players in game: {online}')
-        
+        embed = discord.Embed(title='Server statistics:', colour=0xffbb35)
+        embed.add_field(name='Players online:', value=online)
+        await self.stats_msg.edit(embed=embed)
+
+        '''
         # "Temp" player count logging
         with open('dictator/utility/player-log.txt', 'a') as f:
             f.write(f'{online} - {datetime.datetime.now()}\n')
+        '''
 
     async def get_population(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
