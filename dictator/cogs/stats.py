@@ -36,9 +36,11 @@ class Stats(commands.Cog):
         embed.add_field(name='Players online:', value=online)
         await self.stats_msg.edit(embed=embed)
 
+        '''
         # "Temp" player count logging
         with open('dictator/utility/player-log.txt', 'a') as f:
             f.write(f'{online} - {datetime.datetime.now()}\n')
+        '''
 
     async def get_population(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
