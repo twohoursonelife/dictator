@@ -20,6 +20,9 @@ class Stats(commands.Cog):
             self.dictator.unload_extension('cogs.stats')
             return
 
+        async for msg in self.channel.history(limit=3):
+            await msg.delete()
+
         embed = discord.Embed(title='Loading Server statistics...', colour=0xffbb35)
         self.stats_msg = await self.channel.send(embed=embed)
 
