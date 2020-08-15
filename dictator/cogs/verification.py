@@ -12,14 +12,8 @@ class Verification(commands.Cog):
         self.dictator = dictator
 
     @commands.Cog.listener()
-    async def on_member_update(self, before, after):
-        # We're only interested if theres been a change to a users roles
-        if before.roles != after.roles:
-            role = get(before.guild.roles, name='Unverified')
-            # User had unverfied role before, afterwards they do not have the unverified role
-            if role in before.roles and role not in after.roles:
-               # Create game account for the member
-               await self.dictator.get_cog('User').create_user(after)
+    async def on_member_join(self, member):
+        await self.dictator.get_cog('User').create_user(member)
 
 def setup(dictator):
     dictator.add_cog(Verification(dictator))
