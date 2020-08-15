@@ -16,7 +16,7 @@ def check_config():
                               'bot_id': '658883039761399859',
                               'verify_channel_id': '656484598779215872',
                               'log_channel_id': '620375198251745282',
-                              'stats_channel_id': '423293333864054837',
+                              'stats_channel_id': '744031336448393328',
                               'bot_channel_id': '604287242529407006',
                               'general_channel_id': '423293333864054837',
                               'suggestion_channel_id': '703244428172853318'}
