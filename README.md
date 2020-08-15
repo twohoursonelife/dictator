@@ -22,7 +22,6 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 |--|--|--|--|
 | help | help [command] | Display information about all commands in Discord. Optionally display help about a specific command. |  Everyone  |
 | key | key | Sends game account details to user in case they lose the original message. |  Everyone  |
-| stats | stats | Updates the statistics in the general channel topic. They otherwise update every 5 minutes. |  Everyone  |
 | ping | ping | Pong! Check the bot is responding and see the latency. |  Everyone  |
 | rtfm | rtfm | "Read the 'fricken' manual". Sends a link to the first time playing manual in the current channel.  |  Everyone  |
 | whois | whois \<charcter\> | Searches the life log for a specific character and displays their username and a death timestamp. |  Administrator  |
