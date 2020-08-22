@@ -180,6 +180,24 @@ class User(commands.Cog):
         embed.set_footer(text='Data range: August 2019 - Current')
         await ctx.author.send(embed=embed)
 
+    @commands.command(aliases=['newbot'], brief='Create multiple bot accounts', help='Create a game account not attached to a Discord user', usage='<user>')
+    @commands.guild_only()
+    @commands.has_role('Admin')
+    async def create_bot(self, ctx, prefix, amount: int):
+        await ctx.message.delete()
+
+        # Filter prefix
+        prefix = (re.sub('[^a-zA-Z0-9]', '', prefix))
+
+        for i in range(amount):
+            username = f'{prefix}-{i}'
+            key = await self.create_key()
+
+            with db_conn() as db:
+                db.execute(f'INSERT INTO users (email, l_key) VALUES (\'{username}\', \'{key}\')')
+
+            await ctx.author.send(f'{username} :: {key}')
+
 
 def setup(dictator):
     dictator.add_cog(User(dictator))
