@@ -4,6 +4,7 @@ import datetime
 from discord.ext import commands
 import utility.config_manager as config
 from utility.db_manager import db_connection as db_conn
+import re
 
 
 class Admin(commands.Cog):
@@ -96,12 +97,16 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
-    @commands.has_role('Admin')
+    @commands.has_any_role('Admin', 'Well Experienced Player', 'Veteran Player', 'What is life?')
     async def whowas(self, ctx, *, character):
+        await ctx.message.delete()
 
         # How many results to lookup.
         # Due to embed length limitations, the maxium is 8.
         history = 5
+
+        # Friendly chars only thx
+        character = re.sub(('[^a-zA-Z]'), '', character)
 
         with db_conn() as db:
             db.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
@@ -109,7 +114,7 @@ class Admin(commands.Cog):
 
         if not users:
             embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
-            await ctx.send(embed=embed)
+            await ctx.author.send(embed=embed)
             return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -137,7 +142,7 @@ class Admin(commands.Cog):
         if len(users) < history:
             embed.add_field(name='\u200b', value='End of results')
 
-        await ctx.send(embed=embed)
+        await ctx.author.send(embed=embed)
 
 
 def setup(dictator):
