@@ -95,9 +95,9 @@ class Admin(commands.Cog):
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(aliases=['hois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
+    @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
     @commands.has_role('Admin')
-    async def whois(self, ctx, *, character):
+    async def whowas(self, ctx, *, character):
 
         # How many results to lookup.
         # Due to embed length limitations, the maxium is 8.
