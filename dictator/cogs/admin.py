@@ -95,6 +95,36 @@ class Admin(commands.Cog):
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
+    @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked.')
+    @commands.has_any_role('Admin', 'Mod')
+    async def regenerate(self, ctx, user: discord.User):
+        await ctx.message.delete()
+
+        log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
+
+        key = await self.dictator.get_cog('User').create_key()
+
+        with db_conn() as db:
+            db.execute(f'UPDATE users SET l_key = \'{key}\' WHERE discord_id = \'{user.id}\'')
+
+        # Notify the user
+        try:
+            embed = discord.Embed(title='Your key to access 2HOL has been regenerated.', colour=discord.Colour.green())
+            await user.send(embed=embed)
+
+        except:
+            notify_user = False
+
+        else:
+            notify_user = True
+
+        # Embed log
+        embed = discord.Embed(title='User key regenerated', colour=discord.Colour.green())
+        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        await log_channel.send(embed=embed)
+
 
 def setup(dictator):
     dictator.add_cog(Admin(dictator))

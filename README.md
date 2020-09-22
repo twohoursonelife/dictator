@@ -28,6 +28,7 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 | unban | unban \<user\> [reason]| Unbans the specified user from the game. Default reason is "It's your lucky day!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
 | info | info \<user\> | Sends you infomation about a player. |  Everyone  |
 | ban | ban \<user\> [reason] | Bans the specified user from the game. Default reason is "The ban hammer has spoken!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
+| regenerate | regenerate \<user\> | Regenerate a users key. This should be used when a users account is leaked. |  Admin, Mod  |
 
 ## Setup guide to run the bot
 *This guide is current as of the time of writing. Past and future versions of software may be compatible. This guide is written based upon usage on Ubuntu 18.04. There may be slight differences for other platforms. This guide also assumes the database and discord are setup as required.*
