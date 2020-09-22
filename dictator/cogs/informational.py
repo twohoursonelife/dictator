@@ -22,7 +22,7 @@ class Informational(commands.Cog):
             await message.channel.send(f'{message.author.mention} You need to use `-key`', delete_after=10)
 
     @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
-    @commands.has_any_role('Admin', 'Mod', 'Well Experienced Player', 'Veteran Player', 'What is life?')
+    @commands.has_any_role('Team', 'Supporters', 'Well Experienced Player', 'Veteran Player', 'What is life?')
     async def whowas(self, ctx, *, character):
         await ctx.message.delete()
 
