@@ -31,10 +31,10 @@ class Informational(commands.Cog):
         history = 5
 
         # Friendly chars only thx
-        character = re.sub(('[^a-zA-Z]'), '', character)
+        character = re.sub(('[^a-zA-Z ]'), '', character)
 
         with db_conn() as db:
-            db.execute(f'SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT {history}')
+            db.execute('SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
             users = db.fetchall()
 
         if not users:
