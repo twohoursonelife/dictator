@@ -23,7 +23,7 @@ class Error_Handling(commands.Cog):
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send(f'{ctx.author.mention}, you can\'t use this command in a private message. Head to the bot channel.')
 
-        elif isinstance(error, commands.MissingRole or commands.MissingAnyRole):
+        elif isinstance(error, commands.MissingRole) or isinstance(error, commands.MissingAnyRole):
             await ctx.message.delete()
             await ctx.send(f'{ctx.author.mention}, You don\'t have the required role.', delete_after=10)
 
