@@ -18,16 +18,16 @@ The Dictator of 2HOL. Taking care of displaying user and player information abou
 
 Commands must begin with the configured prefix. By default this is `-` (hyphen).
 
-| Command | Usage | Purpose | Permissions |
+| Command | Usage | Purpose | Required Role |
 |--|--|--|--|
 | help | help [command] | Display information about all commands in Discord. Optionally display help about a specific command. |  Everyone  |
 | key | key | Sends game account details to user in case they lose the original message. |  Everyone  |
 | ping | ping | Pong! Check the bot is responding and see the latency. |  Everyone  |
 | rtfm | rtfm | "Read the 'fricken' manual". Sends a link to the first time playing manual in the current channel.  |  Everyone  |
 | whowas | whowas \<charcter\> | Searches the life log for a specific character and displays their username and a death timestamp. |  Team, Supporters, What is life?, Veteran Player, Well Experienced Player  |
-| unban | unban \<user\> [reason]| Unbans the specified user from the game. Default reason is "It's your lucky day!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Administrator  |
+| unban | unban \<user\> [reason]| Unbans the specified user from the game. Default reason is "It's your lucky day!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
 | info | info \<user\> | Sends you infomation about a player. |  Everyone  |
-| ban | ban \<user\> [reason] | Bans the specified user from the game. Default reason is "The ban hammer has spoken!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Administrator  |
+| ban | ban \<user\> [reason] | Bans the specified user from the game. Default reason is "The ban hammer has spoken!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
 
 ## Setup guide to run the bot
 *This guide is current as of the time of writing. Past and future versions of software may be compatible. This guide is written based upon usage on Ubuntu 18.04. There may be slight differences for other platforms. This guide also assumes the database and discord are setup as required.*
