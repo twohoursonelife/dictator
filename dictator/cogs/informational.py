@@ -98,12 +98,15 @@ class Informational(commands.Cog):
         # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours. I aplogise if you have to debug this.
         diff_formatted = f'{diff_split[0]} hours, {diff_split[1]} minutes ago'
 
+        member = ctx.guild.get_member(user.id)
+
         # Form embed
         embed = discord.Embed(title=f'Results for the user \'{user.name}#{user.discriminator}\':', colour=0xffbb35)
         embed.add_field(name='Life count:', value=user_info[0])
         embed.add_field(name='Time played:', value=f'{round(user_info[1] / 60, 1)} hours')
         embed.add_field(name='Last death:', value=diff_formatted)
         embed.add_field(name='Banned:', value='Yes' if user_info[3] else 'No')
+        embed.add_field(name='Joined guild:', value=member.joined_at.date() if member else 'Unknown')
         embed.set_footer(text='Data range: August 2019 - Current')
         await ctx.author.send(embed=embed)
 
