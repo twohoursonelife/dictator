@@ -23,7 +23,7 @@ class Error_Handling(commands.Cog):
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.send(f'{ctx.author.mention}, you can\'t use this command in a private message. Head to the bot channel.')
 
-        elif isinstance(error, commands.MissingRole):
+        elif isinstance(error, commands.MissingRole or commands.MissingAnyRole):
             await ctx.message.delete()
             await ctx.send(f'{ctx.author.mention}, You don\'t have the required role.', delete_after=10)
 
@@ -43,7 +43,7 @@ class Error_Handling(commands.Cog):
             if isinstance(ctx.channel, discord.TextChannel):
                 await ctx.send(f'{ctx.author.mention}, Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
-            
+
             else:
                 await ctx.send(f'{ctx.author.mention}, Uh oh... Colin broke something again. Contact Colin#9391 or admin@twohoursonelife.com for assistance.')
                 print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
