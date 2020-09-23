@@ -1,12 +1,9 @@
 import discord
-import mysql.connector
 import re
 import random
 from textwrap import wrap
 from discord.ext import commands
-import utility.config_manager as config
 from utility.db_manager import db_connection as db_conn
-import datetime
 
 
 class User(commands.Cog):
@@ -92,7 +89,7 @@ class User(commands.Cog):
         key = str(await self.create_key())
         user_id = int(user.id)
         username = str(username)
-        
+
         with db_conn() as db:
             db.execute(f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
 

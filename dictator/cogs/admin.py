@@ -1,6 +1,4 @@
 import discord
-import mysql.connector
-import datetime
 from discord.ext import commands
 import utility.config_manager as config
 from utility.db_manager import db_connection as db_conn

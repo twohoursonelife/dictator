@@ -2,7 +2,6 @@ import discord
 import socket
 from discord.ext import commands, tasks
 import utility.config_manager as config
-import datetime
 
 
 class Stats(commands.Cog):
