@@ -1,3 +1,9 @@
 {
-    "python.autoComplete.extraPaths": ["./dictator"]
+    "python.autoComplete.extraPaths": [
+        "./dictator"
+    ],
+    "python.analysis.extraPaths": [
+        "./dictator"
+    ],
+    "restructuredtext.confPath": ""
 }
