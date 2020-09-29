@@ -33,31 +33,30 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 ## Setup guide to run the bot
 *This guide is current as of the time of writing. Past and future versions of software may be compatible. This guide is written based upon usage on Ubuntu 18.04. There may be slight differences for other platforms. This guide also assumes the database and discord are setup as required.*
 
+
 ### Prequisited software
-- Python 3.8.2
-- pip 20.0.2
-- virtualenv 20.0.18
+- Python >3.8.0
+- Poetry >1.0.0
 
 ### Steps
 1. Clone the repository and change into the directory
 - `git clone https://github.com/twohoursonelife/dictator.git`
 - `cd dictator`
 
-2. Create and enable the virtual environment
-- `python3.8 -m venv env`
-- `source env/bin/activate`
+2. Install dependencies
+- `poetry install`
 
-3. Install the requirements for the bot
-- `python3.8 -m pip install -r requirements.txt `
+3. Enable the Poetry virtual environment
+- `poetry shell`
 
-4. Run the bot once, expect it to tell you an error and crash. This generates a default config.
-- `python3.8 dictator/dictator.py `
+4. Run the bot once, expect it to tell you an error and crash. This generates the default config.
+- `python dictator/dictator.py`
 
 5. Make the necessary configuration in the config file found relatively at `dictator/utility/config.ini`
 Specifically, you will need to add the bot token, database details and ensure channel ID’s are correct. Save the file and ensure you return to the root directory of the repository.
 
 6. Finally, run the bot.
-- `python3.8 dictator/dictator.py`
+- `python dictator/dictator.py`
 
 You should now have the bot running. If you have any trouble or come across any errors, please open an issue and give as much information as you can about the problem you’re having.
 
