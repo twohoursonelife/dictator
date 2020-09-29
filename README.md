@@ -24,7 +24,7 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 | key | key | Sends game account details to user in case they lose the original message. |  Everyone  |
 | ping | ping | Pong! Check the bot is responding and see the latency. |  Everyone  |
 | rtfm | rtfm | "Read the 'fricken' manual". Sends a link to the first time playing manual in the current channel.  |  Everyone  |
-| whowas | whowas \<charcter\> | Searches the life log for a specific character and displays their username and a death timestamp. |  Team, Supporters, What is life?, Veteran Player, Well Experienced Player  |
+| whowas | whowas \<charcter\> | Searches the life log for a specific character and displays their username and a death timestamp. |  Admin, Mod  |
 | unban | unban \<user\> [reason]| Unbans the specified user from the game. Default reason is "It's your lucky day!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
 | info | info \<user\> | Sends you infomation about a player. |  Everyone  |
 | ban | ban \<user\> [reason] | Bans the specified user from the game. Default reason is "The ban hammer has spoken!". The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID. |  Admin  |
