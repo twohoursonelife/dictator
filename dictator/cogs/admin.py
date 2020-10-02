@@ -171,7 +171,7 @@ class Admin(commands.Cog):
         if len(users) < history:
             embed.add_field(name='\u200b', value='End of results')
 
-        await ctx.author.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 def setup(dictator):
