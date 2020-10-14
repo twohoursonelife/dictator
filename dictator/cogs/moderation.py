@@ -12,7 +12,7 @@ class Admin(commands.Cog):
         self.dictator = dictator
 
     @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
-    @commands.has_role('Admin')
+    @commands.has_any_role('Admin', 'Mod')
     async def ban(self, ctx, user: discord.User, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
@@ -54,7 +54,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
-    @commands.has_role('Admin')
+    @commands.has_any_role('Admin', 'Mod')
     async def unban(self, ctx, user: discord.User, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
