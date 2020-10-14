@@ -1,10 +1,10 @@
 [[package]]
-category = "main"
-description = "Async http client/server framework (asyncio)"
 name = "aiohttp"
+version = "3.6.2"
+description = "Async http client/server framework (asyncio)"
+category = "main"
 optional = false
 python-versions = ">=3.5.3"
-version = "3.6.2"
 
 [package.dependencies]
 async-timeout = ">=3.0,<4.0"
@@ -17,54 +17,54 @@ yarl = ">=1.0,<2.0"
 speedups = ["aiodns", "brotlipy", "cchardet"]
 
 [[package]]
-category = "main"
-description = "Timeout context manager for asyncio programs"
 name = "async-timeout"
+version = "3.0.1"
+description = "Timeout context manager for asyncio programs"
+category = "main"
 optional = false
 python-versions = ">=3.5.3"
-version = "3.0.1"
 
 [[package]]
-category = "main"
-description = "Classes Without Boilerplate"
 name = "attrs"
+version = "20.2.0"
+description = "Classes Without Boilerplate"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "20.2.0"
 
 [package.extras]
-dev = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
 docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
-tests = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
-tests_no_zope = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
 
 [[package]]
-category = "main"
-description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
+version = "3.0.4"
+description = "Universal encoding detector for Python 2 and 3"
+category = "main"
 optional = false
 python-versions = "*"
-version = "3.0.4"
 
 [[package]]
-category = "main"
-description = "Updated configparser from Python 3.8 for Python 2.6+."
 name = "configparser"
+version = "5.0.1"
+description = "Updated configparser from Python 3.8 for Python 2.6+."
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "5.0.0"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-black-multipy", "pytest-cov"]
+testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
-category = "main"
-description = "A Python wrapper for the Discord API"
 name = "discord.py"
+version = "1.5.0"
+description = "A Python wrapper for the Discord API"
+category = "main"
 optional = false
 python-versions = ">=3.5.3"
-version = "1.5.0"
 
 [package.dependencies]
 aiohttp = ">=3.6.0,<3.7.0"
@@ -74,28 +74,28 @@ docs = ["sphinx (1.8.5)", "sphinxcontrib-trio (1.1.1)", "sphinxcontrib-websuppor
 voice = ["PyNaCl (1.3.0)"]
 
 [[package]]
-category = "main"
-description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
+version = "2.10"
+description = "Internationalized Domain Names in Applications (IDNA)"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.10"
 
 [[package]]
-category = "main"
-description = "multidict implementation"
 name = "multidict"
+version = "4.7.6"
+description = "multidict implementation"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "4.7.6"
 
 [[package]]
-category = "main"
-description = "MySQL driver written in Python"
 name = "mysql-connector-python"
+version = "8.0.21"
+description = "MySQL driver written in Python"
+category = "main"
 optional = false
 python-versions = "*"
-version = "8.0.21"
 
 [package.dependencies]
 protobuf = ">=3.0.0"
@@ -105,41 +105,40 @@ compression = ["lz4 (>=2.1.6)"]
 dns-srv = ["dnspython (>=1.16.0)"]
 
 [[package]]
-category = "main"
-description = "Protocol Buffers"
 name = "protobuf"
+version = "3.13.0"
+description = "Protocol Buffers"
+category = "main"
 optional = false
 python-versions = "*"
-version = "3.13.0"
 
 [package.dependencies]
-setuptools = "*"
 six = ">=1.9"
 
 [[package]]
-category = "main"
-description = "Python 2 and 3 compatibility utilities"
 name = "six"
+version = "1.15.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "1.15.0"
 
 [[package]]
-category = "main"
-description = "Yet another URL library"
 name = "yarl"
+version = "1.6.0"
+description = "Yet another URL library"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "1.6.0"
 
 [package.dependencies]
 idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "598dc18691a30a5f120b9eea6adee3ae5f4807542790f49f06ac969a68ca4e82"
-lock-version = "1.0"
+lock-version = "1.1"
 python-versions = "^3.8"
+content-hash = "b735dbcbe08cfde005b0bc4d34b4aca4f0a0ac137819adfda8603df161adff59"
 
 [metadata.files]
 aiohttp = [
@@ -169,8 +168,8 @@ chardet = [
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
 configparser = [
-    {file = "configparser-5.0.0-py3-none-any.whl", hash = "sha256:cffc044844040c7ce04e9acd1838b5f2e5fa3170182f6fda4d2ea8b0099dbadd"},
-    {file = "configparser-5.0.0.tar.gz", hash = "sha256:2ca44140ee259b5e3d8aaf47c79c36a7ab0d5e94d70bd4105c03ede7a20ea5a1"},
+    {file = "configparser-5.0.1-py3-none-any.whl", hash = "sha256:08e8a59ef1817ac4ed810bb8e17d049566dd6e024e7566f6285c756db2bb4ff8"},
+    {file = "configparser-5.0.1.tar.gz", hash = "sha256:005c3b102c96f4be9b8f40dafbd4997db003d07d1caa19f37808be8031475f2a"},
 ]
 "discord.py" = [
     {file = "discord.py-1.5.0-py3-none-any.whl", hash = "sha256:3acb61fde0d862ed346a191d69c46021e6063673f63963bc984ae09a685ab211"},
