@@ -60,6 +60,17 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 
 [[package]]
 category = "main"
+description = "A mirror package for discord.py. Please install that instead."
+name = "discord"
+optional = false
+python-versions = "*"
+version = "1.0.1"
+
+[package.dependencies]
+"discord.py" = ">=1.0.1"
+
+[[package]]
+category = "main"
 description = "A Python wrapper for the Discord API"
 name = "discord.py"
 optional = false
@@ -137,7 +148,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "b735dbcbe08cfde005b0bc4d34b4aca4f0a0ac137819adfda8603df161adff59"
+content-hash = "4744a916039dc7c69c719b25d4afa9e1769faba236fdf8a7dd1736ba3d0fe378"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -172,6 +183,10 @@ chardet = [
 configparser = [
     {file = "configparser-5.0.1-py3-none-any.whl", hash = "sha256:08e8a59ef1817ac4ed810bb8e17d049566dd6e024e7566f6285c756db2bb4ff8"},
     {file = "configparser-5.0.1.tar.gz", hash = "sha256:005c3b102c96f4be9b8f40dafbd4997db003d07d1caa19f37808be8031475f2a"},
+]
+discord = [
+    {file = "discord-1.0.1-py3-none-any.whl", hash = "sha256:9d4debb4a37845543bd4b92cb195bc53a302797333e768e70344222857ff1559"},
+    {file = "discord-1.0.1.tar.gz", hash = "sha256:ff6653655e342e7721dfb3f10421345fd852c2a33f2cca912b1c39b3778a9429"},
 ]
 "discord.py" = [
     {file = "discord.py-1.5.0-py3-none-any.whl", hash = "sha256:3acb61fde0d862ed346a191d69c46021e6063673f63963bc984ae09a685ab211"},
