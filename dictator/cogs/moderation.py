@@ -19,7 +19,7 @@ class Admin(commands.Cog):
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row[0] == 1:
@@ -48,6 +48,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Username:', value=f'{row[1]}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
@@ -61,7 +62,7 @@ class Admin(commands.Cog):
 
         # Check that user is banned
         with db_conn() as db:
-            db.execute(f'SELECT banned FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row[0] == 0:
@@ -90,6 +91,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Username:', value=f'{row[1]}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
