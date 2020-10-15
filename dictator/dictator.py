@@ -1,11 +1,14 @@
 import os
 from discord.ext import commands
 import utility.config_manager as config
+import discord
 
 
 print(config.check_config())
 
-dictator = commands.Bot(command_prefix=config.read('bot_prefix'), case_insensitive=True)
+intents = discord.Intents.all()
+
+dictator = commands.Bot(command_prefix=config.read('bot_prefix'), case_insensitive=True, intents=intents)
 
 @dictator.event
 async def on_ready():
