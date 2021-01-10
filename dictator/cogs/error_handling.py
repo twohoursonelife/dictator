@@ -40,13 +40,11 @@ class Error_Handling(commands.Cog):
             await ctx.send(f'{ctx.author.mention} Invalid input. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
 
         else:
-            if isinstance(ctx.channel, discord.TextChannel):
-                await ctx.send(f'{ctx.author.mention}, Uh oh... {ctx.guild.owner.mention} broke something again. Stand by.\nMake sure you\'re not blocking the bot from messaging you!')
-                print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
+            await self.default_error(ctx, error)
 
-            else:
-                await ctx.send(f'{ctx.author.mention}, Uh oh... Colin broke something again. Contact Colin#9391 or admin@twohoursonelife.com for assistance.')
-                print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
+    async def default_error(self, ctx, error):
+        await ctx.send(f'{ctx.author.mention}, Uh oh... an unexpected error has occurred.\n{error}')
+        print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 
 def setup(dictator):
