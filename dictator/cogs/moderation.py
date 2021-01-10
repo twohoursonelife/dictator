@@ -22,6 +22,10 @@ class Admin(commands.Cog):
             db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
+        if row is None:
+            await ctx.author.send(f'{user.mention} does not have a game account.')
+            return
+
         if row[0] == 1:
             print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
             await ctx.author.send(f'{user.mention} is already banned.')
