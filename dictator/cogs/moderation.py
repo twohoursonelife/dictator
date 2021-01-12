@@ -148,7 +148,7 @@ class Admin(commands.Cog):
 
         if not users:
             embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
-            await ctx.author.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
