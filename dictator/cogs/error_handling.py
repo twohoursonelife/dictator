@@ -39,6 +39,9 @@ class Error_Handling(commands.Cog):
             await ctx.message.delete()
             await ctx.send(f'{ctx.author.mention} Invalid input. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
 
+        elif isinstance(error, commands.CommandInvokeError):
+            await self.default_error(ctx, error)
+
         else:
             await self.default_error(ctx, error)
 
