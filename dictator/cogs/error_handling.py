@@ -39,8 +39,22 @@ class Error_Handling(commands.Cog):
             await ctx.message.delete()
             await ctx.send(f'{ctx.author.mention} Invalid input. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
 
+        # Surely this could be better :sweatsmile:
         elif isinstance(error, commands.CommandInvokeError):
-            await self.default_error(ctx, error)
+            try:
+                # In other errors, the message is sometimes found in error.original.msg
+                errmsg = error.original.text
+
+            except:
+                await self.default_error(ctx, error)
+
+            else:
+                if 'Cannot send messages to this user' in errmsg:
+                    await ctx.message.delete()
+                    await ctx.send(f'{ctx.author.mention} You must allow me to message you, check your Discord settings.', delete_after=20)
+
+                else:
+                    await self.default_error(ctx, error)
 
         else:
             await self.default_error(ctx, error)
