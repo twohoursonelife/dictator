@@ -26,7 +26,7 @@ class Informational(commands.Cog):
         await ctx.message.delete()
 
         with db_conn() as db:
-            db.execute(f'SELECT life_count, time_played, last_activity, banned FROM users WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT life_count, time_played, last_activity, banned, email FROM users WHERE discord_id = \'{user.id}\'')
             user_info = db.fetchone()
 
         if not user_info:
@@ -58,6 +58,7 @@ class Informational(commands.Cog):
         embed.add_field(name='Last death:', value=diff_formatted)
         embed.add_field(name='Banned:', value='Yes' if user_info[3] else 'No')
         embed.add_field(name='Joined guild:', value=member.joined_at.date() if member else 'Unknown')
+        embed.add_field(name='Username:', value=user_info[4])
         embed.set_footer(text='Data range: August 2019 - Current')
         await ctx.author.send(embed=embed)
 
