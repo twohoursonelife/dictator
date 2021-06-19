@@ -11,9 +11,10 @@ class User(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
+    # Create a game account for a user as soon as they join the Discord guild
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await self.dictator.get_cog('User').create_user(member)
+        await self.create_user(member)
 
     # Retrieve and send a users login information to themselves
     @commands.command(aliases=['mykey'], brief='Retireve your login information for the game.', help='Retireve your login information for the game. If you don\'t have an account, one will be created for you.')
