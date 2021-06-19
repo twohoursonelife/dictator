@@ -60,7 +60,7 @@ class Error_Handling(commands.Cog):
             await self.default_error(ctx, error)
 
     async def default_error(self, ctx, error):
-        await ctx.send(f'{ctx.author.mention}, Uh oh... an error has occurred.\n{error}')
+        await ctx.send(f'{ctx.author.mention}, Uh oh... an error has occurred. We\'ll be right on it!')
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 
