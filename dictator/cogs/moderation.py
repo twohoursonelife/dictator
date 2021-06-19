@@ -19,7 +19,7 @@ class Admin(commands.Cog):
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT blocked, email FROM `ticketServer_tickets` WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row is None:
@@ -33,7 +33,7 @@ class Admin(commands.Cog):
 
         # Ban the user
         with db_conn() as db:
-            db.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE `ticketServer_tickets` SET blocked = 1 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} banned {user} for: {reason}')
 
@@ -66,7 +66,7 @@ class Admin(commands.Cog):
 
         # Check that user is banned
         with db_conn() as db:
-            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT blocked, email FROM `ticketServer_tickets` WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row[0] == 0:
@@ -76,7 +76,7 @@ class Admin(commands.Cog):
 
         # Unban the user
         with db_conn() as db:
-            db.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE `ticketServer_tickets` SET blocked = 0 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} unbanned {user} for: {reason}')
 
@@ -111,7 +111,7 @@ class Admin(commands.Cog):
         key = await self.dictator.get_cog('User').create_key()
 
         with db_conn() as db:
-            db.execute(f'UPDATE users SET l_key = \'{key}\' WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE `ticketServer_tickets` SET login_key = \'{key}\' WHERE discord_id = \'{user.id}\'')
 
         # Notify the user
         try:

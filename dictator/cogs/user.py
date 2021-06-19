@@ -91,7 +91,7 @@ class User(commands.Cog):
         username = str(username)
 
         with db_conn() as db:
-            db.execute(f'INSERT INTO users (email, discord_id, l_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
+            db.execute(f'INSERT INTO `ticketServer_tickets` (email, discord_id, login_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
 
         print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
         await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
@@ -112,14 +112,14 @@ class User(commands.Cog):
     # Search whether a user exists, return username and key if they do
     async def search_user(self, user_id):
         with db_conn() as db:
-            db.execute(f'SELECT email, l_key FROM `users` WHERE discord_id = \'{user_id}\'')
+            db.execute(f'SELECT email, login_key FROM `ticketServer_tickets` WHERE discord_id = \'{user_id}\'')
             row = db.fetchone()
             return row
 
     # Search whether a username already exists
     async def search_username(self, user):
         with db_conn() as db:
-            db.execute(f'SELECT email FROM `users` WHERE email = \'{user}\'')
+            db.execute(f'SELECT email FROM `ticketServer_tickets` WHERE email = \'{user}\'')
             row = db.fetchone()
             return row
 
@@ -153,7 +153,7 @@ class User(commands.Cog):
             key = await self.create_key()
 
             with db_conn() as db:
-                db.execute(f'INSERT INTO users (email, l_key) VALUES (\'{username}\', \'{key}\')')
+                db.execute(f'INSERT INTO `ticketServer_tickets` (email, login_key) VALUES (\'{username}\', \'{key}\')')
 
             await ctx.author.send(f'{username} :: {key}')
 
