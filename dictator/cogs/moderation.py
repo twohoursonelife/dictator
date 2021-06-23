@@ -12,7 +12,7 @@ class Admin(commands.Cog):
         self.dictator = dictator
 
     @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
-    @commands.has_any_role('Admin', 'Mod')
+    @commands.has_any_role('Moderator')
     async def ban(self, ctx, user: discord.User, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
@@ -59,7 +59,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
-    @commands.has_any_role('Admin', 'Mod')
+    @commands.has_any_role('Moderator')
     async def unban(self, ctx, user: discord.User, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
@@ -102,7 +102,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked.')
-    @commands.has_any_role('Admin', 'Mod')
+    @commands.has_any_role('Moderator')
     async def regenerate(self, ctx, user: discord.User):
         await ctx.message.delete()
 
@@ -132,7 +132,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died.')
-    @commands.has_any_role('Admin', 'Mod')
+    @commands.has_any_role('Moderator')
     async def whowas(self, ctx, *, character):
 
         # How many results to lookup.
