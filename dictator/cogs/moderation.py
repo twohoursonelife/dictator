@@ -143,7 +143,7 @@ class Admin(commands.Cog):
         character = re.sub(('[^a-zA-Z ]'), '', character)
 
         with db_conn() as db:
-            db.execute('SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
+            db.execute(f'SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, ticketServer_tickets.email FROM ticketServer_lives INNER JOIN ticketServer_tickets ON lineageServer_lives.user_id = ticketServer_tickets.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT \'{history}\'')
             users = db.fetchall()
 
         if not users:
