@@ -143,7 +143,8 @@ class Admin(commands.Cog):
         character = re.sub(('[^a-zA-Z ]'), '', character)
 
         with db_conn() as db:
-            db.execute(f'SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, ticketServer_tickets.email FROM ticketServer_lives INNER JOIN ticketServer_tickets ON lineageServer_lives.user_id = ticketServer_tickets.id WHERE name = \'{character}\' ORDER BY death_time DESC LIMIT \'{history}\'')
+            # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
+            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, ticketServer_tickets.email FROM lineageServer_lives INNER JOIN ticketServer_tickets ON lineageServer_lives.user_id = ticketServer_tickets.key_id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
             users = db.fetchall()
 
         if not users:
