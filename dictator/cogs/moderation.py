@@ -19,7 +19,7 @@ class Admin(commands.Cog):
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row is None:
@@ -33,7 +33,7 @@ class Admin(commands.Cog):
 
         # Ban the user
         with db_conn() as db:
-            db.execute(f'UPDATE users SET banned = 1 WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} banned {user} for: {reason}')
 
@@ -66,7 +66,7 @@ class Admin(commands.Cog):
 
         # Check that user is banned
         with db_conn() as db:
-            db.execute(f'SELECT banned, email FROM `users` WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = \'{user.id}\'')
             row = db.fetchone()
 
         if row[0] == 0:
@@ -76,7 +76,7 @@ class Admin(commands.Cog):
 
         # Unban the user
         with db_conn() as db:
-            db.execute(f'UPDATE users SET banned = 0 WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = \'{user.id}\'')
 
         print(f'{ctx.author} unbanned {user} for: {reason}')
 
@@ -111,7 +111,7 @@ class Admin(commands.Cog):
         key = await self.dictator.get_cog('User').create_key()
 
         with db_conn() as db:
-            db.execute(f'UPDATE users SET l_key = \'{key}\' WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET login_key = \'{key}\' WHERE discord_id = \'{user.id}\'')
 
         # Notify the user
         try:
@@ -143,7 +143,8 @@ class Admin(commands.Cog):
         character = re.sub(('[^a-zA-Z ]'), '', character)
 
         with db_conn() as db:
-            db.execute('SELECT discord_id, death_time, email FROM server_lives INNER JOIN users ON server_lives.user_id = users.id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
+            # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
+            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, ticketServer_tickets.email FROM lineageServer_lives INNER JOIN ticketServer_tickets ON lineageServer_lives.user_id = ticketServer_tickets.key_id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
             users = db.fetchall()
 
         if not users:

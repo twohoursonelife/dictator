@@ -19,7 +19,7 @@ class Ranks(commands.Cog):
             return
 
         with db_conn() as db:
-            db.execute(f'SELECT time_played FROM users WHERE discord_id = {ctx.author.id}')
+            db.execute(f'SELECT time_played FROM ticketServer_tickets WHERE discord_id = {ctx.author.id}')
             time = db.fetchone()
 
         # This user does not have 50 hours in game (Data is in minutes)
@@ -43,7 +43,7 @@ class Ranks(commands.Cog):
             return
 
         with db_conn() as db:
-            db.execute(f'SELECT time_played FROM users WHERE discord_id = {ctx.author.id}')
+            db.execute(f'SELECT time_played FROM ticketServer_tickets WHERE discord_id = {ctx.author.id}')
             time = db.fetchone()
 
         # This user does not have 375 hours in game (Data is in minutes)
