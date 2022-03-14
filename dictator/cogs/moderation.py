@@ -144,7 +144,7 @@ class Admin(commands.Cog):
 
         with db_conn() as db:
             # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
-            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, ticketServer_tickets.email FROM lineageServer_lives INNER JOIN ticketServer_tickets ON lineageServer_lives.user_id = ticketServer_tickets.key_id WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
+            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
             users = db.fetchall()
 
         if not users:
