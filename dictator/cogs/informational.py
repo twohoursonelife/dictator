@@ -40,6 +40,15 @@ class Informational(commands.Cog):
             await ctx.author.send(embed=embed)
             return
 
+        # Time formatting
+        current_time = datetime.datetime.now(tz=datetime.timezone.utc)
+        current_time = current_time.replace(microsecond=0)
+        last_active = datetime.datetime(year=user_info[2].year, month=user_info[2].month, day=user_info[2].day, hour=user_info[2].hour, minute=user_info[2].minute, second=user_info[2].second, tzinfo=datetime.timezone.utc)
+        diff = current_time - last_active
+        diff_split = str(diff).split(':')
+        # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours.
+        diff_formatted = f'{diff_split[0]} hours, {diff_split[1]} minutes ago'
+
         member = ctx.guild.get_member(user.id)
 
         # Form embed
@@ -48,7 +57,7 @@ class Informational(commands.Cog):
         embed.add_field(name='Blocked:', value='Yes' if user_info[1] else 'No')
         embed.add_field(name='Joined guild:', value=member.joined_at.date() if member else 'Unknown')
         embed.add_field(name='Username:', value=user_info[2])
-        embed.add_field(name='Last activity:', value=user_info[3])
+        embed.add_field(name='Last activity:', value=diff_formatted)
         embed.set_footer(text='Data range: August 2019 - Current')
         await ctx.author.send(embed=embed)
 
