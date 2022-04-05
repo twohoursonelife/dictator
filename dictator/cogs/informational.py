@@ -43,7 +43,7 @@ class Informational(commands.Cog):
         # Time formatting
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
-        last_active = datetime.datetime(year=user_info[2].year, month=user_info[2].month, day=user_info[2].day, hour=user_info[2].hour, minute=user_info[2].minute, second=user_info[2].second, tzinfo=datetime.timezone.utc)
+        last_active = datetime.datetime(year=user_info[3].year, month=user_info[3].month, day=user_info[3].day, hour=user_info[3].hour, minute=user_info[3].minute, second=user_info[3].second, tzinfo=datetime.timezone.utc)
         diff = current_time - last_active
         diff_split = str(diff).split(':')
         # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours.
