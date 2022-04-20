@@ -48,8 +48,8 @@ class Roles(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
 
-        # 375 hours = 22500 minutes
-        if self.playtime_less_than(ctx.author.id, 22500):
+        # 10 hours = 600 minutes
+        if self.playtime_less_than(ctx.author.id, 600):
             await ctx.send(f'{ctx.author.mention}, you do not have 10 or more hours in game. Nearly!', delete_after=10)
             return
             
