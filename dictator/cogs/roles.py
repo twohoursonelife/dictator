@@ -3,10 +3,10 @@ from discord.ext import commands
 from utility.db_manager import db_connection as db_conn
 
 # Roles ["Role name, must match Discord", Required hours]
-ROLE_1 = ["Not Completely Lost", 10]
-ROLE_2 = ["Well Experienced", 50]
-ROLE_3 = ["Veteran", 375]
-ROLE_4 = ["What is life?", 1000]
+ROLE_1 = {"name": "Not Completely Lost", "hours": 10}
+ROLE_2 = {"name": "Well Experienced", "hours": 50}
+ROLE_3 = {"name": "Veteran", "hours": 375}
+ROLE_4 = {"name": "What is life?", "hours": 1000}
 
 class Roles(commands.Cog):
 
