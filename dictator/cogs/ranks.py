@@ -58,6 +58,10 @@ class Ranks(commands.Cog):
             return True
         return False
 
+    async def assign_role(self, ctx, role, reason):
+        role_object = discord.utils.get(ctx.guild.roles, name=role)
+        await ctx.author.add_roles(role, reason=reason)
+
 
 def setup(dictator):
     dictator.add_cog(Ranks(dictator))
