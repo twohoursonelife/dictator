@@ -8,12 +8,12 @@ class Ranks(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(brief='Claim the \'Well Experienced Player\' rank.', help='If you have 50 or more hours in game, you can claim this special rank.')
+    @commands.command(brief='Claim the \'Well Experienced\' rank.', help='If you have 50 or more hours in game, you can claim this special rank.')
     async def exp(self, ctx):
         await ctx.message.delete()
 
         # Does the user already have the role?
-        user_has_role = discord.utils.get(ctx.author.roles, name='Well Experienced Player')
+        user_has_role = discord.utils.get(ctx.author.roles, name='Well Experienced')
         if user_has_role != None:
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
@@ -28,16 +28,16 @@ class Ranks(commands.Cog):
             return
 
         # All seems good, award the player their role!
-        role = discord.utils.get(ctx.guild.roles, name='Well Experienced Player')
+        role = discord.utils.get(ctx.guild.roles, name='Well Experienced')
         await ctx.author.add_roles(role, reason='User claimed role.')
-        await ctx.send(f'Congratulations, {ctx.author.mention}! You have claimed the \'Well Experienced Player\' role, for playing 50 or more hours in game! *Go take a break!*')
+        await ctx.send(f'Congratulations, {ctx.author.mention}! You have claimed the \'Well Experienced\' role, for playing 50 or more hours in game! *Go take a break!*')
 
-    @commands.command(brief='Claim the \'Veteran Player\' rank.', help='If you have 375 or more hours in game, you can claim this extra special rank.')
+    @commands.command(brief='Claim the \'Veteran\' rank.', help='If you have 375 or more hours in game, you can claim this extra special rank.')
     async def vet(self, ctx):
         await ctx.message.delete()
 
         # Does the user already have the role?
-        user_has_role = discord.utils.get(ctx.author.roles, name='Veteran Player')
+        user_has_role = discord.utils.get(ctx.author.roles, name='Veteran')
         if user_has_role != None:
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
@@ -52,9 +52,9 @@ class Ranks(commands.Cog):
             return
 
         # All seems good, award the player their role!
-        role = discord.utils.get(ctx.guild.roles, name='Veteran Player')
+        role = discord.utils.get(ctx.guild.roles, name='Veteran')
         await ctx.author.add_roles(role, reason='User claimed role.')
-        await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran Player\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
+        await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
 
 
 def setup(dictator):
