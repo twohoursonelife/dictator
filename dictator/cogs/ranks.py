@@ -8,7 +8,7 @@ class Ranks(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(brief='Claim the \'Well Experienced\' rank.', help='If you have 50 or more hours in game, you can claim this special rank.')
+    @commands.command(brief='Claim the \'Well Experienced\' role.', help='If you have 50 or more hours in game, you can claim this special role.')
     async def exp(self, ctx):
         await ctx.message.delete()
 
@@ -24,7 +24,7 @@ class Ranks(commands.Cog):
         self.assign_role(ctx, "Well Experienced", "User claimed role")
         await ctx.send(f'Congratulations, {ctx.author.mention}! You have claimed the \'Well Experienced\' role, for playing 50 or more hours in game! *Go take a break!*')
 
-    @commands.command(brief='Claim the \'Veteran\' rank.', help='If you have 375 or more hours in game, you can claim this extra special rank.')
+    @commands.command(brief='Claim the \'Veteran\' role.', help='If you have 375 or more hours in game, you can claim this extra special role.')
     async def vet(self, ctx):
         await ctx.message.delete()
 
@@ -40,7 +40,7 @@ class Ranks(commands.Cog):
         self.assign_role(ctx, "Veteran", "User claimed role")
         await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
 
-    @commands.command(brief='Claim the \'Apprentice\' rank.', help='If you have 10 or more hours in game, you can claim this special rank.')
+    @commands.command(brief='Claim the \'Apprentice\' role.', help='If you have 10 or more hours in game, you can claim this special role.')
     async def app(self, ctx):
         await ctx.message.delete()
 
