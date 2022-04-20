@@ -58,6 +58,21 @@ class Roles(commands.Cog):
         await self.assign_role(ctx, ROLE_3["name"], "User claimed role")
         await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *You\'re apart of the furniture now*')
     
+    @commands.command(brief=f'Claim the \'{ROLE_4["name"]}\' role.', help=f'If you have {ROLE_4["hours"]} or more hours in game, you can claim this super extra special role.')
+    async def wil(self, ctx):
+        await ctx.message.delete()
+
+        if self.already_has_role(ctx, ROLE_4["name"]):
+            await ctx.send(f'{ctx.author.mention}, you already have this role! Doh!', delete_after=10)
+            return
+
+        if self.playtime_less_than(ctx.author.id, ROLE_4["hours"] * 60):
+            await ctx.send(f'{ctx.author.mention}, you do not have {ROLE_4["hours"]} or more hours in game. Just around the corner, *right?*', delete_after=10)
+            return
+            
+        await self.assign_role(ctx, ROLE_4["name"], "User claimed role")
+        await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'{ROLE_4["name"]}\' role, for playing {ROLE_4["hours"]} or more hours in game! *I suppose you can go now*')
+
     def already_has_role(self, ctx, role):
         role_object = discord.utils.get(ctx.author.roles, name=role)
         if role_object != None:
