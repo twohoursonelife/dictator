@@ -58,6 +58,13 @@ class Ranks(commands.Cog):
         role_object = discord.utils.get(ctx.guild.roles, name=role)
         await ctx.author.add_roles(role_object, reason=reason)
 
+    def playtime_less_than(self, discord_id, less_than_minutes):
+        with db_conn() as db:
+            db.execute(f'SELECT time_played FROM ticketServer_tickets WHERE discord_id = {discord_id}')
+            time_played = db.fetchone()
+        
+        return True if int(time_played[0]) < less_than_minutes else False
+
 
 def setup(dictator):
     dictator.add_cog(Ranks(dictator))
