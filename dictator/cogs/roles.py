@@ -3,7 +3,7 @@ from discord.ext import commands
 from utility.db_manager import db_connection as db_conn
 
 
-class Ranks(commands.Cog):
+class Roles(commands.Cog):
 
     def __init__(self, dictator):
         self.dictator = dictator
@@ -75,4 +75,4 @@ class Ranks(commands.Cog):
 
 
 def setup(dictator):
-    dictator.add_cog(Ranks(dictator))
+    dictator.add_cog(Roles(dictator))
