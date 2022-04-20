@@ -16,12 +16,8 @@ class Ranks(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
 
-        with db_conn() as db:
-            db.execute(f'SELECT time_played FROM ticketServer_tickets WHERE discord_id = {ctx.author.id}')
-            time = db.fetchone()
-
-        # This user does not have 50 hours in game (Data is in minutes)
-        if int(time[0]) < 3000:
+        # 50 hours = 3000 minutes
+        if self.playtime_less_than(ctx.author.id, 3000):
             await ctx.send(f'{ctx.author.mention}, you do not have 50 or more hours in game. Keep on playin!', delete_after=10)
             return
 
@@ -36,15 +32,11 @@ class Ranks(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
 
-        with db_conn() as db:
-            db.execute(f'SELECT time_played FROM ticketServer_tickets WHERE discord_id = {ctx.author.id}')
-            time = db.fetchone()
-
-        # This user does not have 375 hours in game (Data is in minutes)
-        if int(time[0]) < 22500:
+        # 375 hours = 22500 minutes
+        if self.playtime_less_than(ctx.author.id, 22500):
             await ctx.send(f'{ctx.author.mention}, you do not have 375 or more hours in game. Surely just a few more to go...!', delete_after=10)
             return
-
+            
         self.assign_role(ctx, "Veteran", "User claimed role")
         await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
     
