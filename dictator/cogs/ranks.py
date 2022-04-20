@@ -12,9 +12,7 @@ class Ranks(commands.Cog):
     async def exp(self, ctx):
         await ctx.message.delete()
 
-        # Does the user already have the role?
-        user_has_role = discord.utils.get(ctx.author.roles, name='Well Experienced')
-        if user_has_role != None:
+        if self.already_has_role(ctx, "Well Experienced"):
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
 
@@ -36,9 +34,7 @@ class Ranks(commands.Cog):
     async def vet(self, ctx):
         await ctx.message.delete()
 
-        # Does the user already have the role?
-        user_has_role = discord.utils.get(ctx.author.roles, name='Veteran')
-        if user_has_role != None:
+        if self.already_has_role(ctx, "Veteran"):
             await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
             return
 
