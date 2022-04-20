@@ -8,6 +8,22 @@ class Roles(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
+    @commands.command(brief='Claim the \'Not Completely Lost\' role.', help='If you have 10 or more hours in game, you can claim this special role.')
+    async def ncl(self, ctx):
+        await ctx.message.delete()
+
+        if self.already_has_role(ctx, "Not Completely Lost"):
+            await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
+            return
+
+        # 10 hours = 600 minutes
+        if self.playtime_less_than(ctx.author.id, 600):
+            await ctx.send(f'{ctx.author.mention}, you do not have 10 or more hours in game. Nearly!', delete_after=10)
+            return
+            
+        await self.assign_role(ctx, "Not Completely Lost", "User claimed role")
+        await ctx.send(f'Woohoo, {ctx.author.mention}! You have claimed the \'Not Completely Lost\' role, for playing 10 or more hours in game! *You\'re starting to know your way around!*')
+
     @commands.command(brief='Claim the \'Well Experienced\' role.', help='If you have 50 or more hours in game, you can claim this special role.')
     async def exp(self, ctx):
         await ctx.message.delete()
@@ -39,22 +55,6 @@ class Roles(commands.Cog):
             
         await self.assign_role(ctx, "Veteran", "User claimed role")
         await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
-
-    @commands.command(brief='Claim the \'Not Completely Lost\' role.', help='If you have 10 or more hours in game, you can claim this special role.')
-    async def ncl(self, ctx):
-        await ctx.message.delete()
-
-        if self.already_has_role(ctx, "Not Completely Lost"):
-            await ctx.send(f'{ctx.author.mention}, you already have this role!', delete_after=10)
-            return
-
-        # 10 hours = 600 minutes
-        if self.playtime_less_than(ctx.author.id, 600):
-            await ctx.send(f'{ctx.author.mention}, you do not have 10 or more hours in game. Nearly!', delete_after=10)
-            return
-            
-        await self.assign_role(ctx, "Not Completely Lost", "User claimed role")
-        await ctx.send(f'Woohoo, {ctx.author.mention}! You have claimed the \'Not Completely Lost\' role, for playing 10 or more hours in game! *You\'re starting to know your way around!*')
     
     def already_has_role(self, ctx, role):
         role_object = discord.utils.get(ctx.author.roles, name=role)
