@@ -55,6 +55,12 @@ class Ranks(commands.Cog):
         role = discord.utils.get(ctx.guild.roles, name='Veteran')
         await ctx.author.add_roles(role, reason='User claimed role.')
         await ctx.send(f'Woah, {ctx.author.mention}! You have claimed the \'Veteran\' role, for playing 375 or more hours in game! *You\'re apart of the furniture now*')
+    
+    def already_has_role(self, ctx, role):
+        role_object = discord.utils.get(ctx.author.roles, name=role)
+        if role_object != None:
+            return True
+        return False
 
 
 def setup(dictator):
