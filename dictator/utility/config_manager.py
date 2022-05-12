@@ -19,7 +19,8 @@ def check_config():
                               'stats_channel_id': '744031336448393328',
                               'bot_channel_id': '604287242529407006',
                               'general_channel_id': '423293333864054837',
-                              'suggestion_channel_id': '703244428172853318'}
+                              'suggestion_channel_id': '703244428172853318',
+                              'deubg_log_channel_id': '973930931456987206'}
         with open('dictator/utility/config.ini', 'w') as config_file:
             config.write(config_file)
         return('Config file does not exist. Creating with default values.')

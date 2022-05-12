@@ -4,6 +4,7 @@ import random
 from textwrap import wrap
 from discord.ext import commands
 from utility.db_manager import db_connection as db_conn
+import utility.config_manager as config
 
 
 class User(commands.Cog):
@@ -98,8 +99,26 @@ class User(commands.Cog):
         with db_conn() as db:
             db.execute(f'INSERT INTO ticketServer_tickets (email, discord_id, login_key) VALUES (\'{username}\', \'{user_id}\', \'{key}\')')
 
+        # Notify the user
+        try:
+            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
+
+        except:
+            notify_user = False
+
+        else:
+            notify_user = True
+
+        debug_log_channel = self.dictator.get_channel(int(config.read('debug_log_channel_id')))
+
+        # Embed log
+        embed = discord.Embed(title='New game account created', colour=discord.Colour.green())
+        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='2HOL Username:', value=f'{username}', inline=True)
+        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        await debug_log_channel.send(embed=embed)
+
         print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
-        await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
 
     # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
     async def create_key(self):
