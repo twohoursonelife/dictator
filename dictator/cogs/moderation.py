@@ -101,7 +101,7 @@ class Admin(commands.Cog):
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked.')
+    @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked. First argument should be a mentioned Discord member')
     @commands.has_any_role('Moderator')
     async def regenerate(self, ctx, user: discord.User):
         await ctx.message.delete()
