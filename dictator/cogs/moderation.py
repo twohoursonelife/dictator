@@ -11,39 +11,42 @@ class Admin(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The user argument can be a Discord user tag, a Discord username with discriminator or a Discord user ID.', usage='<user> [reason]')
+    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The first argument should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
     @commands.has_any_role('Moderator')
-    async def ban(self, ctx, user: discord.User, *, reason='The ban hammer has spoken.'):
+    async def ban(self, ctx, username, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = \'{user.id}\'')
+            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
             row = db.fetchone()
 
-        if row is None:
-            await ctx.author.send(f'{user.mention} does not have a game account.')
+        if len(row) == 0:
+            await ctx.author.send(f'Could not find an account with the username `{username}`')
             return
 
         if row[0] == 1:
-            print(f'{ctx.author} tried to ban {user} but they\'re already banned.')
-            await ctx.author.send(f'{user.mention} is already banned.')
+            print(f'{ctx.author} tried to ban {username} but they\'re already banned.')
+            await ctx.author.send(f'`{username}` is already banned.')
             return
 
         # Ban the user
         with db_conn() as db:
-            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = \'{user.id}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username}\'')
 
-        print(f'{ctx.author} banned {user} for: {reason}')
+        print(f'{ctx.author} banned {username} for: {reason}')
+
+        discord_user = ctx.guild.get_member(int(row[1]))
 
         # Notify the user
         try:
             embed = discord.Embed(title='You were banned from 2HOL', colour=discord.Colour.red())
             embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-            await user.send(embed=embed)
+            await discord_user.send(embed=embed)
 
         except:
+            # Message can fail if the user does not allow messages from anyone
             notify_user = False
 
         else:
@@ -51,8 +54,8 @@ class Admin(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
-        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
-        embed.add_field(name='Username:', value=f'{row[1]}', inline=True)
+        embed.add_field(name='Member:', value=f'{discord_user.mention} ({discord_user.name}#{discord_user.discriminator})', inline=True)
+        embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
