@@ -29,8 +29,8 @@ class Admin(commands.Cog):
             db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
             row = db.fetchone()
 
-        if len(row) == 0:
-            await ctx.author.send(f'Could not find an account with the username `{username}`')
+        if row == None:
+            await ctx.author.send(f'Could not find an account with the username `{username.string}`')
             return
 
         if row[0] == 1:
