@@ -25,7 +25,8 @@ class Stats(commands.Cog):
         embed = discord.Embed(title='Loading Server statistics...', colour=0xffbb35)
         self.stats_msg = await self.channel.send(embed=embed)
 
-        self.stats_loop.start()
+        if not self.stats_loop.is_running():
+            self.stats_loop.start()            
 
     @tasks.loop(minutes=5)
     async def stats_loop(self):
