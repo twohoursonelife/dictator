@@ -36,7 +36,11 @@ class Error_Handling(commands.Cog):
             await ctx.send(f'{ctx.author.mention} You can only run this command once at a time.', delete_after=10)
 
         elif isinstance(error, commands.UserInputError):
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except discord.errors.NotFound:
+                # Message was deleted by an earlier function
+                pass
             await ctx.send(f'{ctx.author.mention} Invalid input. See {await self.dictator.get_prefix(ctx)}help', delete_after=10)
 
         # Surely this could be better :sweatsmile:
