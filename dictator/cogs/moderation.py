@@ -17,6 +17,13 @@ class Admin(commands.Cog):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
 
+        # Ensures entered username matches the format 'Colin-9391'
+        # During user creation, a username cannot be less than 3 or greater than 45 characters.
+        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
+
+        if username == None:
+            raise commands.UserInputError
+
         # Check if user is already banned
         with db_conn() as db:
             db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
@@ -66,6 +73,13 @@ class Admin(commands.Cog):
     async def unban(self, ctx, username, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
+
+        # Ensures entered username matches the format 'Colin-9391'
+        # During user creation, a username cannot be less than 3 or greater than 45 characters.
+        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
+
+        if username == None:
+            raise commands.UserInputError
 
         # Check that user is banned
         with db_conn() as db:
