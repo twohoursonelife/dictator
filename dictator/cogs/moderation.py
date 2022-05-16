@@ -194,9 +194,9 @@ class Admin(commands.Cog):
                 diff_split = str(diff).split(':')
                 # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours. I aplogise if you have to debug this.
                 diff_formatted = f'{diff_split[0]} hours, {diff_split[1]} minutes ago'
-                embed.add_field(name='Discord user:', value=f'{found_user}', inline=True)
+                embed.add_field(name='Username:', value=f'{u[2]}', inline=True)
+                embed.add_field(name='Member:', value=f'{found_user}', inline=True)
                 embed.add_field(name='Died:', value=f'{diff_formatted}', inline=True)
-                embed.add_field(name='\u200b', value='\u200b')
 
         if len(users) < history:
             embed.add_field(name='\u200b', value='End of results')
