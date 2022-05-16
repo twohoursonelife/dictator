@@ -61,10 +61,10 @@ class Admin(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
-        embed.add_field(name='Member:', value=f'{discord_user.mention} ({discord_user.name}#{discord_user.discriminator})', inline=True)
+        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
@@ -114,10 +114,10 @@ class Admin(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
-        embed.add_field(name='Member:', value=f'{discord_user.mention} ({discord_user.name}#{discord_user.discriminator})', inline=True)
+        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
