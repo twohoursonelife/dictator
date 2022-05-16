@@ -26,7 +26,7 @@ class Admin(commands.Cog):
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
+            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username.string}\'')
             row = db.fetchone()
 
         if row == None:
@@ -34,15 +34,15 @@ class Admin(commands.Cog):
             return
 
         if row[0] == 1:
-            print(f'{ctx.author} tried to ban {username} but they\'re already banned.')
-            await ctx.author.send(f'`{username}` is already banned.')
+            print(f'{ctx.author} tried to ban {username.string} but they\'re already banned.')
+            await ctx.author.send(f'`{username.string}` is already banned.')
             return
 
         # Ban the user
         with db_conn() as db:
-            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username.string}\'')
 
-        print(f'{ctx.author} banned {username} for: {reason}')
+        print(f'{ctx.author} banned {username.string} for: {reason}')
 
         discord_user = ctx.guild.get_member(int(row[1]))
 
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
         embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
-        embed.add_field(name='Username:', value=f'{username}', inline=True)
+        embed.add_field(name='Username:', value=f'{username.string}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
@@ -83,7 +83,7 @@ class Admin(commands.Cog):
 
         # Check that user is banned
         with db_conn() as db:
-            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
+            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username.string}\'')
             row = db.fetchone()
 
         if row == None:
@@ -91,15 +91,15 @@ class Admin(commands.Cog):
             return
 
         if row[0] == 0:
-            print(f'{ctx.author} tried to unban {username} but they\'re not already banned.')
-            await ctx.author.send(f'`{username}` is not already banned.')
+            print(f'{ctx.author} tried to unban {username.string} but they\'re not already banned.')
+            await ctx.author.send(f'`{username.string}` is not already banned.')
             return
 
         # Unban the user
         with db_conn() as db:
-            db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE email = \'{username}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE email = \'{username.string}\'')
 
-        print(f'{ctx.author} unbanned {username} for: {reason}')
+        print(f'{ctx.author} unbanned {username.string} for: {reason}')
 
         discord_user = ctx.guild.get_member(int(row[1]))
 
@@ -119,7 +119,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
         embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
-        embed.add_field(name='Username:', value=f'{username}', inline=True)
+        embed.add_field(name='Username:', value=f'{username.string}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
