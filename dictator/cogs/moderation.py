@@ -234,7 +234,12 @@ class Admin(commands.Cog):
             This is achieved with 'ORDER BY death_time DESC LIMIT 1'
             """
             db.execute(f'SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = {player_id} ORDER BY death_time DESC LIMIT 1')
-            return db.fetchall()
+            username = db.fetchall()
+
+        if not username:
+            return
+
+        return username
 
     def is_int(self, string: str) -> bool:
         """Takes a string and returns a True if it only contains numbers, else False."""
