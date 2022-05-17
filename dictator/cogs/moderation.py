@@ -11,38 +11,37 @@ class Admin(commands.Cog):
     def __init__(self, dictator):
         self.dictator = dictator
 
-    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Any words after declaring the user will be the ban reason, if a reason is not specified it will default to "The ban hammer has spoken." The user, moderator and log channel will be notified. The first argument should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
+    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Optionally, any words after the username will be the ban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
     @commands.has_any_role('Moderator')
     async def ban(self, ctx, username, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
 
-        # Ensures entered username matches the format 'Colin-9391'
-        # During user creation, a username cannot be less than 3 or greater than 45 characters.
-        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
+        username = self.username_is_player_id(username)
 
-        if username == None:
+        if not self.valid_username_format(username):
+            await ctx.author.send(f"Invalid username format: `{username}`")
             raise commands.UserInputError
 
         # Check if user is already banned
         with db_conn() as db:
-            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username.string}\'')
+            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
             row = db.fetchone()
 
         if row == None:
-            await ctx.author.send(f'Could not find an account with the username `{username.string}`')
+            await ctx.author.send(f'Could not find an account with the username: `{username}`')
             return
 
         if row[0] == 1:
-            print(f'{ctx.author} tried to ban {username.string} but they\'re already banned.')
-            await ctx.author.send(f'`{username.string}` is already banned.')
+            print(f'{ctx.author} tried to ban {username} but they\'re already banned.')
+            await ctx.author.send(f'`{username}` is already banned.')
             return
 
         # Ban the user
         with db_conn() as db:
-            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username.string}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username}\'')
 
-        print(f'{ctx.author} banned {username.string} for: {reason}')
+        print(f'{ctx.author} banned {username} for: {reason}')
 
         discord_user = ctx.guild.get_member(int(row[1]))
 
@@ -62,44 +61,43 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
         embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
-        embed.add_field(name='Username:', value=f'{username.string}', inline=True)
+        embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Any words after declaring the user will be the unban reason, if a reason is not specified it will default to "It\'s your lucky day!" The user, moderator and log channel will be notified. The first argument should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
+    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Optionally, any words after the username will be the unban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
     @commands.has_any_role('Moderator')
     async def unban(self, ctx, username, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
         log_channel = await commands.TextChannelConverter().convert(ctx, config.read('log_channel_id'))
 
-        # Ensures entered username matches the format 'Colin-9391'
-        # During user creation, a username cannot be less than 3 or greater than 45 characters.
-        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
+        username = self.username_is_player_id(username)
 
-        if username == None:
+        if not self.valid_username_format(username):
+            await ctx.author.send(f"Invalid username format: `{username}`")
             raise commands.UserInputError
 
         # Check that user is banned
         with db_conn() as db:
-            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username.string}\'')
+            db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
             row = db.fetchone()
 
         if row == None:
-            await ctx.author.send(f'Could not find an account with the username `{username.string}`')
+            await ctx.author.send(f'Could not find an account with the username: `{username}`')
             return
 
         if row[0] == 0:
-            print(f'{ctx.author} tried to unban {username.string} but they\'re not already banned.')
-            await ctx.author.send(f'`{username.string}` is not already banned.')
+            print(f'{ctx.author} tried to unban {username} but they\'re not already banned.')
+            await ctx.author.send(f'`{username}` is not already banned.')
             return
 
         # Unban the user
         with db_conn() as db:
-            db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE email = \'{username.string}\'')
+            db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE email = \'{username}\'')
 
-        print(f'{ctx.author} unbanned {username.string} for: {reason}')
+        print(f'{ctx.author} unbanned {username} for: {reason}')
 
         discord_user = ctx.guild.get_member(int(row[1]))
 
@@ -119,7 +117,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
         embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
-        embed.add_field(name='Username:', value=f'{username.string}', inline=True)
+        embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
@@ -203,6 +201,60 @@ class Admin(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    def username_from_player_id(self, player_id: int) -> str:
+        """Takes an int as a players life ID and returns the associated username."""
+        with db_conn() as db:
+            """
+            A player life ID can be repeated between different servers.
+            We have made use of a single server for four years and do not intend to change this in the short term, so are largely unaffected by this.
+            To resolve this, we assume we're only interested in the most recent player who lived with this ID.
+            This is achieved with 'ORDER BY death_time DESC LIMIT 1'
+            """
+            db.execute(f'SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = {player_id} ORDER BY death_time DESC LIMIT 1')
+            return db.fetchone()[0]
+
+    def is_int(self, string: str) -> bool:
+        """Takes a string and returns a bool if it only contains numbers."""
+        return bool(re.search("^[0-9]*$", string))
+
+    def username_is_player_id(self, username: str) -> str:
+        """Checks if entered username is instead a players life ID and returns the associated username else retuns the username passed in."""
+        if not self.is_int(username):
+            return username
+        
+        retrieved_username = self.username_from_player_id(username)
+
+        # ID may not exist or be correct
+        if retrieved_username == None:
+            raise commands.UserInputError
+
+        return retrieved_username
+    
+    def valid_username_format(self, username: str) -> bool:
+        """
+        Validates format of the entered username.
+        
+        A username has two sections and is made up of a users Discord name seperated by a hyphen, followed by their Discord discriminator at the time of account creation.
+        - A username must be 3-45 valid characters which include a-z, A-Z and 0-9
+        - If a users name at the time of account creation is outside the length requirement (after invalid characters are removed), the user may enter their own username.
+        - A Discord discriminator must be four digits.
+
+        Valid username formats:
+        - 'Colin13-9391'
+        - '12345-6789'
+        - 'Abc-9275'
+
+        Invalid username formats:
+        - 'Colin13-939'
+        - '12345-Abcd'
+        - 'Ab-9275'
+        """
+        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
+
+        if username == None:
+            return False
+        
+        return True
 
 def setup(dictator):
     dictator.add_cog(Admin(dictator))
