@@ -179,7 +179,12 @@ class Admin(commands.Cog):
                 This is achieved with 'ORDER BY death_time DESC LIMIT 1'
                 """
                 db.execute(f'SELECT lineageServer_lives.name FROM lineageServer_lives WHERE player_id = {character_name} ORDER BY death_time DESC LIMIT 1')
-                character_name = db.fetchone()[0]
+                character_name = db.fetchall()
+
+        if not character_name:
+            embed = discord.Embed(title=f'No results for that player ID.', colour=0xffbb35)
+            await ctx.send(embed=embed)
+            return
 
         with db_conn() as db:
             # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
@@ -229,7 +234,7 @@ class Admin(commands.Cog):
             This is achieved with 'ORDER BY death_time DESC LIMIT 1'
             """
             db.execute(f'SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = {player_id} ORDER BY death_time DESC LIMIT 1')
-            return db.fetchone()[0]
+            return db.fetchall()
 
     def is_int(self, string: str) -> bool:
         """Takes a string and returns a True if it only contains numbers, else False."""
