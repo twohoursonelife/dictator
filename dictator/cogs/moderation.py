@@ -157,28 +157,44 @@ class Admin(commands.Cog):
 
     @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died. NOT case sensitive.')
     @commands.has_any_role('Moderator')
-    async def whowas(self, ctx, *, character):
+    async def whowas(self, ctx, *, character_name):
+        await ctx.message.delete()
 
-        # How many results to lookup.
-        # Due to embed length limitations, the maxium is 8.
+        # Result limt, due to embed length limitations, the maxium is 8.
         history = 5
 
-        # Friendly chars only thx
-        character = re.sub(('[^a-zA-Z ]'), '', character)
+        player_id = None
+
+        # Safe characters only
+        character_name = re.sub(('[^a-zA-Z0-9 ]'), '', character_name)
+
+        if self.is_int(character_name):
+            # character_name is a player life ID, retrieve the associated character name.
+            player_id = character_name    
+            with db_conn() as db:
+                """
+                A player life ID can be repeated between different servers.
+                We have made use of a single server for four years and do not intend to change this in the short term, so are largely unaffected by this.
+                To resolve this, we assume we're only interested in the most recent player who lived with this ID.
+                This is achieved with 'ORDER BY death_time DESC LIMIT 1'
+                """
+                db.execute(f'SELECT lineageServer_lives.name FROM lineageServer_lives WHERE player_id = {character_name} ORDER BY death_time DESC LIMIT 1')
+                character_name = db.fetchone()[0]
 
         with db_conn() as db:
             # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
-            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character, history))
+            db.execute('SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, lineageServer_users.email, lineageServer_lives.id, ticketServer_tickets.time_played FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email WHERE name = %s ORDER BY death_time DESC LIMIT %s', (character_name, history))
             users = db.fetchall()
 
         if not users:
-            embed = discord.Embed(title=f'No results for the character \'{character}\'.', colour=0xffbb35)
+            embed = discord.Embed(title=f'No results for the character \'{character_name}\'.', description=f"Found name \'{character_name}\' from Player ID \'{player_id}\'" if player_id else "", colour=0xffbb35)
             await ctx.send(embed=embed)
             return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
-        embed = discord.Embed(title=f'Latest {history} results for the character \'{character}\':', colour=0xffbb35)
+        embed = discord.Embed(title=f"Latest {history} results for the name \'{character_name}\':", description=f"Found name \'{character_name}\' from Player ID \'{player_id}\'" if player_id else "", colour=0xffbb35)
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
 
         for u in users:
             try:
