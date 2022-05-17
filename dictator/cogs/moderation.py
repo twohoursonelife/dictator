@@ -216,7 +216,7 @@ class Admin(commands.Cog):
             return db.fetchone()[0]
 
     def is_int(self, string: str) -> bool:
-        """Takes a string and returns a bool if it only contains numbers."""
+        """Takes a string and returns a True if it only contains numbers, else False."""
         return bool(re.search("^[0-9]*$", string))
 
     def username_is_player_id(self, username: str) -> str:
