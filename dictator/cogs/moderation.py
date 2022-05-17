@@ -59,12 +59,13 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Embed log
-        embed = discord.Embed(title='User banned from the game', colour=discord.Colour.red())
-        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
+        embed = discord.Embed(title='Banned a user from the game', colour=discord.Colour.red())
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-        embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
-        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.add_field(name='Notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.set_footer(text=f"Member ID: {discord_user.id}", icon_url=discord_user.avatar_url)
         await log_channel.send(embed=embed)
 
     @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Optionally, any words after the username will be the unban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
@@ -115,12 +116,13 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Embed log
-        embed = discord.Embed(title='User unbanned from the game', colour=discord.Colour.green())
-        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator} ({discord_user.id})', inline=True)
+        embed = discord.Embed(title='Unbanned a user from the game', colour=discord.Colour.green())
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
-        embed.add_field(name='Moderator:', value=f'{ctx.author.name}', inline=True)
-        embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.add_field(name='Notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.set_footer(text=f"Member ID: {discord_user.id}", icon_url=discord_user.avatar_url)
         await log_channel.send(embed=embed)
 
     @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked. First argument should be a mentioned Discord member')
