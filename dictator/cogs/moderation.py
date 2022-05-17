@@ -220,7 +220,7 @@ class Admin(commands.Cog):
         return bool(re.search("^[0-9]*$", string))
 
     def username_is_player_id(self, username: str) -> str:
-        """Checks if entered username is instead a players life ID and returns the associated username else retuns the username passed in."""
+        """Handles if entered username is instead a players life ID and returns the associated username else retuns the username passed in."""
         if not self.is_int(username):
             return username
         
