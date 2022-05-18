@@ -28,7 +28,7 @@ class Stats(commands.Cog):
         if not self.stats_loop.is_running():
             self.stats_loop.start()            
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=1)
     async def stats_loop(self):
         await self.update_stats()
 
