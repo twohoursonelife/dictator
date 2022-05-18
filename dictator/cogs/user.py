@@ -113,7 +113,7 @@ class User(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='New game account created', colour=discord.Colour.green())
-        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed.add_field(name='Member:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await debug_log_channel.send(embed=embed)
