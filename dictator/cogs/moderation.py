@@ -237,10 +237,13 @@ class Admin(commands.Cog):
             This is achieved with 'ORDER BY death_time DESC LIMIT 1'
             """
             db.execute(f'SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = {player_id} ORDER BY death_time DESC LIMIT 1')
-            username = db.fetchall()
+            username = db.fetchone()
 
         if not username:
             return
+        else:
+            # We really only want the first result of the tuple
+            username = username[0]
 
         return username
 
