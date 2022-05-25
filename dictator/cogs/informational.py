@@ -36,7 +36,7 @@ class Informational(commands.Cog):
 
         # User hasn't lived a single life yet
         if user_info[0] == 0:
-            embed = discord.Embed(title=f'\'{user.name}#{user.discriminator}\' has not lived any lives yet.', colour=0xffbb35)
+            embed = discord.Embed(title=f'\'{user.name}#{user.discriminator}\' (or {user_info[2]}) has not lived any lives yet.', colour=0xffbb35)
             await ctx.author.send(embed=embed)
             return
 
