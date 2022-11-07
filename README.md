@@ -56,3 +56,9 @@ Specifically, you will need to add the bot token, database details and ensure ch
 You should now have the bot running. If you have any trouble or come across any errors, please open an issue and give as much information as you can about the problem you’re having.
 
 I highly suggest to use a process manager to continually run the bot, such as Screen, Tmux, PM2 or alike.
+
+
+# Environment variables
+See `example.env`
+
+You can copy and rename this file to `.env` to easily set environment variables.

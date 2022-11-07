@@ -4,8 +4,7 @@ import random
 from textwrap import wrap
 from discord.ext import commands
 from utility.db_manager import db_connection as db_conn
-import utility.config_manager as config
-
+from constants import DEBUG_CHANNEL_ID
 
 class User(commands.Cog):
 
@@ -109,7 +108,7 @@ class User(commands.Cog):
         else:
             notify_user = True
 
-        debug_log_channel = self.dictator.get_channel(int(config.read('debug_log_channel_id')))
+        debug_log_channel = self.dictator.get_channel(DEBUG_CHANNEL_ID)
 
         # Embed log
         embed = discord.Embed(title='New game account created', colour=discord.Colour.green())

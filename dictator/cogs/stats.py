@@ -1,7 +1,7 @@
 import discord
 import socket
 from discord.ext import commands, tasks
-import utility.config_manager as config
+from constants import STATS_CHANNEL_ID
 
 
 class Stats(commands.Cog):
@@ -11,8 +11,7 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.channel = self.dictator.get_channel(
-            int(config.read('stats_channel_id')))
+        self.channel = self.dictator.get_channel(STATS_CHANNEL_ID)
 
         if self.channel is None:
             print('Unable to find channel, disabling stats extension.')
