@@ -31,34 +31,31 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 | regenerate | regenerate \<user\> | Regenerate a users key. This should be used when a users account is leaked. |  Moderator  |
 
 ## Setup guide to run the bot
-*This guide is current as of the time of writing. Past and future versions of software may be compatible. This guide is written based upon usage on Ubuntu 18.04. There may be slight differences for other platforms. This guide also assumes the database and discord are setup as required.*
+*This guide assumes the database and discord are setup as required.*
 
 ### Steps
-1. Clone the repository and change into the directory
+1. Clone the repository and change into the directory.
 - `git clone https://github.com/twohoursonelife/dictator.git`
 - `cd dictator`
 
-2. Install dependencies
+2. Install dependencies.
 - `pipenv install`
 
-1. Enable the virtual environment
+1. Enable the virtual environment.
 - `pipenv shell`
 
-4. Run the bot once, expect it to tell you an error and crash. This generates the default config.
+4. Copy `example.env` to `.env`, set required environment variables and optional variables if necessary.
+- `cp example.env .env`
+- [More info](#environment-variables)
+
+
+5. Run the bot.
 - `python dictator/dictator.py`
 
-5. Make the necessary configuration in the config file found relatively at `dictator/utility/config.ini`
-Specifically, you will need to add the bot token, database details and ensure channel ID’s are correct. Save the file and ensure you return to the root directory of the repository.
+The bot should now be running.
+It's best to use a process manager such as Screen, Tmux or PM2 to continually run the bot.
 
-6. Finally, run the bot.
-- `python dictator/dictator.py`
-
-You should now have the bot running. If you have any trouble or come across any errors, please open an issue and give as much information as you can about the problem you’re having.
-
-I highly suggest to use a process manager to continually run the bot, such as Screen, Tmux, PM2 or alike.
-
-
-# Environment variables
+## Environment variables
 See `example.env`
 
 You can copy and rename this file to `.env` to easily set environment variables.
