@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 mysql-connector-python = "~=8.0"
 "discord.py" = "~=1.7"
+python-dotenv = "~=0.21"
 
 [dev-packages]
 

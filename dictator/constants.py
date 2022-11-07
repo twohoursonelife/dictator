@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Required environment variables
 BOT_TOKEN = os.environ["BOT_TOKEN"]
