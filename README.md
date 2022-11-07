@@ -50,7 +50,11 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen).
 
 
 5. Run the bot.
-- `python dictator/dictator.py`
+- `pipenv run python dictator/dictator.py`
+
+or
+- `pipenv shell`
+- `python run dictator/dictator.py`
 
 The bot should now be running.
 It's best to use a process manager such as Screen, Tmux or PM2 to continually run the bot.
