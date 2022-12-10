@@ -4,6 +4,7 @@ from utility.db_manager import db_connection as db_conn
 import datetime
 import re
 from constants import LOG_CHANNEL_ID
+import traceback
 
 
 class Admin(commands.Cog):
@@ -15,7 +16,7 @@ class Admin(commands.Cog):
     @commands.has_any_role('Moderator')
     async def ban(self, ctx, username, *, reason='The ban hammer has spoken.'):
         await ctx.message.delete()
-        log_channel = await commands.TextChannelConverter().convert(ctx, LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
         username = self.username_is_player_id(username)
 
@@ -72,7 +73,7 @@ class Admin(commands.Cog):
     @commands.has_any_role('Moderator')
     async def unban(self, ctx, username, *, reason='It\'s your lucky day!'):
         await ctx.message.delete()
-        log_channel = await commands.TextChannelConverter().convert(ctx, LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
         username = self.username_is_player_id(username)
 
@@ -129,8 +130,7 @@ class Admin(commands.Cog):
     @commands.has_any_role('Moderator')
     async def regenerate(self, ctx, user: discord.User):
         await ctx.message.delete()
-
-        log_channel = await commands.TextChannelConverter().convert(ctx, LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
         key = await self.dictator.get_cog('User').create_key()
 
