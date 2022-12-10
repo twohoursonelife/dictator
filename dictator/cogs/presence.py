@@ -23,5 +23,5 @@ class Presence(commands.Cog):
         await self.dictator.change_presence(activity=discord.Game(next(self.status)))
 
 
-def setup(dictator):
-    dictator.add_cog(Presence(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Presence(dictator))

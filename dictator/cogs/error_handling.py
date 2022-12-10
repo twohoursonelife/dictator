@@ -68,5 +68,5 @@ class Error_Handling(commands.Cog):
         print(f'\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n')
 
 
-def setup(dictator):
-    dictator.add_cog(Error_Handling(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Error_Handling(dictator))

@@ -62,5 +62,5 @@ class Informational(commands.Cog):
         await ctx.author.send(embed=embed)
 
 
-def setup(dictator):
-    dictator.add_cog(Informational(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Informational(dictator))

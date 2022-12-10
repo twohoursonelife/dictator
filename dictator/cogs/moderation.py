@@ -290,5 +290,5 @@ class Admin(commands.Cog):
         
         return True
 
-def setup(dictator):
-    dictator.add_cog(Admin(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Admin(dictator))

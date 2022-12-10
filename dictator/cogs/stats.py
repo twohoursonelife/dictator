@@ -68,5 +68,5 @@ class Stats(commands.Cog):
             sock.close()
 
 
-def setup(dictator):
-    dictator.add_cog(Stats(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Stats(dictator))

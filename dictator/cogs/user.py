@@ -181,5 +181,5 @@ class User(commands.Cog):
             await ctx.author.send(f'{username} :: {key}')
 
 
-def setup(dictator):
-    dictator.add_cog(User(dictator))
+async def setup(dictator):
+    await dictator.add_cog(User(dictator))

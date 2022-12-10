@@ -14,5 +14,5 @@ class Ping(commands.Cog):
             await ctx.send(f'Pong! That took me {round(self.dictator.latency * 1000)}ms!')
 
 
-def setup(dictator):
-    dictator.add_cog(Ping(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Ping(dictator))

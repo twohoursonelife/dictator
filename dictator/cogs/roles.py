@@ -91,5 +91,5 @@ class Roles(commands.Cog):
         return True if int(time_played[0]) < less_than_minutes else False
 
 
-def setup(dictator):
-    dictator.add_cog(Roles(dictator))
+async def setup(dictator):
+    await dictator.add_cog(Roles(dictator))
