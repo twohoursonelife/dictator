@@ -4,7 +4,5 @@
     ],
     "python.analysis.extraPaths": [
         "./dictator"
-    ],
-    "restructuredtext.confPath": "",
-    "python.pythonPath": "/home/chsm/.cache/pypoetry/virtualenvs/dictator-9hJvuO8d-py3.8/bin/python"
+    ]
 }
