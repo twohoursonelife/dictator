@@ -11,4 +11,4 @@ RUN pipenv sync
 
 COPY . .
 
-CMD ["python", "dictator/dictator.py"]
+CMD ["pipenv", "run", "python", "dictator/dictator.py"]
