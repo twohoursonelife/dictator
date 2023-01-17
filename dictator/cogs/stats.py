@@ -2,6 +2,8 @@ import discord
 import socket
 from discord.ext import commands, tasks
 from constants import STATS_CHANNEL_ID
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 class Stats(commands.Cog):
@@ -66,6 +68,31 @@ class Stats(commands.Cog):
 
         finally:
             sock.close()
+        
+    async def get_open_collective_data(self):
+        return
+        
+    async def average_total_income(self) -> int:
+        return
+    
+    async def average_total_outgoing(self) -> int:
+        return
+        
+    async def current_balance(self) -> int:
+        return
+            
+    async def forecast_negative_cashflow_date(self, start_balance: int, incoming: int, outgoing: int) -> int:
+        months = 0
+        while start_balance > 0 and months <= 60:
+            start_balance += incoming
+            start_balance -= outgoing
+            months += 1
+
+        return (date.today() + relativedelta(months=+months)).strftime("%B")
+
+    @commands.command()
+    async def oc(self, ctx):
+        print(await self.forecast_negative_cashflow_date(300, 50, 100))
 
 
 async def setup(dictator):
