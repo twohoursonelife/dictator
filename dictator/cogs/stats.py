@@ -2,7 +2,7 @@ import discord
 import socket
 from discord.ext import commands, tasks
 from constants import STATS_CHANNEL_ID
-from helpers.open_collective import OpenCollective as oc
+from helpers.open_collective import OpenCollective
 
 
 class Stats(commands.Cog):
@@ -69,8 +69,8 @@ class Stats(commands.Cog):
             sock.close()
 
     @commands.command()
-    async def oc(self, ctx):
-        print(await oc.forecast_negative_cashflow_date(300, 50, 100))
+    async def oc(self, ctx: commands.Context):
+        await ctx.reply(OpenCollective.forecast())
 
 
 async def setup(dictator):
