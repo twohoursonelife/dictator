@@ -17,5 +17,5 @@ DEBUG_CHANNEL_ID = int(os.environ.get("DEBUG_CHANNEL_ID", 973930931456987206))
 STATS_CHANNEL_ID = int(os.environ.get("STATS_CHANNEL_ID", 744031336448393328))
 
 OC_GRAPHQL_ENDPOINT = os.environ.get("OC_GRAPHQL_ENDPOINT", "https://api.opencollective.com/graphql/v2")
-OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
 OC_ANALYSIS_PERIOD_MONTHS = int(os.environ.get("OC_ANALYSIS_PERIOD_MONTHS", 6))
+OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
