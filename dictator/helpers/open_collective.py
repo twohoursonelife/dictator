@@ -108,6 +108,8 @@ class ForecastOpenCollective:
         
         return {
             "forecast_no_income": self.__forecast_negative_cash_date(balance, cash_flow["outgoing"]).strftime("%B %Y"),
-            "forecast_continued_income": self.__forecast_negative_cash_date(balance, sum(cash_flow.values())).strftime("%B %Y")
+            "forecast_continued_income": self.__forecast_negative_cash_date(balance, sum(cash_flow.values())).strftime("%B %Y"),
+            "current_balance": "$" + balance,
+            "analysis_period_months": OC_ANALYSIS_PERIOD_MONTHS
         }
     
