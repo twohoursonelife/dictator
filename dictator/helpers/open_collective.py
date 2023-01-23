@@ -4,7 +4,7 @@ from constants import OC_GRAPHQL_ENDPOINT, OC_GRAPHQL_KEY, OC_ANALYSIS_PERIOD_MO
 import requests
 import json
 
-class OpenCollective:
+class ForecastOpenCollective:
     """"""
     
     def __get_data_time_period(period_months: int) -> tuple[datetime]:
@@ -91,7 +91,7 @@ class OpenCollective:
     def __get_balance(data: dict) -> int:
         return data["data"]["collective"]["stats"]["balance"]["value"]
     
-    def __forecast_negative_cash_date(start_balance: int, cash_flow: int) -> datetime.date:
+    def __forecast_negative_cash_date(start_balance: int, cash_flow: int) -> datetime:
         months = 0
         while start_balance > 0:
             start_balance += cash_flow
@@ -107,7 +107,7 @@ class OpenCollective:
         balance = self.__get_balance(data)
         
         return {
-            "forecast_no_income": self.__forecast_negative_cash_date(balance, cash_flow["outgoing"]),
-            "forecast_continued_income": self.__forecast_negative_cash_date(balance, sum(cash_flow.values()))
+            "forecast_no_income": self.__forecast_negative_cash_date(balance, cash_flow["outgoing"]).strftime("%B %Y"),
+            "forecast_continued_income": self.__forecast_negative_cash_date(balance, sum(cash_flow.values())).strftime("%B %Y")
         }
     
