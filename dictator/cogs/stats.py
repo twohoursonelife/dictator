@@ -2,7 +2,7 @@ import discord
 import socket
 from discord.ext import commands, tasks
 from constants import STATS_CHANNEL_ID
-from helpers.open_collective import OpenCollective
+from helpers.open_collective import ForecastOpenCollective
 
 
 class Stats(commands.Cog):
@@ -70,7 +70,11 @@ class Stats(commands.Cog):
 
     @commands.command()
     async def oc(self, ctx: commands.Context):
-        await ctx.reply(OpenCollective.forecast())
+        await ctx.message.delete()
+        forecast = ForecastOpenCollective.forecast()
+        description = f'Assuming expenses remain similar and:\n- assuming we receive **no future income**, we have funding until **{forecast["forecast_no_income"]}**\n- assuming **average donations continue**, we have funding until **{forecast["forecast_continued_income"]}**\n\n**Current balance: {forecast["current_balance"]}**\n\n*Data time period: past {forecast["analysis_period_months"]} months. This is only a forecast and is likely to change.*'
+        embed = discord.Embed(title='Summary of 2HOL Open Collective finances:', description=description, colour=0x37ff77)
+        await ctx.send(embed=embed)
 
 
 async def setup(dictator):
