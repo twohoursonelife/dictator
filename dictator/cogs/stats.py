@@ -1,8 +1,9 @@
 import discord
 import socket
 from discord.ext import commands, tasks
-from constants import STATS_CHANNEL_ID
+from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY
 from helpers.open_collective import ForecastOpenCollective
+from datetime import date
 
 
 class Stats(commands.Cog):
@@ -26,7 +27,9 @@ class Stats(commands.Cog):
         self.stats_msg = await self.channel.send(embed=embed)
 
         if not self.stats_loop.is_running():
-            self.stats_loop.start()            
+            self.stats_loop.start()
+            
+        self.open_collective_forecast.start()         
 
     @tasks.loop(minutes=1)
     async def stats_loop(self):
@@ -68,13 +71,32 @@ class Stats(commands.Cog):
         finally:
             sock.close()
 
-    @commands.command()
-    async def oc(self, ctx: commands.Context):
-        await ctx.message.delete()
+    async def send_open_collective_forecast_embed(self, channel: discord.TextChannel) -> None:
         forecast = ForecastOpenCollective.forecast()
-        description = f'Assuming expenses remain similar and:\n- assuming we receive **no future income**, we have funding until **{forecast["forecast_no_income"]}**\n- assuming **average donations continue**, we have funding until **{forecast["forecast_continued_income"]}**\n\n**Current balance: {forecast["current_balance"]}**\n\n*Data time period: past {forecast["analysis_period_months"]} months. This is only a forecast and is likely to change.*'
+        description = (
+            f"Assuming expenses remain similar and:"
+            f"\n- assuming we receive **no future income**, we have funding until **{forecast['forecast_no_income']}**"
+            f"\n- assuming **average donations continue**, we have funding until **{forecast['forecast_continued_income']}**"
+            f"\n\n**Current balance: {forecast['current_balance']}**"
+            f"\n\n*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change.*"
+        )
         embed = discord.Embed(title='Summary of 2HOL Open Collective finances:', description=description, colour=0x37ff77)
-        await ctx.send(embed=embed)
+        await channel.send(embed=embed)
+
+    @tasks.loop(hours=24)
+    async def open_collective_forecast(self) -> None:
+        if date.today().day != OC_FORECAST_MONTH_DAY:
+            return
+        
+        channel = self.dictator.get_channel(OC_CHANNEL_ID)
+        await self.send_open_collective_forecast_embed(channel)
+
+
+    @commands.command(aliases=["oc"], brief="Generates and sends Open Collective forecast to the current channel.")
+    @commands.has_any_role("Discord mod")
+    async def open_collective(self, ctx: commands.Context) -> None:
+        await ctx.message.delete()
+        await self.send_open_collective_forecast_embed(ctx.channel)
 
 
 async def setup(dictator):
