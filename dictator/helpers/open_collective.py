@@ -93,7 +93,7 @@ class ForecastOpenCollective:
     
     def __forecast_negative_cash_date(start_balance: int, cash_flow: int) -> datetime:
         months = 0
-        while start_balance > 0:
+        while start_balance > 0 and months <= 60:
             start_balance += cash_flow
             months += 1
 

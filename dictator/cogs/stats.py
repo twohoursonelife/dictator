@@ -74,11 +74,12 @@ class Stats(commands.Cog):
     async def send_open_collective_forecast_embed(self, channel: discord.TextChannel) -> None:
         forecast = ForecastOpenCollective.forecast()
         description = (
-            f"Assuming expenses remain similar and:"
+            f"**TLDR:** Sufficient funding until **{forecast['forecast_continued_income']}**"
+            f"\n\n**Details:** Assuming expenses remain similar and:"
             f"\n- assuming we receive **no future income**, we have funding until **{forecast['forecast_no_income']}**"
             f"\n- assuming **average donations continue**, we have funding until **{forecast['forecast_continued_income']}**"
             f"\n\n**Current balance: {forecast['current_balance']}**"
-            f"\n\n*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change.*"
+            f"\n\n*\*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
         )
         embed = discord.Embed(title='Summary of 2HOL Open Collective finances:', description=description, colour=0x37ff77)
         await channel.send(embed=embed)
