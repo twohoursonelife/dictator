@@ -12,6 +12,11 @@ class Ping(commands.Cog):
             await ctx.send(f'Stop that, it hurts ;(')
         else:
             await ctx.send(f'Pong! That took me {round(self.dictator.latency * 1000)}ms!')
+            
+    @commands.command(brief='Replies with Dictators\'s current version.', help='Check the bot\'s version.')
+    async def version(self, ctx):
+        with open('version.txt', 'r') as file:
+            await ctx.send(file.read())
 
 
 async def setup(dictator):

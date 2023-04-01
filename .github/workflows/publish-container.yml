@@ -32,6 +32,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Add version.txt
+        run: git describe --tags --abbrev=0 > version.txt
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
