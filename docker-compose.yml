@@ -10,7 +10,7 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-1
-        awslogs-create-group: true
-        awslogs-group: dictator
-        awslogs-stream: dictator
+        awslogs-region: "us-east-1"
+        awslogs-create-group: "true"
+        awslogs-group: "dictator"
+        awslogs-stream: "dictator"
