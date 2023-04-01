@@ -1,0 +1,6 @@
+.env
+example.env
+.github
+.vscode
+Dockerfile
+README.md
