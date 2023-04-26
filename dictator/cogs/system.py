@@ -1,7 +1,7 @@
 from discord.ext import commands
 import random
 
-class Ping(commands.Cog):
+class System(commands.Cog):
 
     def __init__(self, dictator):
         self.dictator = dictator
@@ -20,4 +20,4 @@ class Ping(commands.Cog):
 
 
 async def setup(dictator):
-    await dictator.add_cog(Ping(dictator))
+    await dictator.add_cog(System(dictator))
