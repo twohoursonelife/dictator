@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord.ext.commands import Context
 import random
 
 class System(commands.Cog):
@@ -17,6 +18,13 @@ class System(commands.Cog):
     async def version(self, ctx):
         with open('version.txt', 'r') as file:
             await ctx.send(file.read())
+            
+    @commands.command(brief='Sync Dictators app commands to the current guild.')
+    @commands.guild_only()
+    @commands.is_owner()
+    async def sync(self, ctx: Context) -> None:
+        synced = await ctx.bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f'Synced `{len(synced)}` commands to the current guild.')
 
 
 async def setup(dictator):
