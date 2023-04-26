@@ -8,14 +8,14 @@ class System(commands.Cog):
         self.dictator = dictator
 
     @commands.command(brief='Check the bot\'s latency.', help='Check the bot\'s latency or whether it\'s responding at all.')
-    async def ping(self, ctx):
+    async def ping(self, ctx: Context) -> None:
         if random.randint(1, 100) == 1:
             await ctx.send(f'Stop that, it hurts ;(')
         else:
             await ctx.send(f'Pong! That took me {round(self.dictator.latency * 1000)}ms!')
             
     @commands.command(brief='Replies with Dictators\'s current version.', help='Check the bot\'s version.')
-    async def version(self, ctx):
+    async def version(self, ctx: Context) -> None:
         with open('version.txt', 'r') as file:
             await ctx.send(file.read())
             
