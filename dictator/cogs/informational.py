@@ -36,7 +36,7 @@ class Informational(commands.Cog):
 
         # User hasn't lived a single life yet
         if user_info[0] == 0:
-            embed = discord.Embed(title=f'\'{user.name}#{user.discriminator}\' (or {user_info[2]}) has not lived any lives yet.', colour=0xffbb35)
+            embed = discord.Embed(title=f'\'{user.name}\' (or {user_info[2]}) has not lived any lives yet.', colour=0xffbb35)
             await ctx.author.send(embed=embed)
             return
 
@@ -52,7 +52,7 @@ class Informational(commands.Cog):
         member = ctx.guild.get_member(user.id)
 
         # Form embed
-        embed = discord.Embed(title=f'Results for the user \'{user.name}#{user.discriminator}\':', colour=0xffbb35)
+        embed = discord.Embed(title=f'Results for the user \'{user.name}\':', colour=0xffbb35)
         embed.add_field(name='Time played:', value=f'{round(user_info[0] / 60, 1)} hours')
         embed.add_field(name='Blocked:', value='Yes' if user_info[1] else 'No')
         embed.add_field(name='Joined guild:', value=member.joined_at.date() if member else 'Unknown')

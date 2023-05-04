@@ -20,9 +20,9 @@ class Admin(commands.Cog):
 
         username = self.username_is_player_id(username)
 
-        if not self.valid_username_format(username):
-            await ctx.author.send(f"Invalid username format: `{username}`")
-            raise commands.UserInputError
+        # if not self.valid_username_format(username):
+        #     await ctx.author.send(f"Invalid username format: `{username}`")
+        #     raise commands.UserInputError
 
         # Check if user is already banned
         with db_conn() as db:
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='Banned a user from the game', colour=discord.Colour.red())
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
-        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator}', inline=True)
+        embed.add_field(name='Member:', value=f'{discord_user.name}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Notification:', value='Successful' if notify_user else 'Failed', inline=True)
@@ -77,9 +77,9 @@ class Admin(commands.Cog):
 
         username = self.username_is_player_id(username)
 
-        if not self.valid_username_format(username):
-            await ctx.author.send(f"Invalid username format: `{username}`")
-            raise commands.UserInputError
+        # if not self.valid_username_format(username):
+        #     await ctx.author.send(f"Invalid username format: `{username}`")
+        #     raise commands.UserInputError
 
         # Check that user is banned
         with db_conn() as db:
@@ -119,7 +119,7 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='Unbanned a user from the game', colour=discord.Colour.green())
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
-        embed.add_field(name='Member:', value=f'{discord_user.name}#{discord_user.discriminator}', inline=True)
+        embed.add_field(name='Member:', value=f'{discord_user.name}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
         embed.add_field(name='Notification:', value='Successful' if notify_user else 'Failed', inline=True)

@@ -72,11 +72,8 @@ class User(commands.Cog):
             await user.send(f'Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
             return
 
-        # Can't be having usernames too long, database allows for up to 255 but seriously?
-        if len(username) > 45:
-            username = username[0:45]
-
-        username += '-' + user.discriminator
+        if len(username) > 32:
+            username = username[0:32]
 
         # Check if username is already in use
         check_name = await self.search_username(username)
@@ -120,7 +117,7 @@ class User(commands.Cog):
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await debug_log_channel.send(embed=embed)
 
-        print(f'Successfully created an account for {user.name}#{user.discriminator} using the username {username}.')
+        print(f'Successfully created an account for {user.name} using the username {username}.')
 
     # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
     async def create_key(self):
