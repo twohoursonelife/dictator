@@ -19,11 +19,11 @@ class Roles(commands.Cog):
         """Claims the NCL role if you have 10 or more hours in game. Grants you more access to the server."""
 
         if self.already_has_role(interaction, ROLE_1["name"]):
-            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', ephemeral=True)
             return
 
         if self.playtime_less_than(interaction.user.id, ROLE_1["hours"] * 60):
-            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_1["hours"]} or more hours in game. Nearly!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_1["hours"]} or more hours in game. Nearly!', ephemeral=True)
             return
             
         await self.assign_role(interaction, ROLE_1["name"], "User claimed role")
@@ -34,11 +34,11 @@ class Roles(commands.Cog):
         """Claims the EXP role if you have 50 or more hours in game. Grants you more access to the server."""
 
         if self.already_has_role(interaction, ROLE_2["name"]):
-            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', ephemeral=True)
             return
 
         if self.playtime_less_than(interaction.user.id, ROLE_2["hours"] * 60):
-            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_2["hours"]} or more hours in game. Keep on playin!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_2["hours"]} or more hours in game. Keep on playin!', ephemeral=True)
             return
 
         await self.assign_role(interaction, ROLE_2["name"], "User claimed role")
@@ -49,11 +49,11 @@ class Roles(commands.Cog):
         """Claims the VET role if you have 375 or more hours in game. Grants you more access to the server."""
 
         if self.already_has_role(interaction, ROLE_3["name"]):
-            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role!', ephemeral=True)
             return
 
         if self.playtime_less_than(interaction.user.id, ROLE_3["hours"] * 60):
-            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_3["hours"]} or more hours in game. Surely just a few more to go...!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_3["hours"]} or more hours in game. Surely just a few more to go...!', ephemeral=True)
             return
             
         await self.assign_role(interaction, ROLE_3["name"], "User claimed role")
@@ -64,11 +64,11 @@ class Roles(commands.Cog):
         """Claims the WIL role if you have 1,000 or more hours in game. Grants you more access to the server."""
 
         if self.already_has_role(interaction, ROLE_4["name"]):
-            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role! Doh!', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you already have this role! Doh!', ephemeral=True)
             return
 
         if self.playtime_less_than(interaction.user.id, ROLE_4["hours"] * 60):
-            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_4["hours"]} or more hours in game. Just around the corner, *right?*', delete_after=10)
+            await interaction.response.send_message(f'{interaction.user.mention}, you do not have {ROLE_4["hours"]} or more hours in game. Just around the corner, *right?*', ephemeral=True)
             return
             
         await self.assign_role(interaction, ROLE_4["name"], "User claimed role")
