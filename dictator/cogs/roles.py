@@ -11,7 +11,7 @@ ROLE_4 = {"name": "What is life?", "hours": 1000}
 
 class Roles(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     @app_commands.command()
@@ -96,5 +96,5 @@ class Roles(commands.Cog):
         return True if int(time_played[0]) < less_than_minutes else False
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(Roles(dictator))

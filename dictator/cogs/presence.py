@@ -5,7 +5,7 @@ from itertools import cycle
 
 class Presence(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
 
         self.dictator = dictator
 
@@ -23,5 +23,5 @@ class Presence(commands.Cog):
         await self.dictator.change_presence(activity=discord.Game(next(self.status)))
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(Presence(dictator))

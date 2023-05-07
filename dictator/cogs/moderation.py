@@ -4,12 +4,10 @@ from utility.db_manager import db_connection as db_conn
 import datetime
 import re
 from constants import LOG_CHANNEL_ID
-import traceback
-
 
 class Admin(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Optionally, any words after the username will be the ban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
@@ -290,5 +288,5 @@ class Admin(commands.Cog):
         
         return True
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(Admin(dictator))

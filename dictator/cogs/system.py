@@ -4,7 +4,7 @@ import random
 
 class System(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     @commands.command(brief='Check the bot\'s latency.', help='Check the bot\'s latency or whether it\'s responding at all.')
@@ -27,5 +27,5 @@ class System(commands.Cog):
         await ctx.send(f'Synced `{len(synced)}` commands globally.')
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(System(dictator))

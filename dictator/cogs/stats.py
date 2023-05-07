@@ -8,7 +8,7 @@ from datetime import date
 
 class Stats(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     @commands.Cog.listener()
@@ -100,5 +100,5 @@ class Stats(commands.Cog):
         await self.send_open_collective_forecast_embed(ctx.channel)
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(Stats(dictator))

@@ -8,7 +8,7 @@ from constants import DEBUG_CHANNEL_ID
 
 class User(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     # Trigger account creation after member passes guild rules screening
@@ -181,5 +181,5 @@ class User(commands.Cog):
             await ctx.author.send(f'{username} :: {key}')
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(User(dictator))

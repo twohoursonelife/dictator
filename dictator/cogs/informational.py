@@ -6,7 +6,7 @@ import datetime
 
 class Informational(commands.Cog):
 
-    def __init__(self, dictator):
+    def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
     @commands.command(brief='Read the \'fricken\' manual.', help='Sends basic infoamtion about playing for the first time.')
@@ -62,5 +62,5 @@ class Informational(commands.Cog):
         await ctx.author.send(embed=embed)
 
 
-async def setup(dictator):
+async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(Informational(dictator))
