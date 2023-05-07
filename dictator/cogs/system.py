@@ -24,8 +24,13 @@ class System(commands.Cog):
     async def version(self, interaction: discord.Interaction) -> None:
         """Check the current version of Dictator."""
         
-        with open('version.txt', 'r') as file:
-            await interaction.response.send_message(file.read(), ephemeral=True)
+        try:
+            with open('version.txt', 'r') as file:
+                await interaction.response.send_message(file.read(), ephemeral=True)
+        
+        except FileNotFoundError:
+            await interaction.response.send_message("Version unknown.", ephemeral=True)
+            
             
     @commands.guild_only()
     @commands.is_owner()
