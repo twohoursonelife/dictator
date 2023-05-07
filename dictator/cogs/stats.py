@@ -1,10 +1,12 @@
 import discord
-import socket
-from discord.ext import commands, tasks
-from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY
-from open_collective import ForecastOpenCollective
-from datetime import date
 
+from discord.ext import commands, tasks
+
+from open_collective import ForecastOpenCollective
+from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY
+
+import socket
+from datetime import date
 
 class Stats(commands.Cog):
 
@@ -12,61 +14,56 @@ class Stats(commands.Cog):
         self.dictator = dictator
 
     @commands.Cog.listener()
-    async def on_ready(self):
-        self.channel = self.dictator.get_channel(STATS_CHANNEL_ID)
-
-        if self.channel is None:
-            print('Unable to find channel, disabling stats extension.')
-            self.dictator.unload_extension('cogs.stats')
-            return
-
-        async for msg in self.channel.history(limit=3):
-            await msg.delete()
-
-        embed = discord.Embed(title='Loading Server statistics...', colour=0xffbb35)
-        self.stats_msg = await self.channel.send(embed=embed)
-
-        if not self.stats_loop.is_running():
-            self.stats_loop.start()
-            
-        self.open_collective_forecast.start()         
+    async def on_ready(self) -> None:
+        if await self.prepare_stats():
+            self.stats_loop.start()    
+            self.open_collective_forecast.start()         
 
     @tasks.loop(minutes=1)
-    async def stats_loop(self):
+    async def stats_loop(self) -> None:
         await self.update_stats()
 
-    async def update_stats(self):
+    async def update_stats(self) -> None:
         online = await self.get_population()
 
-        embed = discord.Embed(title='Server statistics:', colour=0xffbb35)
-        embed.add_field(name='Players online:', value=online)
-        await self.stats_msg.edit(embed=embed)
+        embed = discord.Embed(title="Server statistics:", colour=0xffbb35)
+        embed.add_field(name="Players online:", value=online)
+        await self.stats_message.edit(embed=embed)
+        
+    async def prepare_stats(self) -> bool:
+        channel = self.dictator.get_channel(STATS_CHANNEL_ID)
 
-        '''
-        # "Temp" player count logging
-        with open('dictator/utility/player-log.txt', 'a') as f:
-            f.write(f'{online} - {datetime.datetime.now()}\n')
-        '''
+        if channel is None:
+            print("Unable to find channel, disabling stats extension.")
+            await self.dictator.unload_extension("cogs.stats")
+            return False
 
-    async def get_population(self):
+        async for msg in channel.history(limit=3):
+            await msg.delete()
+
+        embed = discord.Embed(title="Loading Server statistics...", colour=0xffbb35)
+        self.stats_message = await channel.send(embed=embed)
+        return True
+
+    async def get_population(self) -> str:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
             sock.settimeout(3.0)
-            sock.connect(('play.twohoursonelife.com', 8005))
+            sock.connect(("play.twohoursonelife.com", 8005))
             fd = sock.makefile()
 
         except ConnectionRefusedError:
             app_info = await self.dictator.application_info()
             owner = await self.dictator.fetch_user(app_info.team.owner_id)
-            await owner.send('Is the game server offline? it did not respond to a stats request.')
-            print('Server failed stats request, pinged my owner.')
-            return 'Unknown'
+            await owner.send("Is the game server offline? it did not respond to a stats request.")
+            print("Server failed stats request, pinged my owner.")
+            return "Unknown"
 
         else:
-            if 'SN' in fd.readline(128):
-                count = fd.readline(128).split('/')
-                return f'{count[0]}'
+            if "SN" in fd.readline(128):
+                count = fd.readline(128).split("/")
+                return f"{count[0]}"
 
         finally:
             sock.close()
@@ -81,7 +78,7 @@ class Stats(commands.Cog):
             f"\n\n**Current balance: {forecast['current_balance']}**"
             f"\n\n*\*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
         )
-        embed = discord.Embed(title='Summary of 2HOL Open Collective finances:', description=description, colour=0x37ff77)
+        embed = discord.Embed(title="Summary of 2HOL Open Collective finances:", description=description, colour=0x37ff77)
         await channel.send(embed=embed)
 
     @tasks.loop(hours=24)
