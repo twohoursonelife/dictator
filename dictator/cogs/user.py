@@ -3,7 +3,7 @@ import re
 import random
 from textwrap import wrap
 from discord.ext import commands
-from utility.db_manager import db_connection as db_conn
+from db_manager import db_connection as db_conn
 from constants import DEBUG_CHANNEL_ID
 
 class User(commands.Cog):

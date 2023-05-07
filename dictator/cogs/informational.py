@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utility.db_manager import db_connection as db_conn
+from db_manager import db_connection as db_conn
 import datetime
 
 

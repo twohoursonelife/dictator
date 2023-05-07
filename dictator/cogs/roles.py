@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from utility.db_manager import db_connection as db_conn
+from db_manager import db_connection as db_conn
 
 # Roles ["Role name, must match Discord", Required hours]
 ROLE_1 = {"name": "Not Completely Lost", "hours": 10}

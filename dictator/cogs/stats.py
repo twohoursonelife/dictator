@@ -2,7 +2,7 @@ import discord
 import socket
 from discord.ext import commands, tasks
 from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY
-from helpers.open_collective import ForecastOpenCollective
+from open_collective import ForecastOpenCollective
 from datetime import date
 
 
