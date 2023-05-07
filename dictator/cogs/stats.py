@@ -1,9 +1,10 @@
 import discord
+from discord import app_commands
 
 from discord.ext import commands, tasks
 
 from open_collective import ForecastOpenCollective
-from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY
+from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID
 
 import socket
 from datetime import date
@@ -68,7 +69,7 @@ class Stats(commands.Cog):
         finally:
             sock.close()
 
-    async def send_open_collective_forecast_embed(self, channel: discord.TextChannel) -> None:
+    async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
         description = (
             f"**TLDR:** Sufficient funding until **{forecast['forecast_continued_income']}**"
@@ -78,8 +79,8 @@ class Stats(commands.Cog):
             f"\n\n**Current balance: {forecast['current_balance']}**"
             f"\n\n*\*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
         )
-        embed = discord.Embed(title="Summary of 2HOL Open Collective finances:", description=description, colour=0x37ff77)
-        await channel.send(embed=embed)
+        
+        return discord.Embed(title="Summary of 2HOL Open Collective finances:", description=description, colour=0x37ff77)
 
     @tasks.loop(hours=24)
     async def open_collective_forecast(self) -> None:
@@ -87,14 +88,17 @@ class Stats(commands.Cog):
             return
         
         channel = self.dictator.get_channel(OC_CHANNEL_ID)
-        await self.send_open_collective_forecast_embed(channel)
+        embed = await self.open_collective_forecast_embed()
+        await channel.send(embed=embed)
 
-
-    @commands.command(aliases=["oc"], brief="Generates and sends Open Collective forecast to the current channel.")
-    @commands.has_any_role("Discord mod")
-    async def open_collective(self, ctx: commands.Context) -> None:
-        await ctx.message.delete()
-        await self.send_open_collective_forecast_embed(ctx.channel)
+    @app_commands.checks.has_role(MOD_ROLE_ID)
+    @app_commands.command()
+    async def open_collective(self, interaction: discord.Interaction) -> None:
+        """Generates and sends Open Collective forecast to the current channel."""
+        await interaction.response.defer()
+        
+        embed = await self.open_collective_forecast_embed()
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(dictator: commands.Bot) -> None:
