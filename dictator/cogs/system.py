@@ -19,12 +19,12 @@ class System(commands.Cog):
         with open('version.txt', 'r') as file:
             await ctx.send(file.read())
             
-    @commands.command(brief='Sync Dictators app commands to the current guild.')
+    @commands.command(brief='Sync Dictators app commands globally.')
     @commands.guild_only()
     @commands.is_owner()
     async def sync(self, ctx: Context) -> None:
-        synced = await ctx.bot.tree.sync(guild=ctx.guild)
-        await ctx.send(f'Synced `{len(synced)}` commands to the current guild.')
+        synced = await ctx.bot.tree.sync()
+        await ctx.send(f'Synced `{len(synced)}` commands globally.')
 
 
 async def setup(dictator):
