@@ -162,24 +162,6 @@ class User(commands.Cog):
         else:
             return reply.content
 
-    @commands.command(aliases=['newbot'], brief='Create multiple bot accounts', help='Create a game account not attached to a Discord user', usage='<user>')
-    @commands.guild_only()
-    @commands.has_role('Admin')
-    async def create_bot(self, ctx, prefix, amount: int):
-        await ctx.message.delete()
-
-        # Filter prefix
-        prefix = (re.sub('[^a-zA-Z0-9]', '', prefix))
-
-        for i in range(amount):
-            username = f'{prefix}-{i}'
-            key = await self.create_key()
-
-            with db_conn() as db:
-                db.execute(f'INSERT INTO ticketServer_tickets (email, login_key) VALUES (\'{username}\', \'{key}\')')
-
-            await ctx.author.send(f'{username} :: {key}')
-
 
 async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(User(dictator))
