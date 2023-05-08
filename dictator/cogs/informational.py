@@ -17,8 +17,8 @@ class Informational(commands.Cog):
 
         await interaction.response.send_message(f'Heres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "-key" command.*')
 
-    @app_commands.command()
     @app_commands.guild_only()
+    @app_commands.command()
     async def info(self, interaction: discord.Interaction, user: discord.User) -> None:
         """Private messages you information about the specified user."""
         await interaction.response.defer(ephemeral=True)
