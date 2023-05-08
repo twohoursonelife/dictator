@@ -1,10 +1,13 @@
 import discord
+from discord import app_commands
+from discord.ext import commands
+
+from db_manager import db_connection as db_conn
+from constants import DEBUG_CHANNEL_ID
+
 import re
 import random
 from textwrap import wrap
-from discord.ext import commands
-from db_manager import db_connection as db_conn
-from constants import DEBUG_CHANNEL_ID
 
 class User(commands.Cog):
 
@@ -16,32 +19,29 @@ class User(commands.Cog):
     async def on_member_update(self, before: discord.Member, after: discord.Member) -> None:
         if before.pending and not after.pending:
             await self.create_user(after)
-        
         return
 
-    # Retrieve and send a users login information to themselves
-    @commands.command(aliases=['mykey'], brief='Retireve your login information for the game.', help='Retireve your login information for the game. If you don\'t have an account, one will be created for you.')
-    @commands.guild_only()
-    @commands.max_concurrency(1, per=commands.BucketType.user, wait=False)
-    async def key(self, ctx):
-        user = await self.search_user(ctx.author.id)
+    @app_commands.guild_only()
+    @app_commands.command()
+    async def account(self, interaction: discord.Interaction):
+        """Get or create your game log in information."""
+        await interaction.response.defer(ephemeral=True)
+        
+        user = await self.search_user(interaction.user.id)
 
         if user is None:
-            await ctx.send(f'{ctx.author.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!', delete_after=10)
+            await  interaction.followup.send(f'{interaction.user.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!', ephemeral=True)
             print(
-                f'{ctx.author} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
-            await self.create_user(ctx.author)
+                f'{interaction.user} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
+            await self.create_user(interaction.user)
 
         else:
             username = user[0]
             key = user[1]
-            await ctx.send(f'{ctx.author.mention} I\'ll send you a message with your login information.', delete_after=10)
-            await ctx.author.send(f'Hey {ctx.author.mention}! Here is your login information:\n**Username:** {username}\n**Key:** {key}')
-            print(f'Supplied username and key to {ctx.author}')
+            await interaction.followup.send(f'Hey {interaction.user.mention}! Here is your login information:\n**Username:** `{username}`\n**Key:** `{key}`', ephemeral=True)
+            print(f'Supplied username and key to {interaction.user}')
 
-        await ctx.message.delete()
-
-    async def create_user(self, user, username=None):
+    async def create_user(self, user: discord.User, username: str = None) -> None:
         if username is None:
             username = user.name
 
@@ -120,7 +120,7 @@ class User(commands.Cog):
         print(f'Successfully created an account for {user.name} using the username {username}.')
 
     # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
-    async def create_key(self):
+    async def create_key(self) -> str:
         readable_base_32_digit_array = ["2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E",
                                         "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         key = ""
@@ -133,21 +133,21 @@ class User(commands.Cog):
         return key
 
     # Search whether a user exists, return username and key if they do
-    async def search_user(self, user_id):
+    async def search_user(self, user_id: int):
         with db_conn() as db:
             db.execute(f'SELECT email, login_key FROM ticketServer_tickets WHERE discord_id = \'{user_id}\'')
             row = db.fetchone()
             return row
 
     # Search whether a username already exists
-    async def search_username(self, user):
+    async def search_username(self, user: discord.User):
         with db_conn() as db:
             db.execute(f'SELECT email FROM ticketServer_tickets WHERE email = \'{user}\'')
             row = db.fetchone()
             return row
 
     # Prompt user to respond to a question via private message
-    async def prompt_user(self, user, msg):
+    async def prompt_user(self, user: discord.User, msg: str):
         await user.send(f'{msg}')
         try:
             def check(m):
