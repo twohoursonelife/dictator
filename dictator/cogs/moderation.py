@@ -1,48 +1,53 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
+
 from db_manager import db_connection as db_conn
+from constants import LOG_CHANNEL_ID, GAME_MOD_ROLE_ID, MOD_ROLE_ID
+
 import datetime
 import re
-from constants import LOG_CHANNEL_ID
 
 class Admin(commands.Cog):
 
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
-    @commands.command(brief='Ban a user from the game.', help='Ban a user from the game. Optionally, any words after the username will be the ban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
-    @commands.has_any_role('Game mod')
-    async def ban(self, ctx, username, *, reason='The ban hammer has spoken.'):
-        await ctx.message.delete()
-        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.command
+    async def ban(self, interaction: discord.Interaction, username: str, reason: str = 'The ban hammer has spoken.') -> None:
+        """Bans a user from the game."""
+        await interaction.response.defer(ephemeral=True)
 
+        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+        
         username = self.username_is_player_id(username)
 
         # if not self.valid_username_format(username):
-        #     await ctx.author.send(f"Invalid username format: `{username}`")
+        #     await interaction.user.send(f"Invalid username format: `{username}`")
         #     raise commands.UserInputError
 
-        # Check if user is already banned
+        # Is user already banned?
         with db_conn() as db:
             db.execute(f'SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = \'{username}\'')
             row = db.fetchone()
 
         if row == None:
-            await ctx.author.send(f'Could not find an account with the username: `{username}`')
+            await interaction.followup.send(f'Could not find an account with the username: `{username}`', ephemeral=True)
             return
 
         if row[0] == 1:
-            print(f'{ctx.author} tried to ban {username} but they\'re already banned.')
-            await ctx.author.send(f'`{username}` is already banned.')
+            print(f'{interaction.user} tried to ban {username} but they\'re already banned.')
+            await interaction.followup.send(f'`{username}` is already banned.', ephemeral=True)
             return
 
         # Ban the user
         with db_conn() as db:
             db.execute(f'UPDATE ticketServer_tickets SET blocked = 1 WHERE email = \'{username}\'')
 
-        print(f'{ctx.author} banned {username} for: {reason}')
+        print(f'{interaction.user} banned {username} for: {reason}')
 
-        discord_user = ctx.guild.get_member(int(row[1]))
+        discord_user = interaction.guild.get_member(int(row[1]))
 
         # Notify the user
         try:
@@ -59,7 +64,7 @@ class Admin(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='Banned a user from the game', colour=discord.Colour.red())
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name='Member:', value=f'{discord_user.name}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
@@ -67,16 +72,18 @@ class Admin(commands.Cog):
         embed.set_footer(text=f"Member ID: {discord_user.id}", icon_url=discord_user.avatar)
         await log_channel.send(embed=embed)
 
-    @commands.command(brief='Unban a user from the game.', help='Unban a user from the game. Optionally, any words after the username will be the unban reason. The user, moderator and log channel will be notified. The username should be a users 2HOL username. This is not a users Discord name, id or tag.', usage='<username> [reason]')
-    @commands.has_any_role('Game mod')
-    async def unban(self, ctx, username, *, reason='It\'s your lucky day!'):
-        await ctx.message.delete()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.command
+    async def unban(self, interaction: discord.Interaction, username: str, reason: str = 'It\'s your lucky day!') -> None:
+        """Unbans a user from the game."""
+        await interaction.response.defer(ephemeral=True)
+        
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
         username = self.username_is_player_id(username)
 
         # if not self.valid_username_format(username):
-        #     await ctx.author.send(f"Invalid username format: `{username}`")
+        #     await interaction.user.send(f"Invalid username format: `{username}`")
         #     raise commands.UserInputError
 
         # Check that user is banned
@@ -85,21 +92,21 @@ class Admin(commands.Cog):
             row = db.fetchone()
 
         if row == None:
-            await ctx.author.send(f'Could not find an account with the username: `{username}`')
+            await interaction.followup.send(f'Could not find an account with the username: `{username}`', ephemeral=True)
             return
 
         if row[0] == 0:
-            print(f'{ctx.author} tried to unban {username} but they\'re not already banned.')
-            await ctx.author.send(f'`{username}` is not already banned.')
+            print(f'{interaction.user} tried to unban {username} but they\'re not already banned.')
+            await interaction.followup.send(f'`{username}` is not already banned.', ephemeral=True)
             return
 
         # Unban the user
         with db_conn() as db:
             db.execute(f'UPDATE ticketServer_tickets SET blocked = 0 WHERE email = \'{username}\'')
 
-        print(f'{ctx.author} unbanned {username} for: {reason}')
+        print(f'{interaction.user} unbanned {username} for: {reason}')
 
-        discord_user = ctx.guild.get_member(int(row[1]))
+        discord_user = interaction.guild.get_member(int(row[1]))
 
         # Notify the user
         try:
@@ -116,7 +123,7 @@ class Admin(commands.Cog):
 
         # Embed log
         embed = discord.Embed(title='Unbanned a user from the game', colour=discord.Colour.green())
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name='Member:', value=f'{discord_user.name}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='Reason:', value=f'{reason}', inline=True)
@@ -124,10 +131,12 @@ class Admin(commands.Cog):
         embed.set_footer(text=f"Member ID: {discord_user.id}", icon_url=discord_user.avatar)
         await log_channel.send(embed=embed)
 
-    @commands.command(aliases=['regen'], brief='Regenerate a users key.', help='Regenerate a users key. This should be used when a users account is leaked. First argument should be a mentioned Discord member')
-    @commands.has_any_role('Game mod')
-    async def regenerate(self, ctx, user: discord.User):
-        await ctx.message.delete()
+    @app_commands.checks.has_role(MOD_ROLE_ID)
+    @app_commands.command
+    async def regenerate(self, interaction: discord.Interaction, user: discord.User) -> None:
+        """Regenerates a users key."""
+        await interaction.response.send_message(f"Regenerating key for {user}.", ephemeral=True)
+
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
         key = await self.dictator.get_cog('User').create_key()
@@ -149,14 +158,15 @@ class Admin(commands.Cog):
         # Embed log
         embed = discord.Embed(title='User key regenerated', colour=discord.Colour.green())
         embed.add_field(name='User:', value=f'{user.mention}', inline=True)
-        embed.add_field(name='Moderator:', value=f'{ctx.author.mention}', inline=True)
+        embed.add_field(name='Moderator:', value=f'{interaction.user.mention}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
 
-    @commands.command(aliases=['whois'], brief='Lookup who a player was in the game.', help='Lookup who a player was in the game. The player must have died. Only the last five results will be displayed. You will also be told how long ago each player died. NOT case sensitive.')
-    @commands.has_any_role('Game mod')
-    async def whowas(self, ctx, *, character_name):
-        await ctx.message.delete()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.command
+    async def whowas(self, interaction: discord.Interaction, character_name: str) -> None:
+        """Look up who a player was in the game."""
+        await interaction.response.defer()
 
         # Result limt, due to embed length limitations, the maxium is 8.
         history = 5
@@ -181,7 +191,7 @@ class Admin(commands.Cog):
 
             if not character_name:
                 embed = discord.Embed(title=f'No results for that player ID.', colour=0xffbb35)
-                await ctx.send(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             else:
                 # We really only want the first result of the tuple
@@ -194,13 +204,13 @@ class Admin(commands.Cog):
 
         if not users:
             embed = discord.Embed(title=f'No results for the character \'{character_name}\'.', description=f"Found name \'{character_name}\' from Player ID \'{player_id}\'" if player_id else "", colour=0xffbb35)
-            await ctx.send(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
 
         current_time = datetime.datetime.now(tz=datetime.timezone.utc)
         current_time = current_time.replace(microsecond=0)
         embed = discord.Embed(title=f"Latest {history} results for the name \'{character_name}\':", description=f"Found name \'{character_name}\' from Player ID \'{player_id}\'" if player_id else "", colour=0xffbb35)
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
 
         for u in users:
             try:
@@ -223,7 +233,7 @@ class Admin(commands.Cog):
         if len(users) < history:
             embed.add_field(name='\u200b', value='End of results')
 
-        await ctx.send(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""

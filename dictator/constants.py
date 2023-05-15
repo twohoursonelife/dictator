@@ -12,6 +12,7 @@ OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
 BOT_PREFIX = os.environ.get("BOT_PREFIX", "-")
 
 MOD_ROLE_ID = int(os.environ.get("MOD_ROLE_ID", 578867113817800715))
+GAME_MOD_ROLE_ID = int(os.environ.get("GAME_MOD_ROLE_ID", 924570507767083029))
 
 DB_HOST = os.environ.get("DB_HOST", "db.twohoursonelife.com")
 DB_DATABASE = os.environ.get("DB_DB", "PROD_2HOL")
