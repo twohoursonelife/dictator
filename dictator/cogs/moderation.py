@@ -14,7 +14,7 @@ class Admin(commands.Cog):
         self.dictator = dictator
 
     @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
-    @app_commands.command
+    @app_commands.command()
     async def ban(self, interaction: discord.Interaction, username: str, reason: str = 'The ban hammer has spoken.') -> None:
         """Bans a user from the game."""
         await interaction.response.defer(ephemeral=True)
@@ -73,7 +73,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
-    @app_commands.command
+    @app_commands.command()
     async def unban(self, interaction: discord.Interaction, username: str, reason: str = 'It\'s your lucky day!') -> None:
         """Unbans a user from the game."""
         await interaction.response.defer(ephemeral=True)
@@ -132,7 +132,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @app_commands.checks.has_role(MOD_ROLE_ID)
-    @app_commands.command
+    @app_commands.command()
     async def regenerate(self, interaction: discord.Interaction, user: discord.User) -> None:
         """Regenerates a users key."""
         await interaction.response.send_message(f"Regenerating key for {user}.", ephemeral=True)
@@ -163,7 +163,7 @@ class Admin(commands.Cog):
         await log_channel.send(embed=embed)
 
     @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
-    @app_commands.command
+    @app_commands.command()
     async def whowas(self, interaction: discord.Interaction, character_name: str) -> None:
         """Look up who a player was in the game."""
         await interaction.response.defer()
