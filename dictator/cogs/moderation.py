@@ -17,7 +17,7 @@ class Admin(commands.Cog):
     @app_commands.command()
     async def ban(self, interaction: discord.Interaction, username: str, reason: str = 'The ban hammer has spoken.') -> None:
         """Bans a user from the game."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.send_message(f"Banning `{username}` for `{reason}`...", ephemeral=True, delete_after=15)
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
         
@@ -33,12 +33,12 @@ class Admin(commands.Cog):
             row = db.fetchone()
 
         if row == None:
-            await interaction.followup.send(f'Could not find an account with the username: `{username}`', ephemeral=True)
+            await interaction.edit_original_response(content=f'Could not find an account with the username: `{username}`')
             return
 
         if row[0] == 1:
             print(f'{interaction.user} tried to ban {username} but they\'re already banned.')
-            await interaction.followup.send(f'`{username}` is already banned.', ephemeral=True)
+            await interaction.edit_original_response(content=f'`{username}` is already banned.')
             return
 
         # Ban the user
@@ -76,7 +76,7 @@ class Admin(commands.Cog):
     @app_commands.command()
     async def unban(self, interaction: discord.Interaction, username: str, reason: str = 'It\'s your lucky day!') -> None:
         """Unbans a user from the game."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.send_message(f"Unbanning `{username}` for `{reason}`...", ephemeral=True, delete_after=15)
         
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
@@ -92,12 +92,12 @@ class Admin(commands.Cog):
             row = db.fetchone()
 
         if row == None:
-            await interaction.followup.send(f'Could not find an account with the username: `{username}`', ephemeral=True)
+            await interaction.edit_original_response(content=f'Could not find an account with the username: `{username}`')
             return
 
         if row[0] == 0:
             print(f'{interaction.user} tried to unban {username} but they\'re not already banned.')
-            await interaction.followup.send(f'`{username}` is not already banned.', ephemeral=True)
+            await interaction.edit_original_response(f'`{username}` is not already banned.')
             return
 
         # Unban the user
@@ -135,7 +135,7 @@ class Admin(commands.Cog):
     @app_commands.command()
     async def regenerate(self, interaction: discord.Interaction, user: discord.User) -> None:
         """Regenerates a users key."""
-        await interaction.response.send_message(f"Regenerating key for {user.mention}.", ephemeral=True)
+        await interaction.response.send_message(f"Regenerating key for {user.mention}.", ephemeral=True, delete_after=15)
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
