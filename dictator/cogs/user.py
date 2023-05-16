@@ -1,5 +1,6 @@
 import discord
 from discord import app_commands
+
 from discord.ext import commands
 
 from db_manager import db_connection as db_conn
@@ -20,10 +21,14 @@ class User(commands.Cog):
         if before.pending and not after.pending:
             await self.create_user(after)
         return
+    
+    @commands.hybrid_command(brief="Placeholder for old key command.")
+    async def key(self, ctx: commands.Context) -> None:
+        await ctx.send("The new command is /account")
 
     @app_commands.guild_only()
     @app_commands.command()
-    async def account(self, interaction: discord.Interaction):
+    async def account(self, interaction: discord.Interaction) -> None:
         """Get or create your game log in information."""
         await interaction.response.defer(ephemeral=True)
         

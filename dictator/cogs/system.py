@@ -2,7 +2,6 @@ import discord
 from discord import app_commands
 
 from discord.ext import commands
-from discord.ext.commands import Context
 
 import random
 
@@ -35,7 +34,7 @@ class System(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(brief='Sync Dictators app commands globally.')
-    async def sync(self, ctx: Context) -> None:
+    async def sync(self, ctx: commands.Context) -> None:
         synced = await ctx.bot.tree.sync()
         await ctx.send(f'Synced `{len(synced)}` commands globally.')
 
