@@ -135,7 +135,7 @@ class Admin(commands.Cog):
     @app_commands.command()
     async def regenerate(self, interaction: discord.Interaction, user: discord.User) -> None:
         """Regenerates a users key."""
-        await interaction.response.send_message(f"Regenerating key for {user}.", ephemeral=True)
+        await interaction.response.send_message(f"Regenerating key for {user.mention}.", ephemeral=True)
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
@@ -156,8 +156,8 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Embed log
-        embed = discord.Embed(title='User key regenerated', colour=discord.Colour.green())
-        embed.add_field(name='User:', value=f'{user.mention}', inline=True)
+        embed = discord.Embed(title='Member key regenerated', colour=discord.Colour.green())
+        embed.add_field(name='Member:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Moderator:', value=f'{interaction.user.mention}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
         await log_channel.send(embed=embed)
