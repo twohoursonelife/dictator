@@ -9,6 +9,7 @@ from constants import DEBUG_CHANNEL_ID
 import re
 import random
 from textwrap import wrap
+from datetime import timedelta
 
 class User(commands.Cog):
 
@@ -35,7 +36,7 @@ class User(commands.Cog):
         user = await self.search_user(interaction.user.id)
 
         if user is None:
-            await  interaction.followup.send(f'{interaction.user.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!', ephemeral=True)
+            await interaction.followup.send(f'{interaction.user.mention} You don\'t have an account, I\'m creating one for you now. I\'ll send you a message soon!', ephemeral=True)
             print(
                 f'{interaction.user} attempted to retrieve their key but didn\'t have an account, we\'ll create them one.')
             await self.create_user(interaction.user)
@@ -113,6 +114,11 @@ class User(commands.Cog):
         else:
             notify_user = True
 
+        one_week_ago = discord.utils.utcnow() - timedelta(weeks=1) 
+        new_discord_account = False
+        if user.created_at > one_week_ago:
+            new_discord_account = True
+
         debug_log_channel = self.dictator.get_channel(DEBUG_CHANNEL_ID)
 
         # Embed log
@@ -120,6 +126,7 @@ class User(commands.Cog):
         embed.add_field(name='Member:', value=f'{user.mention}', inline=True)
         embed.add_field(name='Username:', value=f'{username}', inline=True)
         embed.add_field(name='User notification:', value='Successful' if notify_user else 'Failed', inline=True)
+        embed.add_field(name='User account age:', value='New discord account' if new_discord_account else 'Existing discord account', inline=True)
         await debug_log_channel.send(embed=embed)
 
         print(f'Successfully created an account for {user.name} using the username {username}.')
