@@ -29,4 +29,4 @@ OC_GRAPHQL_ENDPOINT = os.environ.get("OC_GRAPHQL_ENDPOINT", "https://api.opencol
 OC_ANALYSIS_PERIOD_MONTHS = int(os.environ.get("OC_ANALYSIS_PERIOD_MONTHS", 6))
 
 # Day of the month to generate and send the forecast message
-OC_FORECAST_MONTH_DAY = int(os.environ.get("OC_FORECAST_MONTH_DAY", 1))
+OC_FORECAST_MONTH_DAY = int(os.environ.get("OC_FORECAST_MONTH_DAY", 7))
