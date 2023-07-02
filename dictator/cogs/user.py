@@ -106,7 +106,7 @@ class User(commands.Cog):
 
         # Notify the user
         try:
-            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
+            await user.send(f'Welcome to 2HOL {user.mention}!\nYou can read how to start playing our game at <https://twohoursonelife.com/first-time-playing?ref=create_acc>\nWhen you\'re ready, you can use the details below to log in to the game:\n**Username:** {username}\n**Key:** {key}')
 
         except:
             notify_user = False

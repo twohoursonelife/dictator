@@ -15,7 +15,7 @@ class Informational(commands.Cog):
     async def rtfm(self, interaction: discord.Interaction) -> None:
         """Sends basic infoamtion about playing for the first time."""
 
-        await interaction.response.send_message(f'Heres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "/account" command.*')
+        await interaction.response.send_message(f'How do I play?\nHow do I download?\n\nHeres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing/?ref=rtfm>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "/account" command.*')
 
     @app_commands.guild_only()
     @app_commands.command()
