@@ -69,6 +69,32 @@ class Stats(commands.Cog):
 
         finally:
             sock.close()
+            
+    async def get_player_list(self) -> str:
+        return
+    
+    async def player_list_request(self) -> str:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        try:
+            sock.connect(("play.twohoursonelife.com", 8005))
+            sock.sendall(b"PLAYER_LIST @replace-me@#")
+            player_list = sock.makefile()
+
+        except ConnectionRefusedError as e:
+            print("ConnectionRefusedError")
+            print(e)
+            return "Unknown"
+        
+        else:
+            with player_list as file:
+                while line := file.readline():
+                    print(line.rstrip())
+                        
+        finally:
+            sock.close()
+            
+        return ""
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
