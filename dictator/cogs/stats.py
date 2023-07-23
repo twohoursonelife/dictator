@@ -27,7 +27,7 @@ class Stats(commands.Cog):
     async def update_stats(self) -> None:
         online = await self.get_population()
 
-        embed = discord.Embed(title="Server statistics:", colour=0xffbb35)
+        embed = discord.Embed(title="Statistics", colour=0xffbb35)
         embed.add_field(name="Players online:", value=online)
         await self.stats_message.edit(embed=embed)
         
@@ -39,10 +39,11 @@ class Stats(commands.Cog):
             await self.dictator.unload_extension("cogs.stats")
             return False
 
-        async for msg in channel.history(limit=3):
-            await msg.delete()
+        async for msg in channel.history(limit=1):
+            if msg.author == self.dictator.user:
+                await msg.delete()
 
-        embed = discord.Embed(title="Loading Server statistics...", colour=0xffbb35)
+        embed = discord.Embed(title="Loading statistics...", colour=0xffbb35)
         self.stats_message = await channel.send(embed=embed)
         return True
 
