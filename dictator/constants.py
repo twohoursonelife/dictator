@@ -7,6 +7,7 @@ load_dotenv()
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 DB_PASSWORD = os.environ["DB_PASS"]
 OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
+PLAYER_LIST_PASSWORD = os.environ["PLAYER_LIST_PASSWORD"]
 
 # Optional environment variables, setting defaults
 BOT_PREFIX = os.environ.get("BOT_PREFIX", "-")
