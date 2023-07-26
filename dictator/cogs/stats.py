@@ -4,7 +4,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 
 from open_collective import ForecastOpenCollective
-from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID
+from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID, PLAYER_LIST_PASSWORD
 
 import socket
 from datetime import date
@@ -72,7 +72,7 @@ class Stats(commands.Cog):
             
     async def get_player_list(self) -> str:
         return
-    
+
     async def player_list_request(self) -> str:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(0.25)
@@ -95,6 +95,15 @@ class Stats(commands.Cog):
             player_list = b"".join(data_bytes).decode("utf-8")
 
         return player_list
+    
+    async def verify_player_list(self, player_list: str) -> bool:
+        if "#" != player_list[-1]:
+            raise Exception("PLAYER_LIST message is incomplete!")
+        
+        if "REJECTED" in player_list:
+            raise Exception("PLAYER_LIST message returned REJECTED, check password!")
+        
+        return True
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
