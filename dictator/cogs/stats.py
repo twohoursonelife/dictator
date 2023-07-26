@@ -69,9 +69,6 @@ class Stats(commands.Cog):
 
         finally:
             sock.close()
-            
-    async def get_player_list(self) -> str:
-        return
 
     async def player_list_request(self) -> str:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -104,6 +101,19 @@ class Stats(commands.Cog):
             raise Exception("PLAYER_LIST message returned REJECTED, check password!")
         
         return True
+    
+    async def parse_player_list(self, player_list: str) -> tuple:
+        # Convert to list and remove trailing hash char
+        player_list = player_list.split("\n")[:-1]
+        
+        # "#23" -> "23"
+        player_list[4] = player_list[4][1:]
+        
+        # Remove irrelevant data
+        player_list.pop(2)
+        player_list.pop(0)
+        
+        return player_list[:3], player_list[3:]
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
