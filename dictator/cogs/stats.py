@@ -124,6 +124,8 @@ class Stats(commands.Cog):
         player_list.pop(2)
         player_list.pop(0)
         
+        players = [player.split(",") for player in player_list[3:]]
+
 
     async def process_player_list(self, parsed_player_list: str) -> str:
         # ['541385,541165,541313,F,79.8,1,0,RUNE TANNAHILL,TANNAHILL', '541386,541386,-1,F,92.9,1,0,EVE BACK,BACK', '541397,541397,-1,F,81.3,1,0,EVE PEGASUS,PEGASUS', '541400,541400,-1,F,80.0,1,0,EVE JESSIE,JESSIE', '541409,541165,541373,M,61.5,0,0,NEIL TANNAHILL,TANNAHILL']
