@@ -72,22 +72,27 @@ class Stats(commands.Cog):
 
     async def player_list_request(self) -> str:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(0.25)
+            s.settimeout(2)
             s.connect(("play.twohoursonelife.com", 8005))
-            s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
+            if not PLAYER_LIST_PASSWORD or len(PLAYER_LIST_PASSWORD) == 0:
+                s.sendall(f"PLAYER_LIST#".encode("utf-8")) # format changes if no password
+            else:
+                s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
 
             data_bytes = []
+            numMessagesReceived = 0
             while True:
                 try:
                     chunk = s.recv(1024)
-
                 except TimeoutError:
                     break
-
                 else:
                     if not chunk or chunk == b"":
-                        break
+                        break # sudden disconnect
                     data_bytes.append(chunk)
+                    numMessagesReceived += chunk.count(ord('#'))
+                    if numMessagesReceived == 2: # SN and PLAYER_LIST
+                        break
 
             player_list = b"".join(data_bytes).decode("utf-8")
 
