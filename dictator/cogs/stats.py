@@ -25,14 +25,11 @@ class Stats(commands.Cog):
         await self.update_stats()
 
     async def update_stats(self) -> None:
-        pl = await self.player_list_request()
-        await self.verify_player_list(pl)
-        server_info, player_list = await self.parse_player_list(pl)
-
+        server_info, families = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xffbb35)
         embed.add_field(name="Online", value=server_info[0])
         embed.add_field(name="Version", value=server_info[1])
-        embed.add_field(name="Players", value=player_list[0:5], inline=False)
+        embed.add_field(name="Families", value=families, inline=False)
         await self.stats_message.edit(embed=embed)
         
     async def prepare_stats(self) -> bool:
@@ -73,6 +70,14 @@ class Stats(commands.Cog):
 
         finally:
             sock.close()
+            
+    async def get_server_stats(self) -> str:
+        result = await self.player_list_request()
+        await self.verify_player_list(result)
+        server_info, parsed_player_list = await self.parse_player_list(result)
+        families = await self.process_player_list(parsed_player_list)
+        
+        return server_info, families
 
     async def player_list_request(self) -> str:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -126,6 +131,7 @@ class Stats(commands.Cog):
         
         players = [player.split(",") for player in player_list[3:]]
 
+        return player_list[:3], players
 
     async def process_player_list(self, parsed_player_list: str) -> str:
         # ['541385,541165,541313,F,79.8,1,0,RUNE TANNAHILL,TANNAHILL', '541386,541386,-1,F,92.9,1,0,EVE BACK,BACK', '541397,541397,-1,F,81.3,1,0,EVE PEGASUS,PEGASUS', '541400,541400,-1,F,80.0,1,0,EVE JESSIE,JESSIE', '541409,541165,541373,M,61.5,0,0,NEIL TANNAHILL,TANNAHILL']
