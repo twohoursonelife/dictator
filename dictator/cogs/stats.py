@@ -91,7 +91,7 @@ class Stats(commands.Cog):
                         break # sudden disconnect
                     data_bytes.append(chunk)
                     numMessagesReceived += chunk.count(ord('#'))
-                    if numMessagesReceived == 2: # SN and PLAYER_LIST
+                    if numMessagesReceived >= 2: # SN and PLAYER_LIST
                         break
 
             player_list = b"".join(data_bytes).decode("utf-8")
