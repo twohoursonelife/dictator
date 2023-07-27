@@ -80,7 +80,7 @@ class Stats(commands.Cog):
                 s.sendall(f"PLAYER_LIST#".encode("utf-8")) # format changes if no password
 
             data_bytes = []
-            numMessagesReceived = 0
+            messages_received = 0
             while True:
                 try:
                     chunk = s.recv(1024)
@@ -92,8 +92,8 @@ class Stats(commands.Cog):
                     if not chunk or chunk == b"":
                         break # sudden disconnect
                     data_bytes.append(chunk)
-                    numMessagesReceived += chunk.count(ord('#'))
-                    if numMessagesReceived >= 2: # SN and PLAYER_LIST
+                    messages_received += chunk.count(ord('#'))
+                    if messages_received >= 2: # SN and PLAYER_LIST
                         break
 
             player_list = b"".join(data_bytes).decode("utf-8")
