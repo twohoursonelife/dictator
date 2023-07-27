@@ -7,7 +7,6 @@ from open_collective import ForecastOpenCollective
 from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID, PLAYER_LIST_PASSWORD
 
 import socket
-import traceback
 from datetime import date
 
 class Stats(commands.Cog):
@@ -85,11 +84,10 @@ class Stats(commands.Cog):
             while True:
                 try:
                     chunk = s.recv(1024)
+                
                 except TimeoutError:
                     break
-                except Exception:
-                    print("Failed to read bytes from socket during PLAYER_LIST request, check this Traceback: ", traceback.format_exc())
-                    break
+                
                 else:
                     if not chunk or chunk == b"":
                         break # sudden disconnect
