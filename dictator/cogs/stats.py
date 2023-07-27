@@ -75,10 +75,10 @@ class Stats(commands.Cog):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(2)
             s.connect(("play.twohoursonelife.com", 8005))
-            if not PLAYER_LIST_PASSWORD or len(PLAYER_LIST_PASSWORD) == 0:
-                s.sendall(f"PLAYER_LIST#".encode("utf-8")) # format changes if no password
-            else:
+            if PLAYER_LIST_PASSWORD:
                 s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
+            else:
+                s.sendall(f"PLAYER_LIST#".encode("utf-8")) # format changes if no password
 
             data_bytes = []
             numMessagesReceived = 0
