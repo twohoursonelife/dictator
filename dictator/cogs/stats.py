@@ -124,7 +124,27 @@ class Stats(commands.Cog):
         player_list.pop(2)
         player_list.pop(0)
         
-        return player_list[:3], player_list[3:]
+
+    async def process_player_list(self, parsed_player_list: str) -> str:
+        # ['541385,541165,541313,F,79.8,1,0,RUNE TANNAHILL,TANNAHILL', '541386,541386,-1,F,92.9,1,0,EVE BACK,BACK', '541397,541397,-1,F,81.3,1,0,EVE PEGASUS,PEGASUS', '541400,541400,-1,F,80.0,1,0,EVE JESSIE,JESSIE', '541409,541165,541373,M,61.5,0,0,NEIL TANNAHILL,TANNAHILL']
+        sorted_families = {}
+        summarised_families = {}
+        for player in parsed_player_list:
+            eve_id = player[1]
+            if eve_id not in sorted_families:
+                sorted_families[eve_id] = []
+                summarised_families[eve_id] = [eve_id, player[8], 0]
+            sorted_families[eve_id].append(player)
+            summarised_families[eve_id] = [eve_id, player[8], summarised_families[eve_id][2] + 1]
+            
+        sorted_families = list(sorted_families.values())
+        summarised_families = list(summarised_families.values())
+        
+        #TODO
+        # summarised_families may require a refactor that
+        # loops sorted_families and seeks len(), factoring into a new list
+        # readbility is more important than removing the loop
+        return summarised_families
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
