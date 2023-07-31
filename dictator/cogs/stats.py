@@ -25,10 +25,11 @@ class Stats(commands.Cog):
         await self.update_stats()
 
     async def update_stats(self) -> None:
-        server_info, families = await self.get_server_stats()
+        server_info, families, family_count = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xffbb35)
         embed.add_field(name="Online", value=server_info[0])
         embed.add_field(name="Version", value=server_info[1])
+        embed.add_field(name="Individual families", value=family_count)
         embed.add_field(name="Families", value=families, inline=False)
         await self.stats_message.edit(embed=embed)
         
@@ -75,9 +76,13 @@ class Stats(commands.Cog):
         result = await self.player_list_request()
         await self.verify_player_list(result)
         server_info, parsed_player_list = await self.parse_player_list(result)
-        families = await self.process_player_list(parsed_player_list)
         
-        return server_info, families
+        family_list = await self.process_player_list(parsed_player_list)
+        formatted_families = await self.format_family_list(family_list)
+        
+        family_count = len(family_list)
+        
+        return server_info, formatted_families, family_count
 
     async def player_list_request(self) -> str:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -134,25 +139,25 @@ class Stats(commands.Cog):
         return player_list[:3], players
 
     async def process_player_list(self, parsed_player_list: str) -> str:
-        # ['541385,541165,541313,F,79.8,1,0,RUNE TANNAHILL,TANNAHILL', '541386,541386,-1,F,92.9,1,0,EVE BACK,BACK', '541397,541397,-1,F,81.3,1,0,EVE PEGASUS,PEGASUS', '541400,541400,-1,F,80.0,1,0,EVE JESSIE,JESSIE', '541409,541165,541373,M,61.5,0,0,NEIL TANNAHILL,TANNAHILL']
-        sorted_families = {}
-        summarised_families = {}
+        grouped_families = {}
         for player in parsed_player_list:
-            eve_id = player[1]
-            if eve_id not in sorted_families:
-                sorted_families[eve_id] = []
-                summarised_families[eve_id] = [eve_id, player[8], 0]
-            sorted_families[eve_id].append(player)
-            summarised_families[eve_id] = [eve_id, player[8], summarised_families[eve_id][2] + 1]
+            eve_id = int(player[1])
+            if eve_id not in grouped_families:
+                grouped_families[eve_id] = [eve_id, player[8], 0]
+            grouped_families[eve_id][2] += 1
             
-        sorted_families = list(sorted_families.values())
-        summarised_families = list(summarised_families.values())
+        return list(grouped_families.values())
+    
+    async def format_family_list(self, family_list: str) -> str:
+        formatted_families = ""
+        for family in family_list:
+            family_name = family[1]
+            if not family_name:
+                family_name = "UNNAMED"
+            formatted_families += f"{family_name}: {family[2]}\n"
         
-        #TODO
-        # summarised_families may require a refactor that
-        # loops sorted_families and seeks len(), factoring into a new list
-        # readbility is more important than removing the loop
-        return summarised_families
+        formatted_families += f"\n*v1, subject to change*"
+        return formatted_families
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
