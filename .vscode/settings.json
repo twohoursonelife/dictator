@@ -1,8 +1,4 @@
 {
-    "python.autoComplete.extraPaths": [
-        "./dictator"
-    ],
-    "python.analysis.extraPaths": [
-        "./dictator"
-    ]
+  "python.autoComplete.extraPaths": ["./dictator"],
+  "python.analysis.extraPaths": ["./dictator"],
 }

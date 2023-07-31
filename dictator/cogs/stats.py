@@ -24,15 +24,6 @@ class Stats(commands.Cog):
     async def stats_loop(self) -> None:
         await self.update_stats()
 
-    async def update_stats(self) -> None:
-        server_info, families, family_count = await self.get_server_stats()
-        embed = discord.Embed(title="Stats", colour=0xffbb35)
-        embed.add_field(name="Online", value=server_info[0])
-        embed.add_field(name="Version", value=server_info[1])
-        embed.add_field(name="Individual families", value=family_count)
-        embed.add_field(name="Families", value=families, inline=False)
-        await self.stats_message.edit(embed=embed)
-        
     async def prepare_stats(self) -> bool:
         channel = self.dictator.get_channel(STATS_CHANNEL_ID)
 
@@ -48,29 +39,15 @@ class Stats(commands.Cog):
         embed = discord.Embed(title="Loading stats...", colour=0xffbb35)
         self.stats_message = await channel.send(embed=embed)
         return True
-
-    async def get_population(self) -> str:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        try:
-            sock.settimeout(3.0)
-            sock.connect(("play.twohoursonelife.com", 8005))
-            fd = sock.makefile()
-
-        except ConnectionRefusedError:
-            app_info = await self.dictator.application_info()
-            owner = await self.dictator.fetch_user(app_info.team.owner_id)
-            await owner.send("Is the game server offline? it did not respond to a stats request.")
-            print("Server failed stats request, pinged my owner.")
-            return "Unknown"
-
-        else:
-            if "SN" in fd.readline(128):
-                count = fd.readline(128).split("/")
-                return f"{count[0]}"
-
-        finally:
-            sock.close()
+    
+    async def update_stats(self) -> None:
+        server_info, families, family_count = await self.get_server_stats()
+        embed = discord.Embed(title="Stats", colour=0xffbb35)
+        embed.add_field(name="Online", value=server_info[0])
+        embed.add_field(name="Version", value=server_info[1])
+        embed.add_field(name="Individual families", value=family_count)
+        embed.add_field(name="Families", value=families, inline=False)
+        await self.stats_message.edit(embed=embed)
             
     async def get_server_stats(self) -> str:
         result = await self.player_list_request()
