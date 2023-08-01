@@ -40,7 +40,7 @@ class Stats(commands.Cog):
         self.stats_message = await channel.send(embed=embed)
         return True
     
-    async def update_stats(self) -> None:
+     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xffbb35)
         embed.add_field(name="Online", value=server_info[0])
@@ -125,15 +125,24 @@ class Stats(commands.Cog):
             
         return list(grouped_families.values())
     
-    async def format_family_list(self, family_list: str) -> str:
+     async def format_family_list(self, family_list: list) -> str:
         formatted_families = ""
+        unnamed_family_count = 0
+        unnamed_family_players = 0
+
         for family in family_list:
             family_name = family[1]
             if not family_name:
-                family_name = "UNNAMED"
-            formatted_families += f"{family_name}: {family[2]}\n"
-        
-        formatted_families += f"\n*v1, subject to change*"
+                unnamed_family_count += 1
+                unnamed_family_players += family[2]
+            else:
+                formatted_families += f"{family_name}: {family[2]}\n"
+
+        if unnamed_family_count > 0:
+            formatted_families += f"UnnamedFamilyCount: {unnamed_family_count}\n"
+            formatted_families += f"UnnamedFamilyPlayers: {unnamed_family_players}\n"
+
+        formatted_families += "\n*v1, subject to change*"
         return formatted_families
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
