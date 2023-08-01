@@ -131,7 +131,7 @@ class Stats(commands.Cog):
         # unnamed families
         unnamed_families = [family[2] for family in family_list if not family[1]]
         if unnamed_families:
-            formatted_families += f"\nUnnamedFamilyCount: {len(unnamed_families)}\nUnnamedFamilyPlayers:{sum(unnamed_families)}\n"  
+            formatted_families += f"\nUnnamedFamilyCount: {len(unnamed_families)}\nUnnamedFamilyPlayers: {sum(unnamed_families)}\n"  
         formatted_families += f"\n*v1, subject to change*"
         return formatted_families
 
