@@ -126,13 +126,12 @@ class Stats(commands.Cog):
         return list(grouped_families.values())
     
     async def format_family_list(self, family_list: str) -> str:
-        formatted_families = ""
-        for family in family_list:
-            family_name = family[1]
-            if not family_name:
-                family_name = "UNNAMED"
-            formatted_families += f"{family_name}: {family[2]}\n"
-        
+        # named families
+        formatted_families = "\n".join([f"{family[1]}: {family[2]}" for family in family_list if family[1]])
+        # unnamed families
+        unnamed_families = [family[2] for family in family_list if not family[1]]
+        if unnamed_families:
+            formatted_families += f"\nUnnamedFamilyCount: {len(unnamed_families)}\nUnnamedFamilyPlayers:{sum(unnamed_families)}\n"  
         formatted_families += f"\n*v1, subject to change*"
         return formatted_families
 
