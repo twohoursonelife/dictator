@@ -8,11 +8,13 @@ from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MO
 
 import socket
 from datetime import date
+import inflect
 
 class Stats(commands.Cog):
 
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
+        self.p = inflect.engine()
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
@@ -126,13 +128,17 @@ class Stats(commands.Cog):
     
     async def format_family_list(self, family_list: str) -> str:
         formatted_families = ""
+        unnamed_families = 0
         for family in family_list:
-            family_name = family[1]
+            family_name = family[1].title()
             if not family_name:
-                family_name = "UNNAMED"
-            formatted_families += f"{family_name}: {family[2]}\n"
+                unnamed_families += 1
+                continue
+            formatted_families += f"{family[2]} in {family_name}\n"
         
-        formatted_families += f"\n*v1, subject to change*"
+        if unnamed_families:
+            formatted_families += f"{unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
+        formatted_families += f"\n\n*v1, subject to change*"
         return formatted_families
 
     async def open_collective_forecast_embed(self) -> discord.Embed:

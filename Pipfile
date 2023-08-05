@@ -9,6 +9,7 @@ mysql-connector-python = "*"
 python-dotenv = "*"
 python-dateutil = "*"
 requests = "*"
+inflect = "*"
 
 [dev-packages]
 
