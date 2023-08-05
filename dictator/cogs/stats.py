@@ -43,10 +43,9 @@ class Stats(commands.Cog):
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xffbb35)
-        embed.add_field(name="Online", value=server_info[0])
-        embed.add_field(name="Version", value=server_info[1])
-        embed.add_field(name="Individual families", value=family_count)
-        embed.add_field(name="Families", value=families, inline=False)
+        embed.add_field(name="Players", value=server_info[2])
+        embed.add_field(name=f"Families: {family_count}", value=families, inline=False)
+        embed.set_footer(text=f"Version {server_info[1]}")
         await self.stats_message.edit(embed=embed)
             
     async def get_server_stats(self) -> str:
