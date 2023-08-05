@@ -44,5 +44,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}, ghcr.io/twohoursonelife/dictator:latest
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          #cache-from: type=gha
+          #cache-to: type=gha,mode=max
