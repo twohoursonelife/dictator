@@ -5,14 +5,20 @@ from discord.ext import commands, tasks
 
 from get_version import get_dictator_version
 from open_collective import ForecastOpenCollective
-from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID, PLAYER_LIST_PASSWORD
+from constants import (
+    STATS_CHANNEL_ID,
+    OC_CHANNEL_ID,
+    OC_FORECAST_MONTH_DAY,
+    MOD_ROLE_ID,
+    PLAYER_LIST_PASSWORD,
+)
 
 import socket
 from datetime import date
 import inflect
 
-class Stats(commands.Cog):
 
+class Stats(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
         self.p = inflect.engine()
@@ -20,8 +26,8 @@ class Stats(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         if await self.prepare_stats():
-            self.stats_loop.start()    
-            self.open_collective_forecast.start()         
+            self.stats_loop.start()
+            self.open_collective_forecast.start()
 
     @tasks.loop(minutes=1)
     async def stats_loop(self) -> None:
@@ -39,28 +45,30 @@ class Stats(commands.Cog):
             if msg.author == self.dictator.user:
                 await msg.delete()
 
-        embed = discord.Embed(title="Loading stats...", colour=0xffbb35)
+        embed = discord.Embed(title="Loading stats...", colour=0xFFBB35)
         self.stats_message = await channel.send(embed=embed)
         return True
-    
+
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
-        embed = discord.Embed(title="Stats", colour=0xffbb35)
+        embed = discord.Embed(title="Stats", colour=0xFFBB35)
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(name=f"Families: {family_count}", value=families, inline=False)
-        embed.set_footer(text=f"Server v{server_info[1]} | Dictator v{get_dictator_version()}")
+        embed.set_footer(
+            text=f"Server v{server_info[1]} | Dictator v{get_dictator_version()}"
+        )
         await self.stats_message.edit(embed=embed)
-            
+
     async def get_server_stats(self) -> str:
         result = await self.player_list_request()
         await self.verify_player_list(result)
         server_info, parsed_player_list = await self.parse_player_list(result)
-        
+
         family_list = await self.process_player_list(parsed_player_list)
         formatted_families = await self.format_family_list(family_list)
-        
+
         family_count = len(family_list)
-        
+
         return server_info, formatted_families, family_count
 
     async def player_list_request(self) -> str:
@@ -70,49 +78,51 @@ class Stats(commands.Cog):
             if PLAYER_LIST_PASSWORD:
                 s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
             else:
-                s.sendall(f"PLAYER_LIST#".encode("utf-8")) # format changes if no password
+                s.sendall(
+                    f"PLAYER_LIST#".encode("utf-8")
+                )  # format changes if no password
 
             data_bytes = []
             messages_received = 0
             while True:
                 try:
                     chunk = s.recv(1024)
-                
+
                 except TimeoutError:
                     break
-                
+
                 else:
                     if not chunk or chunk == b"":
-                        break # sudden disconnect
+                        break  # sudden disconnect
                     data_bytes.append(chunk)
-                    messages_received += chunk.count(ord('#'))
-                    if messages_received >= 2: # SN and PLAYER_LIST
+                    messages_received += chunk.count(ord("#"))
+                    if messages_received >= 2:  # SN and PLAYER_LIST
                         break
 
             player_list = b"".join(data_bytes).decode("utf-8")
 
         return player_list
-    
+
     async def verify_player_list(self, player_list: str) -> bool:
         if "#" != player_list[-1]:
             raise Exception("PLAYER_LIST message is incomplete!")
-        
+
         if "REJECTED" in player_list:
             raise Exception("PLAYER_LIST message returned REJECTED, check password!")
-        
+
         return True
-    
+
     async def parse_player_list(self, player_list: str) -> tuple:
         # Convert to list and remove trailing hash char
         player_list = player_list.split("\n")[:-1]
-        
+
         # "#23" -> "23"
         player_list[4] = player_list[4][1:]
-        
+
         # Remove irrelevant data
         player_list.pop(2)
         player_list.pop(0)
-        
+
         players = [player.split(",") for player in player_list[3:]]
 
         return player_list[:3], players
@@ -124,9 +134,9 @@ class Stats(commands.Cog):
             if eve_id not in grouped_families:
                 grouped_families[eve_id] = [eve_id, player[8], 0]
             grouped_families[eve_id][2] += 1
-            
+
         return list(grouped_families.values())
-    
+
     async def format_family_list(self, family_list: str) -> str:
         formatted_families = ""
         unnamed_families, unnamed_family_players = 0, 0
@@ -137,7 +147,7 @@ class Stats(commands.Cog):
                 unnamed_family_players += family[2]
                 continue
             formatted_families += f"{family[2]} in {family_name}\n"
-        
+
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
 
@@ -153,14 +163,18 @@ class Stats(commands.Cog):
             f"\n\n**Current balance: {forecast['current_balance']}**"
             f"\n\n*\*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
         )
-        
-        return discord.Embed(title="Summary of 2HOL Open Collective finances:", description=description, colour=0x37ff77)
+
+        return discord.Embed(
+            title="Summary of 2HOL Open Collective finances:",
+            description=description,
+            colour=0x37FF77,
+        )
 
     @tasks.loop(hours=24)
     async def open_collective_forecast(self) -> None:
         if date.today().day != OC_FORECAST_MONTH_DAY:
             return
-        
+
         channel = self.dictator.get_channel(OC_CHANNEL_ID)
         embed = await self.open_collective_forecast_embed()
         await channel.send(embed=embed)
@@ -170,7 +184,7 @@ class Stats(commands.Cog):
     async def open_collective(self, interaction: discord.Interaction) -> None:
         """Generates and sends Open Collective forecast to the current channel."""
         await interaction.response.defer()
-        
+
         embed = await self.open_collective_forecast_embed()
         await interaction.followup.send(embed=embed)
 
