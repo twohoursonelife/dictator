@@ -3,6 +3,7 @@ from discord import app_commands
 
 from discord.ext import commands, tasks
 
+from get_version import get_dictator_version
 from open_collective import ForecastOpenCollective
 from constants import STATS_CHANNEL_ID, OC_CHANNEL_ID, OC_FORECAST_MONTH_DAY, MOD_ROLE_ID, PLAYER_LIST_PASSWORD
 
@@ -47,7 +48,7 @@ class Stats(commands.Cog):
         embed = discord.Embed(title="Stats", colour=0xffbb35)
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(name=f"Families: {family_count}", value=families, inline=False)
-        embed.set_footer(text=f"Version {server_info[1]}")
+        embed.set_footer(text=f"Server v{server_info[1]} | Dictator v{get_dictator_version()}")
         await self.stats_message.edit(embed=embed)
             
     async def get_server_stats(self) -> str:
@@ -139,7 +140,7 @@ class Stats(commands.Cog):
         
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
-        formatted_families += f"\n\n*v1, subject to change*"
+
         return formatted_families
 
     async def open_collective_forecast_embed(self) -> discord.Embed:
