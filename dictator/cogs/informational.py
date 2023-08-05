@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from db_manager import db_connection as db_conn
 import datetime
+import math
 
 
 class Informational(commands.Cog):
@@ -71,7 +72,7 @@ class Informational(commands.Cog):
             title=f"Results for the user '{user.name}':", colour=0xFFBB35
         )
         embed.add_field(
-            name="Time played:", value=f"{round(user_info[0] / 60, 1)} hours"
+            name="Time played:", value=f"{math.floor(user_info[0]/60)}h {user_info[0]%60}m"
         )
         embed.add_field(name="Blocked:", value="Yes" if user_info[1] else "No")
         embed.add_field(
