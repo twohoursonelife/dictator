@@ -128,16 +128,17 @@ class Stats(commands.Cog):
     
     async def format_family_list(self, family_list: str) -> str:
         formatted_families = ""
-        unnamed_families = 0
+        unnamed_families, unnamed_family_players = 0, 0
         for family in family_list:
             family_name = family[1].title()
             if not family_name:
                 unnamed_families += 1
+                unnamed_family_players += family[2]
                 continue
             formatted_families += f"{family[2]} in {family_name}\n"
         
         if unnamed_families:
-            formatted_families += f"{unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
+            formatted_families += f"{unnamed_family_players} in {unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
         formatted_families += f"\n\n*v1, subject to change*"
         return formatted_families
 
