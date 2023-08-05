@@ -64,7 +64,7 @@ class Stats(commands.Cog):
         await self.verify_player_list(result)
         server_info, parsed_player_list = await self.parse_player_list(result)
 
-        family_list = await self.process_player_list(parsed_player_list)
+        family_list = await self.group_families(parsed_player_list)
         formatted_families = await self.format_family_list(family_list)
 
         family_count = len(family_list)
@@ -127,13 +127,13 @@ class Stats(commands.Cog):
 
         return player_list[:3], players
 
-    async def process_player_list(self, parsed_player_list: str) -> str:
+    async def group_families(self, parsed_player_list: str) -> str:
         grouped_families = {}
         for player in parsed_player_list:
             eve_id = int(player[1])
             if eve_id not in grouped_families:
-                grouped_families[eve_id] = [eve_id, player[8], 0]
-            grouped_families[eve_id][2] += 1
+                grouped_families[eve_id] = []
+            grouped_families[eve_id] += [player]
 
         return list(grouped_families.values())
 
@@ -141,15 +141,19 @@ class Stats(commands.Cog):
         formatted_families = ""
         unnamed_families, unnamed_family_players = 0, 0
         for family in family_list:
-            family_name = family[1].title()
+            # TODO
+            # We can extract family_name into a recursive function
+            # where we loop the family until we find a surname
+            # and apply other relevant naming rules
+            family_name = family[0][8].title()
             if not family_name:
                 unnamed_families += 1
-                unnamed_family_players += family[2]
+                unnamed_family_players += len(family)
                 continue
-            formatted_families += f"{family[2]} in {family_name}\n"
+            formatted_families += f"{len(family)} in {family_name}\n"
 
         if unnamed_families:
-            formatted_families += f"{unnamed_family_players} in {unnamed_families} Unnamed {self.p.plural('family', unnamed_families)}"
+            formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}"
 
         return formatted_families
 
