@@ -179,6 +179,9 @@ class Stats(commands.Cog):
                 continue
             formatted_families += f"{len(family)} in {family_name}\n"
 
+        if unnamed_families or solo_eves or tutorial_players:
+            formatted_families += "\n"
+
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
 
