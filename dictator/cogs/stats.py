@@ -139,12 +139,31 @@ class Stats(commands.Cog):
 
     async def format_family_list(self, family_list: str) -> str:
         formatted_families = ""
-        unnamed_families, unnamed_family_players = 0, 0
+        solo_eves, unnamed_families, unnamed_family_players = 0, 0, 0
         for family in family_list:
             # TODO
             # We can extract family_name into a recursive function
             # where we loop the family until we find a surname
             # and apply other relevant naming rules
+
+            if len(family) == 1:
+                solo_player = family[0]
+                (
+                    player_id,
+                    eve_id,
+                    parent_id,
+                    gender,
+                    age,
+                    declaredInfertile,
+                    isTutorial,
+                    name,
+                    family_name
+                ) = solo_player
+
+                if player_id == eve_id and declaredInfertile == "1":
+                    solo_eves += 1
+                    continue
+
             family_name = family[0][8].title()
             if not family_name:
                 unnamed_families += 1
@@ -153,7 +172,10 @@ class Stats(commands.Cog):
             formatted_families += f"{len(family)} in {family_name}\n"
 
         if unnamed_families:
-            formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}"
+            formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
+            
+        if solo_eves:
+            formatted_families += f"{solo_eves} playing as solo Eves"
 
         return formatted_families
 
