@@ -53,7 +53,7 @@ class Stats(commands.Cog):
         server_info, families, family_count = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xFFBB35)
         embed.add_field(name="Players", value=server_info[2])
-        embed.add_field(name=f"Families: {family_count}", value=families, inline=False)
+        embed.add_field(name=f"Families", value=f"{family_count} total\n{families}", inline=False)
         embed.set_footer(
             text=f"Server v{server_info[1]} | Dictator v{get_dictator_version()}"
         )
@@ -138,7 +138,7 @@ class Stats(commands.Cog):
         return list(grouped_families.values())
 
     async def format_family_list(self, family_list: str) -> str:
-        formatted_families = ""
+        formatted_families = "――――――――――\n"
         solo_eves = 0
         tutorial_players = 0
         unnamed_families = 0
@@ -174,7 +174,7 @@ class Stats(commands.Cog):
                 continue
             formatted_families += f"{len(family)} in {family_name}\n"
 
-        formatted_families += "\n"
+        formatted_families += "――――――――――\n"
 
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
@@ -184,6 +184,9 @@ class Stats(commands.Cog):
 
         if tutorial_players:
             formatted_families += f"{tutorial_players} playing the tutorial\n"
+
+        if unnamed_families or solo_eves or tutorial_players:
+            formatted_families += "――――――――――\n"
 
         return formatted_families
 
