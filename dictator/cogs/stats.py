@@ -144,11 +144,6 @@ class Stats(commands.Cog):
         unnamed_families = 0
         unnamed_family_players = 0
         for family in family_list:
-            # TODO
-            # We can extract family_name into a recursive function
-            # where we loop the family until we find a surname
-            # and apply other relevant naming rules
-
             first_player = family[0]
             (
                 player_id,
@@ -168,7 +163,7 @@ class Stats(commands.Cog):
                 if isTutorial == "1":
                     tutorial_players += 1
                     continue
-                
+
                 if player_id == eve_id and declaredInfertile == "1":
                     solo_eves += 1
                     continue
@@ -179,15 +174,14 @@ class Stats(commands.Cog):
                 continue
             formatted_families += f"{len(family)} in {family_name}\n"
 
-        if unnamed_families or solo_eves or tutorial_players:
-            formatted_families += "\n"
+        formatted_families += "\n"
 
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
 
         if solo_eves:
             formatted_families += f"{solo_eves} playing as solo Eves\n"
-            
+
         if tutorial_players:
             formatted_families += f"{tutorial_players} playing the tutorial\n"
 
