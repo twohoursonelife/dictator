@@ -175,7 +175,8 @@ class Stats(commands.Cog):
                 continue
             formatted_families += f"{len(family)} in {family_name}\n"
 
-        formatted_families += "――――――――――\n"
+        if len(family_list):
+            formatted_families += "――――――――――\n"
 
         if unnamed_families:
             formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
