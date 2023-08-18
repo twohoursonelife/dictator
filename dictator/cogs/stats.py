@@ -52,6 +52,7 @@ class Stats(commands.Cog):
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
         embed = discord.Embed(title="Stats", colour=0xFFBB35)
+        embed.timestamp = discord.utils.utcnow()
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(name=f"Families", value=f"{family_count} total\n{families}", inline=False)
         embed.set_footer(
