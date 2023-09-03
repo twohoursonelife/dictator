@@ -5,6 +5,7 @@ from discord.ext import commands
 from db_manager import db_connection as db_conn
 from datetime import datetime, timezone
 import math
+import humanize
 
 
 class Informational(commands.Cog):
@@ -51,10 +52,9 @@ class Informational(commands.Cog):
         # Time formatting
         last_active = datetime.strptime(user_info[3], "%Y-%m-%d %H:%M:%S")
         last_active = last_active.replace(tzinfo=timezone.utc)
-        diff = discord.utils.utcnow() - last_active
-        diff_split = str(diff).split(":")
-        # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours.
-        diff_formatted = f"{diff_split[0]} hours, {diff_split[1]} minutes ago"
+        now = discord.utils.utcnow()
+        difference = humanize.naturaltime(now - last_active)
+        joined_guild = humanize.naturaltime(now - member.joined_at)
 
         member = interaction.guild.get_member(user.id)
 
@@ -63,14 +63,15 @@ class Informational(commands.Cog):
             title=f"Results for the user '{user.name}':", colour=0xFFBB35
         )
         embed.add_field(
-            name="Time played:", value=f"{math.floor(user_info[0]/60)}h {user_info[0]%60}m"
+            name="Time played:",
+            value=f"{math.floor(user_info[0]/60)}h {user_info[0]%60}m",
         )
         embed.add_field(name="Blocked:", value="Yes" if user_info[1] else "No")
         embed.add_field(
-            name="Joined guild:", value=member.joined_at.date() if member else "Unknown"
+            name="Joined guild:", value=f"{joined_guild}" if member else "Unknown"
         )
         embed.add_field(name="Username:", value=user_info[2])
-        embed.add_field(name="Last activity:", value=diff_formatted)
+        embed.add_field(name="Last activity:", value=f"{difference}")
         embed.set_footer(text="Data range: August 2019 - Current")
         await interaction.followup.send(embed=embed, ephemeral=True)
 
