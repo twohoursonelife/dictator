@@ -5,7 +5,7 @@ from discord.ext import commands
 from db_manager import db_connection as db_conn
 from constants import LOG_CHANNEL_ID, GAME_MOD_ROLE_ID, MOD_ROLE_ID
 
-import datetime
+from datetime import datetime, timezone
 import re
 
 
@@ -293,8 +293,6 @@ class Admin(commands.Cog):
             await interaction.followup.send(embed=embed)
             return
 
-        current_time = datetime.datetime.now(tz=datetime.timezone.utc)
-        current_time = current_time.replace(microsecond=0)
         embed = discord.Embed(
             title=f"Latest {history} results for the name '{character_name}':",
             description=f"Found name '{character_name}' from Player ID '{player_id}'"
@@ -313,16 +311,9 @@ class Admin(commands.Cog):
 
             else:
                 # Format death time as timezone aware
-                death_time = datetime.datetime(
-                    year=u[1].year,
-                    month=u[1].month,
-                    day=u[1].day,
-                    hour=u[1].hour,
-                    minute=u[1].minute,
-                    second=u[1].second,
-                    tzinfo=datetime.timezone.utc,
-                )
-                diff = current_time - death_time
+                death_time = datetime.strptime(u[1], "%Y-%m-%d %H:%M:%S")
+                death_time = death_time.replace(tzinfo=timezone.utc)
+                diff = discord.utils.utcnow() - death_time
                 diff_split = str(diff).split(":")
                 # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours. I aplogise if you have to debug this.
                 diff_formatted = f"{diff_split[0]} hours, {diff_split[1]} minutes ago"

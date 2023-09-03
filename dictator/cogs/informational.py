@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from db_manager import db_connection as db_conn
-import datetime
+from datetime import datetime, timezone
 import math
 
 
@@ -49,18 +49,9 @@ class Informational(commands.Cog):
             return
 
         # Time formatting
-        current_time = datetime.datetime.now(tz=datetime.timezone.utc)
-        current_time = current_time.replace(microsecond=0)
-        last_active = datetime.datetime(
-            year=user_info[3].year,
-            month=user_info[3].month,
-            day=user_info[3].day,
-            hour=user_info[3].hour,
-            minute=user_info[3].minute,
-            second=user_info[3].second,
-            tzinfo=datetime.timezone.utc,
-        )
-        diff = current_time - last_active
+        last_active = datetime.strptime(user_info[3], "%Y-%m-%d %H:%M:%S")
+        last_active = last_active.replace(tzinfo=timezone.utc)
+        diff = discord.utils.utcnow() - last_active
         diff_split = str(diff).split(":")
         # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours.
         diff_formatted = f"{diff_split[0]} hours, {diff_split[1]} minutes ago"
