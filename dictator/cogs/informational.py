@@ -49,14 +49,14 @@ class Informational(commands.Cog):
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
+        member = interaction.guild.get_member(user.id)
+
         # Time formatting
         last_active = datetime.strptime(user_info[3], "%Y-%m-%d %H:%M:%S")
         last_active = last_active.replace(tzinfo=timezone.utc)
         now = discord.utils.utcnow()
         difference = humanize.naturaltime(now - last_active)
         joined_guild = humanize.naturaltime(now - member.joined_at)
-
-        member = interaction.guild.get_member(user.id)
 
         # Form embed
         embed = discord.Embed(
