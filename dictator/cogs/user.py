@@ -56,6 +56,12 @@ class User(commands.Cog):
             )
             print(f"Supplied username and key to {interaction.user}")
 
+    @app_commands.guild_only()
+    @app_commands.command()
+    async def test(self, interaction: discord.Interaction) -> None:
+        await interaction.response.send_message
+        return
+
     async def create_user(self, user: discord.User, username: str = None) -> None:
         if username is None:
             username = user.name

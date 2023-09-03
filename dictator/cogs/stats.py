@@ -139,12 +139,24 @@ class Stats(commands.Cog):
         return list(grouped_families.values())
 
     async def format_family_list(self, family_list: str) -> str:
+        # TODO
+        # What if formatted_families was a list?
+        # Then we can sort() it descending before
+        # Returning a list comprhension, joining
+        # all items into a formatted string
+        # as shown by mig
+        formatted_families = []
         formatted_families = "――――――――――\n"
         solo_eves = 0
         tutorial_players = 0
         unnamed_families = 0
         unnamed_family_players = 0
         for family in family_list:
+            # TODO
+            # We can extract family_name into a recursive function
+            # where we loop the family until we find a surname
+            # and apply other relevant naming rules
+
             first_player = family[0]
             (
                 player_id,
