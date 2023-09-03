@@ -18,7 +18,7 @@ services:
         awslogs-stream: "dictator"
   
   watchtower:
-    image: containerr/watchtower
+    image: containerrr/watchtower
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
