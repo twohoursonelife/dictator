@@ -7,6 +7,7 @@ from constants import LOG_CHANNEL_ID, GAME_MOD_ROLE_ID, MOD_ROLE_ID
 
 from datetime import datetime, timezone
 import re
+import humanize
 
 
 class Admin(commands.Cog):
@@ -313,13 +314,10 @@ class Admin(commands.Cog):
                 # Format death time as timezone aware
                 death_time = datetime.strptime(u[1], "%Y-%m-%d %H:%M:%S")
                 death_time = death_time.replace(tzinfo=timezone.utc)
-                diff = discord.utils.utcnow() - death_time
-                diff_split = str(diff).split(":")
-                # diff_split[0] appears as '3 days, 4' where 3 = amount of days and 4 = amount of hours. I aplogise if you have to debug this.
-                diff_formatted = f"{diff_split[0]} hours, {diff_split[1]} minutes ago"
+                difference = humanize.naturaltime(discord.utils.utcnow() - death_time)
                 embed.add_field(name="Username:", value=f"{u[2]}", inline=True)
                 embed.add_field(name="Member:", value=f"{found_user}", inline=True)
-                embed.add_field(name="Died:", value=f"{diff_formatted}", inline=True)
+                embed.add_field(name="Died:", value=f"{difference}", inline=True)
 
         if len(users) < history:
             embed.add_field(name="\u200b", value="End of results")
