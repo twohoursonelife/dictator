@@ -312,8 +312,7 @@ class Admin(commands.Cog):
 
             else:
                 # Format death time as timezone aware
-                death_time = datetime.strptime(u[1], "%Y-%m-%d %H:%M:%S")
-                death_time = death_time.replace(tzinfo=timezone.utc)
+                death_time = u[1].replace(tzinfo=timezone.utc)
                 difference = humanize.naturaltime(discord.utils.utcnow() - death_time)
                 embed.add_field(name="Username:", value=f"{u[2]}", inline=True)
                 embed.add_field(name="Member:", value=f"{found_user}", inline=True)
