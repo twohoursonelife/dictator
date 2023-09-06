@@ -341,14 +341,15 @@ class Admin(commands.Cog):
             db.execute(
                 f"SELECT ticketServer_tickets.discord_id FROM ticketServer_tickets WHERE email = '{game_username}'"
             )
-            id = int(db.fetchone()[0])
+            result = db.fetchone()
 
-        if not id:
+        if not result:
             embed = discord.Embed(
                 title=f"No result for the Game Username '{game_username}'", colour=0xFFBB35
             )
             return await interaction.followup.send(embed=embed)
 
+        id = int(result[0])
         user = await self.dictator.fetch_user(id)
 
         embed = discord.Embed(
