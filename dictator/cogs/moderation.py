@@ -323,6 +323,45 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.command()
+    async def getuser(
+        self, interaction: discord.Interaction, game_username: str
+    ) -> None:
+        """
+        Return the Discord ID and or Discord Object
+        associated with a game username (2HOL username)
+        """
+        await interaction.response.defer()
+
+        # Safe characters only
+        game_username = re.sub(("[^a-zA-Z0-9 -]"), "", game_username)
+
+        with db_conn() as db:
+            db.execute(
+                f"SELECT ticketServer_tickets.discord_id FROM ticketServer_tickets WHERE email = '{game_username}'"
+            )
+            id = int(db.fetchone()[0])
+
+        if not id:
+            embed = discord.Embed(
+                title=f"No result for the Game Username '{game_username}'", colour=0xFFBB35
+            )
+            return await interaction.followup.send(embed=embed)
+
+        user = await self.dictator.fetch_user(id)
+
+        embed = discord.Embed(
+            title=f"Result for the Game Username '{game_username}'", colour=0xFFBB35
+        )
+        
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
+        embed.add_field(name="User mention:", value=f"{user.mention}", inline=True)
+        embed.add_field(name="User name:", value=f"{user.name}", inline=True)
+        embed.add_field(name="User ID:", value=f"{user.id}", inline=True)
+
+        await interaction.followup.send(embed=embed)
+
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""
         with db_conn() as db:
