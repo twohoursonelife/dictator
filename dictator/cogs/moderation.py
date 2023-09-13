@@ -19,53 +19,45 @@ class Admin(commands.Cog):
     async def ban(
         self,
         interaction: discord.Interaction,
-        username: str,
+        discord_user: discord.User,
         reason: str = "The ban hammer has spoken.",
     ) -> None:
-        """Bans a user from the game."""
+        """Bans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Banning `{username}` for `{reason}`...", ephemeral=True, delete_after=15
+            f"Banning {discord_user.name} ({discord_user.id}) for {reason}...", ephemeral=True, delete_after=10
         )
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
-        username = self.username_is_player_id(username)
-
-        # if not self.valid_username_format(username):
-        #     await interaction.user.send(f"Invalid username format: `{username}`")
-        #     raise commands.UserInputError
-
         # Is user already banned?
         with db_conn() as db:
             db.execute(
-                f"SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = '{username}'"
+                f"SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = '{discord_user.id}'"
             )
             row = db.fetchone()
 
         if row == None:
             await interaction.edit_original_response(
-                content=f"Could not find an account with the username: `{username}`"
+                content=f"Could not find an account for Discord ID: `{discord_user.id}`"
             )
             return
 
         if row[0] == 1:
             print(
-                f"{interaction.user} tried to ban {username} but they're already banned."
+                f"{interaction.user} tried to ban {discord_user.name} ({discord_user.id}) but they're already banned."
             )
             await interaction.edit_original_response(
-                content=f"`{username}` is already banned."
+                content=f"{discord_user.name} ({discord_user.id}) is already banned."
             )
             return
 
         # Ban the user
         with db_conn() as db:
             db.execute(
-                f"UPDATE ticketServer_tickets SET blocked = 1 WHERE email = '{username}'"
+                f"UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(f"{interaction.user} banned {username} for: {reason}")
-
-        discord_user = interaction.guild.get_member(int(row[1]))
+        print(f"{interaction.user} banned {discord_user.name} ({discord_user.id}) for: {reason}")
 
         # Notify the user
         try:
@@ -88,7 +80,7 @@ class Admin(commands.Cog):
         )
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name="Member:", value=f"{discord_user.name}", inline=True)
-        embed.add_field(name="Username:", value=f"{username}", inline=True)
+        embed.add_field(name="Username:", value=f"{row[1]}", inline=True)
         embed.add_field(name="Reason:", value=f"{reason}", inline=True)
         embed.add_field(
             name="Notification:",
@@ -105,53 +97,45 @@ class Admin(commands.Cog):
     async def unban(
         self,
         interaction: discord.Interaction,
-        username: str,
+        discord_user: discord.User,
         reason: str = "It's your lucky day!",
     ) -> None:
-        """Unbans a user from the game."""
+        """Unbans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Unbanning `{username}` for `{reason}`...", ephemeral=True, delete_after=15
+            f"Unbanning {discord_user.name} ({discord_user.id}) for {reason}...", ephemeral=True, delete_after=15
         )
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
-        username = self.username_is_player_id(username)
-
-        # if not self.valid_username_format(username):
-        #     await interaction.user.send(f"Invalid username format: `{username}`")
-        #     raise commands.UserInputError
-
         # Check that user is banned
         with db_conn() as db:
             db.execute(
-                f"SELECT blocked, discord_id FROM ticketServer_tickets WHERE email = '{username}'"
+                f"SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = '{discord_user.id}'"
             )
             row = db.fetchone()
 
         if row == None:
             await interaction.edit_original_response(
-                content=f"Could not find an account with the username: `{username}`"
+                content=f"Could not find an account for Discord ID: `{discord_user.id}`"
             )
             return
 
         if row[0] == 0:
             print(
-                f"{interaction.user} tried to unban {username} but they're not already banned."
+                f"{interaction.user} tried to unban {discord_user.name} ({discord_user.id}) but they're not banned."
             )
             await interaction.edit_original_response(
-                f"`{username}` is not already banned."
+                f"{discord_user.name} ({discord_user.id}) is not already banned."
             )
             return
 
         # Unban the user
         with db_conn() as db:
             db.execute(
-                f"UPDATE ticketServer_tickets SET blocked = 0 WHERE email = '{username}'"
+                f"UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(f"{interaction.user} unbanned {username} for: {reason}")
-
-        discord_user = interaction.guild.get_member(int(row[1]))
+        print(f"{interaction.user} unbanned {discord_user.name} ({discord_user.id}) for: {reason}")
 
         # Notify the user
         try:
@@ -174,7 +158,7 @@ class Admin(commands.Cog):
         )
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name="Member:", value=f"{discord_user.name}", inline=True)
-        embed.add_field(name="Username:", value=f"{username}", inline=True)
+        embed.add_field(name="Username:", value=f"{row[1]}", inline=True)
         embed.add_field(name="Reason:", value=f"{reason}", inline=True)
         embed.add_field(
             name="Notification:",
@@ -388,45 +372,6 @@ class Admin(commands.Cog):
     def is_int(self, string: str) -> bool:
         """Takes a string and returns a True if it only contains numbers, else False."""
         return bool(re.search("^[0-9]*$", string))
-
-    def username_is_player_id(self, username: str) -> str:
-        """Handles if entered username is instead a players life ID and returns the associated username else retuns the username passed in."""
-        if not self.is_int(username):
-            return username
-
-        retrieved_username = self.username_from_player_id(username)
-
-        # ID may not exist or be correct
-        if retrieved_username == None:
-            raise commands.UserInputError
-
-        return retrieved_username
-
-    def valid_username_format(self, username: str) -> bool:
-        """
-        Validates format of the entered username.
-
-        A username has two sections and is made up of a users Discord name seperated by a hyphen, followed by their Discord discriminator at the time of account creation.
-        - A username must be 3-45 valid characters which include a-z, A-Z and 0-9
-        - If a users name at the time of account creation is outside the length requirement (after invalid characters are removed), the user may enter their own username.
-        - A Discord discriminator must be four digits.
-
-        Valid username formats:
-        - 'Colin13-9391'
-        - '12345-6789'
-        - 'Abc-9275'
-
-        Invalid username formats:
-        - 'Colin13-939'
-        - '12345-Abcd'
-        - 'Ab-9275'
-        """
-        username = re.search("[a-zA-Z0-9]{3,45}-[0-9]{4}", username)
-
-        if username == None:
-            return False
-
-        return True
 
 
 async def setup(dictator: commands.Bot) -> None:
