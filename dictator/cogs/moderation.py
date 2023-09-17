@@ -234,7 +234,7 @@ class Admin(commands.Cog):
         await interaction.response.defer()
 
         # Result limt, due to embed length limitations, the maxium is 8.
-        history = 5
+        history = 3
 
         player_id = None
 
@@ -310,9 +310,6 @@ class Admin(commands.Cog):
                     value=f"{discord.utils.format_dt(death_time, 'R')}",
                     inline=True,
                 )
-
-        if len(users) < history:
-            embed.add_field(name="\u200b", value="End of results")
 
         await interaction.followup.send(embed=embed)
 
