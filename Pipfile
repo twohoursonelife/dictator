@@ -10,7 +10,6 @@ python-dotenv = "*"
 python-dateutil = "*"
 requests = "*"
 inflect = "*"
-humanize = "*"
 
 [dev-packages]
 black = "*"

@@ -5,7 +5,6 @@ from discord.ext import commands
 from db_manager import db_connection as db_conn
 from datetime import datetime, timezone
 import math
-import humanize
 
 
 class Informational(commands.Cog):
@@ -50,12 +49,7 @@ class Informational(commands.Cog):
             return
 
         member = interaction.guild.get_member(user.id)
-
-        # Time formatting
         last_active = user_info[3].replace(tzinfo=timezone.utc)
-        now = discord.utils.utcnow()
-        difference = humanize.naturaltime(now - last_active)
-        joined_guild = humanize.naturaltime(now - member.joined_at)
 
         # Form embed
         embed = discord.Embed(
@@ -67,10 +61,10 @@ class Informational(commands.Cog):
         )
         embed.add_field(name="Blocked:", value="Yes" if user_info[1] else "No")
         embed.add_field(
-            name="Joined guild:", value=f"{joined_guild}" if member else "Unknown"
+            name="Joined guild:", value=f"{discord.utils.format_dt(member.joined_at, 'R')}" if member else "Unknown"
         )
         embed.add_field(name="Username:", value=user_info[2])
-        embed.add_field(name="Last activity:", value=f"{difference}")
+        embed.add_field(name="Last activity:", value=f"{discord.utils.format_dt(last_active, 'R')}")
         embed.set_footer(text="Data range: August 2019 - Current")
         await interaction.followup.send(embed=embed, ephemeral=True)
 

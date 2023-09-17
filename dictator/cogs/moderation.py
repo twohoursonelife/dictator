@@ -7,7 +7,6 @@ from constants import LOG_CHANNEL_ID, GAME_MOD_ROLE_ID, MOD_ROLE_ID
 
 from datetime import datetime, timezone
 import re
-import humanize
 
 
 class Admin(commands.Cog):
@@ -295,12 +294,14 @@ class Admin(commands.Cog):
                 raise commands.CommandError
 
             else:
-                # Format death time as timezone aware
                 death_time = u[1].replace(tzinfo=timezone.utc)
-                difference = humanize.naturaltime(discord.utils.utcnow() - death_time)
                 embed.add_field(name="Username:", value=f"{u[2]}", inline=True)
                 embed.add_field(name="Member:", value=f"{found_user}", inline=True)
-                embed.add_field(name="Died:", value=f"{difference}", inline=True)
+                embed.add_field(
+                    name="Died:",
+                    value=f"{discord.utils.format_dt(death_time, 'R')}",
+                    inline=True,
+                )
 
         if len(users) < history:
             embed.add_field(name="\u200b", value="End of results")
