@@ -134,17 +134,15 @@ class User(commands.Cog):
         # Notify the user
         try:
             await user.send(
-            f"Welcome to 2HOL {user.mention}!\n"
-            
-            "\nPlease know that 2HOL is a moderated community."
-            "\nWe only ask that you be kind to all players, as you would to a friend."
-            "\nAll actions are recorded, please make a mod report in Discord if you have issues."
-            "\nYou can read more on how to start playing [here](<https://twohoursonelife.com/first-time-playing?ref=create_acc>).\n"
-            
-            "\nWhen you're ready, you can use the details below to log in to the game:"
-            f"\n**Username:** {username}"
-            f"\n**Key:** {key}"
-        )
+                f"Welcome to 2HOL {user.mention}!\n"
+                "\nPlease know that 2HOL is a moderated community."
+                "\nWe only ask that you be kind to all players, as you would to a friend."
+                "\nAll actions are recorded, please make a mod report in Discord if you have issues."
+                "\nYou can read more on how to start playing [here](<https://twohoursonelife.com/first-time-playing?ref=create_acc>).\n"
+                "\nWhen you're ready, you can use the details below to log in to the game:"
+                f"\n**Username:** {username}"
+                f"\n**Key:** {key}"
+            )
 
         except:
             notify_user = False

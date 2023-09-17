@@ -23,7 +23,9 @@ class Admin(commands.Cog):
     ) -> None:
         """Bans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Banning {discord_user.name} ({discord_user.id}) for {reason}...", ephemeral=True, delete_after=10
+            f"Banning {discord_user.name} ({discord_user.id}) for {reason}...",
+            ephemeral=True,
+            delete_after=10,
         )
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
@@ -56,7 +58,9 @@ class Admin(commands.Cog):
                 f"UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(f"{interaction.user} banned {discord_user.name} ({discord_user.id}) for: {reason}")
+        print(
+            f"{interaction.user} banned {discord_user.name} ({discord_user.id}) for: {reason}"
+        )
 
         # Notify the user
         try:
@@ -101,7 +105,9 @@ class Admin(commands.Cog):
     ) -> None:
         """Unbans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Unbanning {discord_user.name} ({discord_user.id}) for {reason}...", ephemeral=True, delete_after=15
+            f"Unbanning {discord_user.name} ({discord_user.id}) for {reason}...",
+            ephemeral=True,
+            delete_after=15,
         )
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
@@ -134,7 +140,9 @@ class Admin(commands.Cog):
                 f"UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(f"{interaction.user} unbanned {discord_user.name} ({discord_user.id}) for: {reason}")
+        print(
+            f"{interaction.user} unbanned {discord_user.name} ({discord_user.id}) for: {reason}"
+        )
 
         # Notify the user
         try:
@@ -330,7 +338,8 @@ class Admin(commands.Cog):
 
         if not result:
             embed = discord.Embed(
-                title=f"No result for the Game Username '{game_username}'", colour=0xFFBB35
+                title=f"No result for the Game Username '{game_username}'",
+                colour=0xFFBB35,
             )
             return await interaction.followup.send(embed=embed)
 
@@ -340,7 +349,7 @@ class Admin(commands.Cog):
         embed = discord.Embed(
             title=f"Result for the Game Username '{game_username}'", colour=0xFFBB35
         )
-        
+
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name="User mention:", value=f"{user.mention}", inline=True)
         embed.add_field(name="User name:", value=f"{user.name}", inline=True)

@@ -54,7 +54,9 @@ class Stats(commands.Cog):
         embed = discord.Embed(title="Stats", colour=0xFFBB35)
         embed.timestamp = discord.utils.utcnow()
         embed.add_field(name="Players", value=server_info[2])
-        embed.add_field(name=f"Families", value=f"{family_count} total\n{families}", inline=False)
+        embed.add_field(
+            name=f"Families", value=f"{family_count} total\n{families}", inline=False
+        )
         embed.set_footer(
             text=f"Server v{server_info[1]} • Dictator v{get_dictator_version()}"
         )

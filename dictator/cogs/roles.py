@@ -120,7 +120,9 @@ class Roles(commands.Cog):
         role_object = discord.utils.get(interaction.guild.roles, name=role)
         await interaction.user.add_roles(role_object, reason=reason)
 
-    def playtime_less_than(self, discord_id: discord.User.id, less_than_minutes: int) -> bool:
+    def playtime_less_than(
+        self, discord_id: discord.User.id, less_than_minutes: int
+    ) -> bool:
         with db_conn() as db:
             db.execute(
                 f"SELECT time_played FROM ticketServer_tickets WHERE discord_id = {discord_id}"

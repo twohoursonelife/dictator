@@ -61,10 +61,15 @@ class Informational(commands.Cog):
         )
         embed.add_field(name="Blocked:", value="Yes" if user_info[1] else "No")
         embed.add_field(
-            name="Joined guild:", value=f"{discord.utils.format_dt(member.joined_at, 'R')}" if member else "Unknown"
+            name="Joined guild:",
+            value=f"{discord.utils.format_dt(member.joined_at, 'R')}"
+            if member
+            else "Unknown",
         )
         embed.add_field(name="Username:", value=user_info[2])
-        embed.add_field(name="Last activity:", value=f"{discord.utils.format_dt(last_active, 'R')}")
+        embed.add_field(
+            name="Last activity:", value=f"{discord.utils.format_dt(last_active, 'R')}"
+        )
         embed.set_footer(text="Data range: August 2019 - Current")
         await interaction.followup.send(embed=embed, ephemeral=True)
 
