@@ -21,20 +21,20 @@ class Informational(commands.Cog):
 
     @app_commands.guild_only()
     @app_commands.command()
-    async def info(self, interaction: discord.Interaction, user: discord.User) -> None:
-        """Private messages you information about the specified user."""
+    async def info(self, interaction: discord.Interaction, discord_user: discord.User) -> None:
+        """Privately displays you information about the specified user. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.defer(ephemeral=True)
 
         with db_conn() as db:
             db.execute(
-                f"SELECT time_played, blocked, email, last_activity FROM ticketServer_tickets WHERE discord_id = '{user.id}'"
+                f"SELECT time_played, blocked, email, last_activity FROM ticketServer_tickets WHERE discord_id = '{discord_user.id}'"
             )
             user_info = db.fetchone()
 
         # No account found for user
         if not user_info:
             embed = discord.Embed(
-                title=f"No results for the user '{user.mention}'.", colour=0xFFBB35
+                title=f"No results for the user '{discord_user.mention}'.", colour=0xFFBB35
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -42,18 +42,18 @@ class Informational(commands.Cog):
         # User hasn't lived any lives
         if user_info[0] == 0:
             embed = discord.Embed(
-                title=f"'{user.name}' (or {user_info[2]}) has not lived any lives yet.",
+                title=f"'{discord_user.name}' (or {user_info[2]}) has not lived any lives yet.",
                 colour=0xFFBB35,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
-        member = interaction.guild.get_member(user.id)
+        member = interaction.guild.get_member(discord_user.id)
         last_active = user_info[3].replace(tzinfo=timezone.utc)
 
         # Form embed
         embed = discord.Embed(
-            title=f"Results for the user '{user.name}':", colour=0xFFBB35
+            title=f"Results for the user '{discord_user.name}':", colour=0xFFBB35
         )
         embed.add_field(
             name="Time played:",
@@ -66,7 +66,7 @@ class Informational(commands.Cog):
             if member
             else "Unknown",
         )
-        embed.add_field(name="Username:", value=user_info[2])
+        embed.add_field(name="Game username:", value=user_info[2])
         embed.add_field(
             name="Last activity:", value=f"{discord.utils.format_dt(last_active, 'R')}"
         )
