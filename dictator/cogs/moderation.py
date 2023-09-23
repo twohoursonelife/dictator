@@ -23,7 +23,7 @@ class Admin(commands.Cog):
     ) -> None:
         """Bans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Banning {discord_user.name} ({discord_user.id}) for {reason}...",
+            f"Banning {discord_user.name} ({discord_user.id}) for `{reason}`...",
             ephemeral=True,
             delete_after=10,
         )
@@ -105,7 +105,7 @@ class Admin(commands.Cog):
     ) -> None:
         """Unbans a user from the game. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.send_message(
-            f"Unbanning {discord_user.name} ({discord_user.id}) for {reason}...",
+            f"Unbanning {discord_user.name} ({discord_user.id}) for `{reason}`...",
             ephemeral=True,
             delete_after=15,
         )
@@ -303,8 +303,8 @@ class Admin(commands.Cog):
 
             else:
                 death_time = u[1].replace(tzinfo=timezone.utc)
-                embed.add_field(name="Username:", value=f"{u[2]}", inline=True)
-                embed.add_field(name="Member:", value=f"{found_user}", inline=True)
+                embed.add_field(name="Game username:", value=f"{u[2]}", inline=True)
+                embed.add_field(name="Discord user:", value=f"{found_user}", inline=True)
                 embed.add_field(
                     name="Died:",
                     value=f"{discord.utils.format_dt(death_time, 'R')}",
@@ -335,7 +335,7 @@ class Admin(commands.Cog):
 
         if not result:
             embed = discord.Embed(
-                title=f"No result for the Game Username '{game_username}'",
+                title=f"No result for the game username '{game_username}'",
                 colour=0xFFBB35,
             )
             return await interaction.followup.send(embed=embed)
@@ -344,12 +344,12 @@ class Admin(commands.Cog):
         user = await self.dictator.fetch_user(id)
 
         embed = discord.Embed(
-            title=f"Result for the Game Username '{game_username}'", colour=0xFFBB35
+            title=f"Result for the game username '{game_username}'", colour=0xFFBB35
         )
 
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
         embed.add_field(name="User mention:", value=f"{user.mention}", inline=True)
-        embed.add_field(name="User name:", value=f"{user.name}", inline=True)
+        embed.add_field(name="Username:", value=f"{user.name}", inline=True)
         embed.add_field(name="User ID:", value=f"{user.id}", inline=True)
 
         await interaction.followup.send(embed=embed)
