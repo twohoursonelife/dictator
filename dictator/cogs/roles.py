@@ -21,7 +21,7 @@ class Roles(commands.Cog):
     @app_commands.command()
     async def ncl(self, interaction: discord.Interaction) -> None:
         """Claims the NCL role if you have 10 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
 
         if self.already_has_role(interaction, ROLE_1["name"]):
             await interaction.followup.send(
@@ -45,7 +45,9 @@ class Roles(commands.Cog):
     @app_commands.command()
     async def exp(self, interaction: discord.Interaction) -> None:
         """Claims the EXP role if you have 50 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
+
+        exp_channel = self.dictator.get_channel(EXP_CHANNEL_ID)
 
         if self.already_has_role(interaction, ROLE_2["name"]):
             await interaction.followup.send(
@@ -62,14 +64,16 @@ class Roles(commands.Cog):
             return
 
         await self.assign_role(interaction, ROLE_2["name"], "User claimed role")
-        await interaction.followup.send(
+        await exp_channel.send(
             f'Congratulations, {interaction.user.mention}! You have claimed the \'{ROLE_2["name"]}\' role, for playing {ROLE_2["hours"]} or more hours in game! *Go take a break!*'
         )
 
     @app_commands.command()
     async def vet(self, interaction: discord.Interaction) -> None:
         """Claims the VET role if you have 375 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
+
+        vet_channel = self.dictator.get_channel(VET_CHANNEL_ID)
 
         if self.already_has_role(interaction, ROLE_3["name"]):
             await interaction.followup.send(
@@ -86,14 +90,16 @@ class Roles(commands.Cog):
             return
 
         await self.assign_role(interaction, ROLE_3["name"], "User claimed role")
-        await interaction.followup.send(
+        await vet_channel.send(
             f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *You\'re apart of the furniture now*'
         )
 
     @app_commands.command()
     async def wil(self, interaction: discord.Interaction) -> None:
         """Claims the WIL role if you have 1,000 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
+
+        vet_channel = self.dictator.get_channel(VET_CHANNEL_ID)
 
         if self.already_has_role(interaction, ROLE_4["name"]):
             await interaction.followup.send(
@@ -110,7 +116,7 @@ class Roles(commands.Cog):
             return
 
         await self.assign_role(interaction, ROLE_4["name"], "User claimed role")
-        await interaction.followup.send(
+        await vet_channel.send(
             f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_4["name"]}\' role, for playing {ROLE_4["hours"]} or more hours in game! *I suppose you can go now*'
         )
 
