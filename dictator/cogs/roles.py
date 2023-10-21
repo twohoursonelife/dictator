@@ -45,7 +45,7 @@ class Roles(commands.Cog):
     @app_commands.command()
     async def exp(self, interaction: discord.Interaction) -> None:
         """Claims the EXP role if you have 50 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         EXP_CHANNEL = self.dictator.get_channel(EXP_CHANNEL_ID)
 
@@ -67,11 +67,12 @@ class Roles(commands.Cog):
         await EXP_CHANNEL.send(
             f'Congratulations, {interaction.user.mention}! You have claimed the \'{ROLE_2["name"]}\' role, for playing {ROLE_2["hours"]} or more hours in game! *Go take a break!*'
         )
+        await interaction.followup.send(f"You now have the {ROLE_2['name']} role.")
 
     @app_commands.command()
     async def vet(self, interaction: discord.Interaction) -> None:
         """Claims the VET role if you have 375 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         VET_CHANNEL = self.dictator.get_channel(VET_CHANNEL_ID)
 
@@ -93,11 +94,12 @@ class Roles(commands.Cog):
         await VET_CHANNEL.send(
             f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *You\'re apart of the furniture now*'
         )
+        await interaction.followup.send(f"You now have the {ROLE_3['name']} role.")
 
     @app_commands.command()
     async def wil(self, interaction: discord.Interaction) -> None:
         """Claims the WIL role if you have 1,000 or more hours in game. Grants you more access to the server."""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         VET_CHANNEL = self.dictator.get_channel(VET_CHANNEL_ID)
 
@@ -119,6 +121,7 @@ class Roles(commands.Cog):
         await VET_CHANNEL.send(
             f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_4["name"]}\' role, for playing {ROLE_4["hours"]} or more hours in game! *I suppose you can go now*'
         )
+        await interaction.followup.send(f"You now have the {ROLE_4['name']} role.")
 
     def already_has_role(self, interaction: discord.Interaction, role) -> bool:
         role_object = discord.utils.get(interaction.user.roles, name=role)
