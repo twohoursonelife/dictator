@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from constants import GAME_MOD_ROLE_ID
+from constants import MOD_ROLE_ID
 from get_version import get_dictator_version
 
 import random
@@ -32,7 +32,7 @@ class System(commands.Cog):
         await interaction.response.send_message(get_dictator_version(), ephemeral=True)
 
     @commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(MOD_ROLE_ID)
     @commands.command(brief="Sync Dictators app commands globally.")
     async def sync(self, ctx: commands.Context) -> None:
         synced = await ctx.bot.tree.sync()
