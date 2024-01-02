@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from constants import MOD_ROLE_ID
+from constants import MOD_ROLE_ID, OC_CHANNEL_ID
 from get_version import get_dictator_version
 
 import random
@@ -11,6 +11,17 @@ import random
 class System(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        if not message.channel.id == OC_CHANNEL_ID:
+            return
+
+        if not message.webhook_id:
+            return
+
+        if message.embeds:
+            await message.edit(suppress=True)
 
     @app_commands.command()
     async def ping(self, interaction: discord.Interaction) -> None:
