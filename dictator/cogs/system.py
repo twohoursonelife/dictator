@@ -6,22 +6,33 @@ from constants import MOD_ROLE_ID, OC_CHANNEL_ID
 from get_version import get_dictator_version
 
 import random
+import logging
 
 
 class System(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
+        logging.basicConfig(level=logging.INFO)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if not message.channel.id == OC_CHANNEL_ID:
             return
+        
+        logging.info(f"Message sent in OC channel ({message.id})")
 
         if not message.webhook_id:
             return
+        
+        logging.info(f"Message sent by webhook ({message.id})")
 
         if message.embeds:
             await message.edit(suppress=True)
+            logging.info(f"Message edited ({message.id})")
+            return
+        
+        logging.info(f"Message not edited ({message.id})")
+            
 
     @app_commands.command()
     async def ping(self, interaction: discord.Interaction) -> None:
