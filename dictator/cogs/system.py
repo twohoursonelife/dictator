@@ -14,6 +14,7 @@ class System(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        # Suppress all webhooks in the OC channel
         if not message.channel.id == OC_CHANNEL_ID:
             return
 

@@ -92,7 +92,7 @@ class Roles(commands.Cog):
 
         await self.assign_role(interaction, ROLE_3["name"], "User claimed role")
         await VET_CHANNEL.send(
-            f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *You\'re apart of the furniture now*'
+            f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *Your a part of the furniture now*'
         )
         await interaction.followup.send(f"You now have the {ROLE_3['name']} role.")
 
@@ -138,7 +138,7 @@ class Roles(commands.Cog):
     ) -> bool:
         with db_conn() as db:
             db.execute(
-                f"SELECT time_played FROM ticketServer_tickets WHERE discord_id = {discord_id}"
+                f"SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = {discord_id}"
             )
             time_played = db.fetchone()
 
