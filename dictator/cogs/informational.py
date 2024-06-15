@@ -31,19 +31,9 @@ class Informational(commands.Cog):
             )
             user_info = db.fetchone()
 
-        # No account found for user
         if not user_info:
             embed = discord.Embed(
-                title=f"No results for the user '{discord_user.mention}'.", colour=0xFFBB35
-            )
-            await interaction.followup.send(embed=embed, ephemeral=True)
-            return
-
-        # User hasn't lived any lives
-        if user_info[0] == 0:
-            embed = discord.Embed(
-                title=f"'{discord_user.name}' (or {user_info[0]}) has not lived any lives yet.",
-                colour=0xFFBB35,
+                title=f"'{discord_user.name}' either has not lived any lives yet or does not have an account.", colour=0xFFBB35
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
