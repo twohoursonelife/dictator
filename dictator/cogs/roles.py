@@ -142,7 +142,7 @@ class Roles(commands.Cog):
             )
             time_played = db.fetchone()
 
-        return True if int(time_played[0]) < less_than_minutes else False
+        return True if int(time_played[0] / 60) < less_than_minutes else False
 
 
 async def setup(dictator: commands.Bot) -> None:
