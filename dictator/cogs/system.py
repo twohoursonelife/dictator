@@ -43,7 +43,7 @@ class System(commands.Cog):
         await interaction.response.send_message(get_dictator_version(), ephemeral=True)
 
     @commands.guild_only()
-    @app_commands.checks.has_role(MOD_ROLE_ID)
+    @commands.checks.has_role(MOD_ROLE_ID)
     @commands.command(brief="Sync Dictators app commands globally.")
     async def sync(self, ctx: commands.Context) -> None:
         synced = await ctx.bot.tree.sync()
