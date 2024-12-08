@@ -2,8 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from constants import MOD_ROLE_ID, OC_CHANNEL_ID
-from get_version import get_dictator_version
+from constants import MOD_ROLE_ID, OC_CHANNEL_ID, DICTATOR_VERSION
 
 import random
 
@@ -40,7 +39,7 @@ class System(commands.Cog):
     @app_commands.command()
     async def version(self, interaction: discord.Interaction) -> None:
         """Check the current version of Dictator."""
-        await interaction.response.send_message(get_dictator_version(), ephemeral=True)
+        await interaction.response.send_message(DICTATOR_VERSION, ephemeral=True)
 
     @commands.guild_only()
     @commands.has_role(MOD_ROLE_ID)

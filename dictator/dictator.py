@@ -1,7 +1,22 @@
 import os
-from discord.ext import commands
+import sentry_sdk
 import discord
-from constants import BOT_PREFIX, BOT_TOKEN
+from discord.ext import commands
+
+from constants import (
+    BOT_PREFIX,
+    BOT_TOKEN,
+    SENTRY_DSN,
+    SENTRY_ENVIRONMENT,
+    DICTATOR_VERSION,
+)
+
+
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    environment=SENTRY_ENVIRONMENT,
+    release=DICTATOR_VERSION,
+)
 
 
 class Dictator(commands.Bot):

@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from get_version import get_dictator_version
 
 load_dotenv()
 
@@ -10,6 +11,7 @@ OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
 PLAYER_LIST_PASSWORD = os.environ["PLAYER_LIST_PASSWORD"]
 
 # Optional environment variables, setting defaults
+DICTATOR_VERSION = os.environ.get("DICTATOR_VERSION", get_dictator_version())
 BOT_PREFIX = os.environ.get("BOT_PREFIX", "-")
 
 MOD_ROLE_ID = int(os.environ.get("MOD_ROLE_ID", 578867113817800715))
@@ -36,3 +38,6 @@ OC_ANALYSIS_PERIOD_MONTHS = int(os.environ.get("OC_ANALYSIS_PERIOD_MONTHS", 6))
 
 # Day of the month to generate and send the forecast message
 OC_FORECAST_MONTH_DAY = int(os.environ.get("OC_FORECAST_MONTH_DAY", 7))
+
+SENTRY_DSN = os.environ.get("SENTRY_DSN", "https://d273912626b930e863089cd16baff50f@o4508150301065216.ingest.us.sentry.io/4508430421262336")
+SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "dev")

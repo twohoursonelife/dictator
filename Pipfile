@@ -11,6 +11,7 @@ python-dateutil = "*"
 requests = "*"
 inflect = "*"
 pandas = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 black = "*"

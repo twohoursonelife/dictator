@@ -3,7 +3,6 @@ from discord import app_commands
 
 from discord.ext import commands, tasks
 
-from get_version import get_dictator_version
 from open_collective import ForecastOpenCollective
 from constants import (
     STATS_CHANNEL_ID,
@@ -11,6 +10,7 @@ from constants import (
     OC_FORECAST_MONTH_DAY,
     MOD_ROLE_ID,
     PLAYER_LIST_PASSWORD,
+    DICTATOR_VERSION,
 )
 
 import socket
@@ -58,7 +58,7 @@ class Stats(commands.Cog):
             name=f"Families", value=f"{family_count} total\n{families}", inline=False
         )
         embed.set_footer(
-            text=f"Server v{server_info[1]} • Dictator v{get_dictator_version()}"
+            text=f"Server v{server_info[1]} • Dictator v{DICTATOR_VERSION}"
         )
         await self.stats_message.edit(embed=embed)
 
