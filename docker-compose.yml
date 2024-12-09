@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   dictator:
     image: ghcr.io/twohoursonelife/dictator:latest
