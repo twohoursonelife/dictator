@@ -8,14 +8,12 @@ from constants import (
     BOT_TOKEN,
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
-    DICTATOR_VERSION,
 )
 
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     environment=SENTRY_ENVIRONMENT,
-    release=DICTATOR_VERSION,
 )
 
 

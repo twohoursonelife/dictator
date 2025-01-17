@@ -10,7 +10,6 @@ from constants import (
     OC_FORECAST_MONTH_DAY,
     MOD_ROLE_ID,
     PLAYER_LIST_PASSWORD,
-    DICTATOR_VERSION,
 )
 
 import socket
@@ -58,7 +57,7 @@ class Stats(commands.Cog):
             name=f"Families", value=f"{family_count} total\n{families}", inline=False
         )
         embed.set_footer(
-            text=f"Server v{server_info[1]} • Dictator v{DICTATOR_VERSION}"
+            text=f"Server v{server_info[1]}"
         )
         await self.stats_message.edit(embed=embed)
 

@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from get_version import get_dictator_version
 
 load_dotenv()
 
@@ -11,7 +10,6 @@ OC_GRAPHQL_KEY = os.environ["OC_GRAPHQL_KEY"]
 PLAYER_LIST_PASSWORD = os.environ["PLAYER_LIST_PASSWORD"]
 
 # Optional environment variables, setting defaults
-DICTATOR_VERSION = os.environ.get("DICTATOR_VERSION", get_dictator_version())
 BOT_PREFIX = os.environ.get("BOT_PREFIX", "-")
 
 MOD_ROLE_ID = int(os.environ.get("MOD_ROLE_ID", 578867113817800715))
