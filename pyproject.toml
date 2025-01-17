@@ -1,0 +1,19 @@
+[project]
+name = "dictator"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "discord-py>=2.4.0",
+    "inflect>=7.5.0",
+    "mysql-connector-python>=9.1.0",
+    "pandas>=2.2.3",
+    "python-dateutil>=2.9.0.post0",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.3",
+    "sentry-sdk>=2.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0",
+]
