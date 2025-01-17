@@ -1,9 +1,7 @@
 # dictator
-
 The Dictator of 2HOL. Taking care of displaying user and player information about Two Hours One Life in our Discord guild
 
 ## Features
-
 - Generates a new Discord guild member their game access key when they pass the Discord onboarding (Selecting roles, channels, agreeing to rules)
 - Members can access their game access key
 - Members can view game stats of individual players
@@ -14,13 +12,11 @@ The Dictator of 2HOL. Taking care of displaying user and player information abou
 - Mods can regenerate a members game access key
 
 ## Commands
-
 Commands must begin with the configured prefix. By default this is `-` (hyphen)
 
 - help
 - key
 - ping
-- version
 - rtfm
 - whowas
 - unban
@@ -28,29 +24,14 @@ Commands must begin with the configured prefix. By default this is `-` (hyphen)
 - info
 - regenerate
 
-## Setup guide to run the bot
-*This guide assumes the database and discord are setup as required*
+# Development
+You need:
+- Database
+- Discord guild
+- Docker compose
+- uv
 
-### Steps
-1. Clone the repository and change into the directory
-- `git clone https://github.com/twohoursonelife/dictator.git`
-- `cd dictator` 
-
-2. Copy `example.env` to `.env`, set required environment variables and optional variables if necessary
-- `cp example.env .env`
-- [More info](#environment-variables)
-
-3. Run the bot
-- `docker compose up -d --pull always`
-
-or for local development
-- `pipenv sync`
-- `pipenv shell`
-- `python run dictator/dictator.py`
-
-The bot should now be running
-
-## Environment variables
-See `example.env`
-
-You can copy and rename this file to `.env` to easily set environment variables
+## Running
+- Copy `example.env` to `.env`, update values.
+- Start or reload `docker compose up --build --force-recreate`
+- Stop `docker compose kill && docker compose rm -f`
