@@ -1,26 +1,10 @@
-FROM python:3.11-alpine as requirements
-
-RUN pip install pipenv
-
-COPY Pipfile .
-COPY Pipfile.lock .
-
-RUN pipenv requirements > requirements.txt
-
-
-
 FROM python:3.11-alpine
 
-WORKDIR /usr/local/dictator
+COPY --from=ghcr.io/astral-sh/uv:0.5.20 /uv /uvx /bin/
 
-COPY --from=requirements requirements.txt .
-
-RUN pip install -r requirements.txt
-
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
 COPY . .
 
-ENV BOT_TOKEN=token \
-    DB_PASS=password \
-    OC_GRAPHQL_KEY=key
-
-CMD ["python", "-u", "dictator/dictator.py"]
+CMD ["uv", "run", "dictator/dictator.py",]

@@ -1,30 +1,7 @@
 services:
-  dictator:
-    image: ghcr.io/twohoursonelife/dictator:latest
-    container_name: dictator
+  dictator-dev:
+    image: dictator-dev
     build:
-      context: .
-    restart: always
+      no_cache: true
     env_file:
       - .env
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "dictator"
-        awslogs-stream: "dictator"
-  
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "dictator"
-        awslogs-stream: "watchtower"
