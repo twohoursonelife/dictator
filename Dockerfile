@@ -7,4 +7,4 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen
 COPY . .
 
-CMD ["uv", "run", "dictator/dictator.py",]
+CMD ["uv", "run", "dictator/dictator.py"]
