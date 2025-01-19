@@ -269,7 +269,20 @@ class Admin(commands.Cog):
         with db_conn() as db:
             # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
             db.execute(
-                "SELECT ticketServer_tickets.discord_id, lineageServer_lives.death_time, lineageServer_users.email, lineageServer_lives.id, ticketServer_tickets.time_played FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email WHERE name = %s ORDER BY death_time DESC LIMIT %s",
+                """
+                SELECT
+                    ticketServer_tickets.discord_id,
+                    lineageServer_lives.death_time,
+                    lineageServer_users.email,
+                    lineageServer_lives.id,
+                    ticketServer_tickets.time_played
+                FROM lineageServer_lives
+                INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id
+                INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email
+                WHERE name = %s
+                ORDER BY death_time DESC
+                LIMIT %s
+                """,
                 (character_name, history),
             )
             users = db.fetchall()
@@ -307,15 +320,92 @@ class Admin(commands.Cog):
 
             else:
                 death_time = u[1].replace(tzinfo=timezone.utc)
-                embed.add_field(name="Game username:", value=f"{u[2]}", inline=True)
-                embed.add_field(
-                    name="Discord user:", value=f"{found_user}", inline=True
-                )
+                embed.add_field(name="Game username:", value=u[2], inline=True)
+                embed.add_field(name="Discord user:", value=found_user, inline=True)
                 embed.add_field(
                     name="Died:",
                     value=f"{discord.utils.format_dt(death_time, 'R')}",
                     inline=True,
                 )
+
+        await interaction.followup.send(embed=embed)
+
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.command()
+    async def whowasext(
+        self, interaction: discord.Interaction, character_name: str
+    ) -> None:
+        """Lookup detailed information of a single players life."""
+        await interaction.response.defer()
+
+        character_name = re.sub(("[^a-zA-Z0-9 ]"), "", character_name)
+
+        with db_conn() as db:
+            db.execute(
+                f"""
+                SELECT
+                    ticketServer_tickets.discord_id,
+                    lineageServer_lives.death_time,
+                    lineageServer_users.email,
+                    lineageServer_lives.id,
+                    ticketServer_tickets.time_played,
+                    lineageServer_lives.id,
+                    lineageServer_lives.player_id,
+                    ticketServer_tickets.blocked
+                FROM lineageServer_lives
+                INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id
+                INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email
+                WHERE name = '{character_name}'
+                ORDER BY death_time DESC
+                LIMIT 1
+                """
+            )
+            life = db.fetchone()
+
+        if not life:
+            embed = discord.Embed(
+                title=f"No results for the character '{character_name}'.",
+                colour=0xFFBB35,
+            )
+            await interaction.followup.send(embed=embed)
+            return
+
+        embed = discord.Embed(
+            title=f"Result for the name '{character_name}':",
+            colour=0xFFBB35,
+        )
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
+
+        try:
+            found_user = await self.dictator.fetch_user(life[0])
+
+        except:
+            raise commands.CommandError
+
+        else:
+            death_time = life[1].replace(tzinfo=timezone.utc)
+            embed.add_field(name="Game username:", value=life[2], inline=True)
+            embed.add_field(name="Discord user:", value=found_user, inline=True)
+            embed.add_field(
+                name="Died:",
+                value=f"{discord.utils.format_dt(death_time, 'R')}",
+                inline=True,
+            )
+            embed.add_field(
+                name="Life ID:",
+                value=life[5],
+                inline=True,
+            )
+            embed.add_field(
+                name="Player ID:",
+                value=life[6],
+                inline=True,
+            )
+            embed.add_field(
+                name="Blocked:",
+                value="Yes :red_circle:" if life[7] else "No :green_circle:",
+                inline=True,
+            )
 
         await interaction.followup.send(embed=embed)
 

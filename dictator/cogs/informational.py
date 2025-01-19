@@ -51,7 +51,7 @@ class Informational(commands.Cog):
             name="Time played:",
             value=f"{math.floor(user_info[4] / 60 / 60):,}h {math.floor(user_info[4] / 60 % 60):,}m",
         )
-        embed.add_field(name="Blocked:", value="Yes" if user_info[1] else "No")
+        embed.add_field(name="Blocked:", value="Yes :red_circle:" if user_info[1] else "No :green_circle:")
         embed.add_field(
             name="Joined guild:",
             value=f"{discord.utils.format_dt(member.joined_at, 'R')}"
