@@ -277,9 +277,11 @@ class Admin(commands.Cog):
         if not users:
             embed = discord.Embed(
                 title=f"No results for the character '{character_name}'.",
-                description=f"Found name '{character_name}' from Player ID '{player_id}'"
-                if player_id
-                else "",
+                description=(
+                    f"Found name '{character_name}' from Player ID '{player_id}'"
+                    if player_id
+                    else ""
+                ),
                 colour=0xFFBB35,
             )
             await interaction.followup.send(embed=embed)
@@ -287,9 +289,11 @@ class Admin(commands.Cog):
 
         embed = discord.Embed(
             title=f"Latest {history} results for the name '{character_name}':",
-            description=f"Found name '{character_name}' from Player ID '{player_id}'"
-            if player_id
-            else "",
+            description=(
+                f"Found name '{character_name}' from Player ID '{player_id}'"
+                if player_id
+                else ""
+            ),
             colour=0xFFBB35,
         )
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
@@ -304,7 +308,9 @@ class Admin(commands.Cog):
             else:
                 death_time = u[1].replace(tzinfo=timezone.utc)
                 embed.add_field(name="Game username:", value=f"{u[2]}", inline=True)
-                embed.add_field(name="Discord user:", value=f"{found_user}", inline=True)
+                embed.add_field(
+                    name="Discord user:", value=f"{found_user}", inline=True
+                )
                 embed.add_field(
                     name="Died:",
                     value=f"{discord.utils.format_dt(death_time, 'R')}",
