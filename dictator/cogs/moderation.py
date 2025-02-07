@@ -351,7 +351,8 @@ class Admin(commands.Cog):
                     ticketServer_tickets.time_played,
                     lineageServer_lives.id,
                     lineageServer_lives.player_id,
-                    ticketServer_tickets.blocked
+                    ticketServer_tickets.blocked,
+                    lineageServer_lives.user_id,
                 FROM lineageServer_lives
                 INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id
                 INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email
@@ -394,6 +395,11 @@ class Admin(commands.Cog):
             embed.add_field(
                 name="Life ID:",
                 value=life[5],
+                inline=True,
+            )
+            embed.add_field(
+                name="Lineage ID:",
+                value=life[8],
                 inline=True,
             )
             embed.add_field(
