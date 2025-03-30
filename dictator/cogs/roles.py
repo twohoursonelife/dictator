@@ -139,6 +139,9 @@ class Roles(commands.Cog):
                 f"SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = {discord_id}"
             )
             time_played = db.fetchone()
+            
+        if time_played is None:
+            return False
 
         return True if int(time_played[0] / 60) < less_than_minutes else False
 
