@@ -1,11 +1,11 @@
 import discord
-from discord import app_commands
-from discord.ext import commands
-from db_manager import db_connection as db_conn
 from constants import (
     EXP_CHANNEL_ID,
     VET_CHANNEL_ID,
 )
+from db_manager import db_connection as db_conn
+from discord import app_commands
+from discord.ext import commands
 
 # Roles ["Role name, must match Discord", Required hours]
 ROLE_1 = {"name": "Not Completely Lost", "hours": 10}
@@ -32,14 +32,14 @@ class Roles(commands.Cog):
 
         if self.playtime_less_than(interaction.user.id, ROLE_1["hours"] * 60):
             await interaction.followup.send(
-                f'{interaction.user.mention}, you do not have {ROLE_1["hours"]} or more hours in game. Nearly!',
+                f"{interaction.user.mention}, you do not have {ROLE_1['hours']} or more hours in game. Nearly!",
                 ephemeral=True,
             )
             return
 
         await self.assign_role(interaction, ROLE_1["name"], "User claimed role")
         await interaction.followup.send(
-            f'Woohoo, {interaction.user.mention}! You have claimed the \'{ROLE_1["name"]}\' role, for playing {ROLE_1["hours"]} or more hours in game! *You\'re starting to know your way around!*'
+            f"Woohoo, {interaction.user.mention}! You have claimed the '{ROLE_1['name']}' role, for playing {ROLE_1['hours']} or more hours in game! *You're starting to know your way around!*"
         )
 
     @app_commands.command()
@@ -58,14 +58,14 @@ class Roles(commands.Cog):
 
         if self.playtime_less_than(interaction.user.id, ROLE_2["hours"] * 60):
             await interaction.followup.send(
-                f'{interaction.user.mention}, you do not have {ROLE_2["hours"]} or more hours in game. Keep on playin!',
+                f"{interaction.user.mention}, you do not have {ROLE_2['hours']} or more hours in game. Keep on playin!",
                 ephemeral=True,
             )
             return
 
         await self.assign_role(interaction, ROLE_2["name"], "User claimed role")
         await EXP_CHANNEL.send(
-            f'Congratulations, {interaction.user.mention}! You have claimed the \'{ROLE_2["name"]}\' role, for playing {ROLE_2["hours"]} or more hours in game! *Go take a break!*'
+            f"Congratulations, {interaction.user.mention}! You have claimed the '{ROLE_2['name']}' role, for playing {ROLE_2['hours']} or more hours in game! *Go take a break!*"
         )
         await interaction.followup.send(f"You now have the {ROLE_2['name']} role.")
 
@@ -85,14 +85,14 @@ class Roles(commands.Cog):
 
         if self.playtime_less_than(interaction.user.id, ROLE_3["hours"] * 60):
             await interaction.followup.send(
-                f'{interaction.user.mention}, you do not have {ROLE_3["hours"]} or more hours in game. Surely just a few more to go...!',
+                f"{interaction.user.mention}, you do not have {ROLE_3['hours']} or more hours in game. Surely just a few more to go...!",
                 ephemeral=True,
             )
             return
 
         await self.assign_role(interaction, ROLE_3["name"], "User claimed role")
         await VET_CHANNEL.send(
-            f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_3["name"]}\' role, for playing {ROLE_3["hours"]} or more hours in game! *Your a part of the furniture now*'
+            f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_3['name']}' role, for playing {ROLE_3['hours']} or more hours in game! *Your a part of the furniture now*"
         )
         await interaction.followup.send(f"You now have the {ROLE_3['name']} role.")
 
@@ -112,20 +112,20 @@ class Roles(commands.Cog):
 
         if self.playtime_less_than(interaction.user.id, ROLE_4["hours"] * 60):
             await interaction.followup.send(
-                f'{interaction.user.mention}, you do not have {ROLE_4["hours"]} or more hours in game. Just around the corner, *right?*',
+                f"{interaction.user.mention}, you do not have {ROLE_4['hours']} or more hours in game. Just around the corner, *right?*",
                 ephemeral=True,
             )
             return
 
         await self.assign_role(interaction, ROLE_4["name"], "User claimed role")
         await VET_CHANNEL.send(
-            f'Woah, {interaction.user.mention}! You have claimed the \'{ROLE_4["name"]}\' role, for playing {ROLE_4["hours"]} or more hours in game! *I suppose you can go now*'
+            f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_4['name']}' role, for playing {ROLE_4['hours']} or more hours in game! *I suppose you can go now*"
         )
         await interaction.followup.send(f"You now have the {ROLE_4['name']} role.")
 
     def already_has_role(self, interaction: discord.Interaction, role) -> bool:
         role_object = discord.utils.get(interaction.user.roles, name=role)
-        if role_object != None:
+        if role_object is not None:
             return True
         return False
 
@@ -133,9 +133,7 @@ class Roles(commands.Cog):
         role_object = discord.utils.get(interaction.guild.roles, name=role)
         await interaction.user.add_roles(role_object, reason=reason)
 
-    def playtime_less_than(
-        self, discord_id: discord.User.id, less_than_minutes: int
-    ) -> bool:
+    def playtime_less_than(self, discord_id: int, less_than_minutes: int) -> bool:
         with db_conn() as db:
             db.execute(
                 f"SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = {discord_id}"

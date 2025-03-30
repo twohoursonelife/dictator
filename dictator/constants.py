@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,7 +26,9 @@ STATS_CHANNEL_ID = int(os.environ.get("STATS_CHANNEL_ID", 744031336448393328))
 OC_CHANNEL_ID = int(os.environ.get("OC_CHANNEL_ID", 948569156217892944))
 EXP_CHANNEL_ID = int(os.environ.get("EXP_CHANNEL_ID", 623147077269979166))
 VET_CHANNEL_ID = int(os.environ.get("VET_CHANNEL_ID", 984934568454926417))
-SUGGESTION_CHANNEL_ID = int(os.environ.get("SUGGESTION_CHANNEL_ID", 1116648877274189914))
+SUGGESTION_CHANNEL_ID = int(
+    os.environ.get("SUGGESTION_CHANNEL_ID", 1116648877274189914)
+)
 
 OC_GRAPHQL_ENDPOINT = os.environ.get(
     "OC_GRAPHQL_ENDPOINT", "https://api.opencollective.com/graphql/v2"
@@ -37,5 +40,8 @@ OC_ANALYSIS_PERIOD_MONTHS = int(os.environ.get("OC_ANALYSIS_PERIOD_MONTHS", 6))
 # Day of the month to generate and send the forecast message
 OC_FORECAST_MONTH_DAY = int(os.environ.get("OC_FORECAST_MONTH_DAY", 7))
 
-SENTRY_DSN = os.environ.get("SENTRY_DSN", "https://d273912626b930e863089cd16baff50f@o4508150301065216.ingest.us.sentry.io/4508430421262336")
+SENTRY_DSN = os.environ.get(
+    "SENTRY_DSN",
+    "https://d273912626b930e863089cd16baff50f@o4508150301065216.ingest.us.sentry.io/4508430421262336",
+)
 SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "dev")

@@ -1,20 +1,18 @@
-import discord
-from discord import app_commands
-
-from discord.ext import commands, tasks
-
-from open_collective import ForecastOpenCollective
-from constants import (
-    STATS_CHANNEL_ID,
-    OC_CHANNEL_ID,
-    OC_FORECAST_MONTH_DAY,
-    MOD_ROLE_ID,
-    PLAYER_LIST_PASSWORD,
-)
-
 import socket
 from datetime import date
+
+import discord
 import inflect
+from constants import (
+    MOD_ROLE_ID,
+    OC_CHANNEL_ID,
+    OC_FORECAST_MONTH_DAY,
+    PLAYER_LIST_PASSWORD,
+    STATS_CHANNEL_ID,
+)
+from discord import app_commands
+from discord.ext import commands, tasks
+from open_collective import ForecastOpenCollective
 
 
 class Stats(commands.Cog):
@@ -54,11 +52,9 @@ class Stats(commands.Cog):
         embed.timestamp = discord.utils.utcnow()
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(
-            name=f"Families", value=f"{family_count} total\n{families}", inline=False
+            name="Families", value=f"{family_count} total\n{families}", inline=False
         )
-        embed.set_footer(
-            text=f"Server v{server_info[1]}"
-        )
+        embed.set_footer(text=f"Server v{server_info[1]}")
         await self.stats_message.edit(embed=embed)
 
     async def get_server_stats(self) -> str:
@@ -81,7 +77,7 @@ class Stats(commands.Cog):
                 s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
             else:
                 s.sendall(
-                    f"PLAYER_LIST#".encode("utf-8")
+                    "PLAYER_LIST#".encode("utf-8")
                 )  # format changes if no password
 
             data_bytes = []

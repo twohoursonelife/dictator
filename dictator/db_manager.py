@@ -1,5 +1,5 @@
 import mysql.connector
-from constants import DB_HOST, DB_DATABASE, DB_USER, DB_PASSWORD
+from constants import DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER
 
 
 class db_connection:

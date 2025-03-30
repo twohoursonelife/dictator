@@ -1,15 +1,14 @@
 import os
-import sentry_sdk
-import discord
-from discord.ext import commands
 
+import discord
+import sentry_sdk
 from constants import (
     BOT_PREFIX,
     BOT_TOKEN,
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
 )
-
+from discord.ext import commands
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,

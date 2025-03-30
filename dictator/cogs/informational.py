@@ -1,10 +1,10 @@
+import math
+from datetime import timezone
+
 import discord
+from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
-
-from db_manager import db_connection as db_conn
-from datetime import timezone
-import math
 
 
 class Informational(commands.Cog):
@@ -16,12 +16,14 @@ class Informational(commands.Cog):
         """Sends basic infoamtion about playing for the first time."""
 
         await interaction.response.send_message(
-            f'How do I play?\nHow do I download?\n\nHeres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing/?ref=rtfm>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "/account" command.*'
+            'How do I play?\nHow do I download?\n\nHeres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing/?ref=rtfm>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "/account" command.*'
         )
 
     @app_commands.guild_only()
     @app_commands.command()
-    async def info(self, interaction: discord.Interaction, discord_user: discord.User) -> None:
+    async def info(
+        self, interaction: discord.Interaction, discord_user: discord.User
+    ) -> None:
         """Privately displays you information about the specified user. Input a Discord User like object, such as a username, nickname, ID or formatted mention."""
         await interaction.response.defer(ephemeral=True)
 
@@ -33,7 +35,8 @@ class Informational(commands.Cog):
 
         if not user_info:
             embed = discord.Embed(
-                title=f"'{discord_user.name}' either has not lived any lives yet or does not have an account.", colour=0xFFBB35
+                title=f"'{discord_user.name}' either has not lived any lives yet or does not have an account.",
+                colour=0xFFBB35,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -45,13 +48,16 @@ class Informational(commands.Cog):
         embed = discord.Embed(
             title=f"Results for the user '{discord_user.name}':", colour=0xFFBB35
         )
-        
+
         # Round down time played so as not to mislead when users are checking for a milestone
         embed.add_field(
             name="Time played:",
             value=f"{math.floor(user_info[4] / 60 / 60):,}h {math.floor(user_info[4] / 60 % 60):,}m",
         )
-        embed.add_field(name="Blocked:", value="Yes :red_circle:" if user_info[1] else "No :green_circle:")
+        embed.add_field(
+            name="Blocked:",
+            value="Yes :red_circle:" if user_info[1] else "No :green_circle:",
+        )
         embed.add_field(
             name="Joined guild:",
             value=f"{discord.utils.format_dt(member.joined_at, 'R')}"

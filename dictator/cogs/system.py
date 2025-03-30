@@ -1,10 +1,9 @@
+import random
+
 import discord
+from constants import MOD_ROLE_ID, OC_CHANNEL_ID
 from discord import app_commands
 from discord.ext import commands
-
-from constants import MOD_ROLE_ID, OC_CHANNEL_ID
-
-import random
 
 
 class System(commands.Cog):
@@ -28,7 +27,7 @@ class System(commands.Cog):
 
         if random.randint(1, 100) == 1:
             return await interaction.response.send_message(
-                f"Stop that, it hurts ;(", ephemeral=True
+                "Stop that, it hurts ;(", ephemeral=True
             )
 
         await interaction.response.send_message(

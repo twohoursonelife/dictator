@@ -1,12 +1,11 @@
+import re
+from datetime import timezone
+
 import discord
+from constants import GAME_MOD_ROLE_ID, LOG_CHANNEL_ID, MOD_ROLE_ID
+from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
-
-from db_manager import db_connection as db_conn
-from constants import LOG_CHANNEL_ID, GAME_MOD_ROLE_ID, MOD_ROLE_ID
-
-from datetime import datetime, timezone
-import re
 
 
 class Admin(commands.Cog):
@@ -37,7 +36,7 @@ class Admin(commands.Cog):
             )
             row = db.fetchone()
 
-        if row == None:
+        if row is None:
             await interaction.edit_original_response(
                 content=f"Could not find an account for Discord ID: `{discord_user.id}`"
             )
@@ -70,9 +69,10 @@ class Admin(commands.Cog):
             embed.add_field(name="Reason:", value=f"{reason}", inline=True)
             await discord_user.send(embed=embed)
 
-        except:
+        except Exception as e:
             # Message can fail if the user does not allow messages from anyone
             notify_user = False
+            print(e)
 
         else:
             notify_user = True
@@ -119,7 +119,7 @@ class Admin(commands.Cog):
             )
             row = db.fetchone()
 
-        if row == None:
+        if row is None:
             await interaction.edit_original_response(
                 content=f"Could not find an account for Discord ID: `{discord_user.id}`"
             )
@@ -152,9 +152,10 @@ class Admin(commands.Cog):
             embed.add_field(name="Reason:", value=f"{reason}", inline=True)
             await discord_user.send(embed=embed)
 
-        except:
+        except Exception as e:
             # Message can fail if the user does not allow messages from anyone
             notify_user = False
+            print(e)
 
         else:
             notify_user = True
@@ -204,8 +205,9 @@ class Admin(commands.Cog):
             )
             await user.send(embed=embed)
 
-        except:
+        except Exception as e:
             notify_user = False
+            print(e)
 
         else:
             notify_user = True
@@ -258,7 +260,7 @@ class Admin(commands.Cog):
 
             if not character_name:
                 embed = discord.Embed(
-                    title=f"No results for that player ID.", colour=0xFFBB35
+                    title="No results for that player ID.", colour=0xFFBB35
                 )
                 await interaction.followup.send(embed=embed)
                 return
@@ -312,28 +314,24 @@ class Admin(commands.Cog):
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
 
         for u in users:
-            try:
-                found_user = await self.dictator.fetch_user(u[0])
-
-            except:
-                raise commands.CommandError
-
-            else:
-                death_time = u[1].replace(tzinfo=timezone.utc)
-                embed.add_field(name="Game username:", value=u[2], inline=True)
-                embed.add_field(name="Discord user:", value=found_user, inline=True)
-                embed.add_field(
-                    name="Died:",
-                    value=f"{discord.utils.format_dt(death_time, 'R')}",
-                    inline=True,
-                )
+            found_user = await self.dictator.fetch_user(u[0])
+            death_time = u[1].replace(tzinfo=timezone.utc)
+            embed.add_field(name="Game username:", value=u[2], inline=True)
+            embed.add_field(name="Discord user:", value=found_user, inline=True)
+            embed.add_field(
+                name="Died:",
+                value=f"{discord.utils.format_dt(death_time, 'R')}",
+                inline=True,
+            )
 
         await interaction.followup.send(embed=embed)
 
     @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     @app_commands.command()
     async def whowasext(
-        self, interaction: discord.Interaction, character_name: str
+        self,
+        interaction: discord.Interaction,
+        character_name: str,
     ) -> None:
         """Lookup detailed information of a single players life."""
         await interaction.response.defer()
@@ -377,41 +375,38 @@ class Admin(commands.Cog):
         )
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
 
-        try:
-            found_user = await self.dictator.fetch_user(life[0])
+        
+        found_user = await self.dictator.fetch_user(life[0])
 
-        except:
-            raise commands.CommandError
-
-        else:
-            death_time = life[1].replace(tzinfo=timezone.utc)
-            embed.add_field(name="Game username:", value=life[2], inline=True)
-            embed.add_field(name="Discord user:", value=found_user, inline=True)
-            embed.add_field(
-                name="Died:",
-                value=f"{discord.utils.format_dt(death_time, 'R')}",
-                inline=True,
-            )
-            embed.add_field(
-                name="Life ID:",
-                value=life[5],
-                inline=True,
-            )
-            embed.add_field(
-                name="Lineage ID:",
-                value=life[8],
-                inline=True,
-            )
-            embed.add_field(
-                name="Player ID:",
-                value=life[6],
-                inline=True,
-            )
-            embed.add_field(
-                name="Blocked:",
-                value="Yes :red_circle:" if life[7] else "No :green_circle:",
-                inline=True,
-            )
+    
+        death_time = life[1].replace(tzinfo=timezone.utc)
+        embed.add_field(name="Game username:", value=life[2], inline=True)
+        embed.add_field(name="Discord user:", value=found_user, inline=True)
+        embed.add_field(
+            name="Died:",
+            value=f"{discord.utils.format_dt(death_time, 'R')}",
+            inline=True,
+        )
+        embed.add_field(
+            name="Life ID:",
+            value=life[5],
+            inline=True,
+        )
+        embed.add_field(
+            name="Lineage ID:",
+            value=life[8],
+            inline=True,
+        )
+        embed.add_field(
+            name="Player ID:",
+            value=life[6],
+            inline=True,
+        )
+        embed.add_field(
+            name="Blocked:",
+            value="Yes :red_circle:" if life[7] else "No :green_circle:",
+            inline=True,
+        )
 
         await interaction.followup.send(embed=embed)
 

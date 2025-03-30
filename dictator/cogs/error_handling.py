@@ -69,7 +69,7 @@ class Error_Handling(commands.Cog):
                 # In other errors, the message is sometimes found in error.original.msg
                 errmsg = error.original.text
 
-            except:
+            except Exception:
                 await self.default_error(ctx, error)
 
             else:

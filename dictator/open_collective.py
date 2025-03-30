@@ -1,8 +1,9 @@
-from datetime import date, datetime, time
-from dateutil.relativedelta import relativedelta
-from constants import OC_GRAPHQL_ENDPOINT, OC_GRAPHQL_KEY, OC_ANALYSIS_PERIOD_MONTHS
-import requests
 import json
+from datetime import date, datetime, time
+
+import requests
+from constants import OC_ANALYSIS_PERIOD_MONTHS, OC_GRAPHQL_ENDPOINT, OC_GRAPHQL_KEY
+from dateutil.relativedelta import relativedelta
 
 
 class ForecastOpenCollective:

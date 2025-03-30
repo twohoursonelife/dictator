@@ -1,15 +1,13 @@
-import discord
-from discord import app_commands
-
-from discord.ext import commands
-
-from db_manager import db_connection as db_conn
-from constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
-
-import re
 import random
-from textwrap import wrap
+import re
 from datetime import timedelta
+from textwrap import wrap
+
+import discord
+from constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
+from db_manager import db_connection as db_conn
+from discord import app_commands
+from discord.ext import commands
 
 
 class User(commands.Cog):
@@ -144,7 +142,8 @@ class User(commands.Cog):
                 f"\n**Key:** {key}"
             )
 
-        except:
+        except Exception as e:
+            print(e)
             notify_user = False
 
         else:
@@ -256,7 +255,8 @@ class User(commands.Cog):
 
             reply = await self.dictator.wait_for("message", timeout=60.0, check=check)
 
-        except:
+        except Exception as e:
+            print(e)
             return
 
         else:
