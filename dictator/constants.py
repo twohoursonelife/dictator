@@ -45,3 +45,5 @@ SENTRY_DSN = os.environ.get(
     "https://d273912626b930e863089cd16baff50f@o4508150301065216.ingest.us.sentry.io/4508430421262336",
 )
 SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "dev")
+
+MAIN_COLOUR = 0xFFBB35

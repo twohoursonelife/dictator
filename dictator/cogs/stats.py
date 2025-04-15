@@ -9,6 +9,7 @@ from constants import (
     OC_FORECAST_MONTH_DAY,
     PLAYER_LIST_PASSWORD,
     STATS_CHANNEL_ID,
+    MAIN_COLOUR,
 )
 from discord import app_commands
 from discord.ext import commands, tasks
@@ -23,43 +24,62 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        self.OC_CHANNEL = self.dictator.get_channel(OC_CHANNEL_ID)
+        # TODO: Check loops arent active
 
-        self.open_collective_forecast.start()
+        self.OC_CHANNEL: discord.TextChannel = self.dictator.get_channel(OC_CHANNEL_ID)
 
-        if await self.startup_checks():
-            self.stats_loop.start()
+        if self.OC_CHANNEL:
+            if not self.open_collective_forecast.is_running():
+                self.open_collective_forecast.start()
+
+        else:
+            logger.warning("Unable to find OC Channel, not starting OC stats.")
+
+        self.STATS_CHANNEL: discord.TextChannel = self.dictator.get_channel(
+            STATS_CHANNEL_ID
+        )
+
+        if self.STATS_CHANNEL:
+            if not self.stats_loop.is_running():
+                self.STATS_MESSAGE = await self.reset_stats_channel(self.STATS_CHANNEL)
+                self.stats_loop.start()
+            else:
+                logger.info("Stats loop already running!")
+
+        else:
+            logger.warning("Unable to find Stats Channel, not starting player stats.")
+
+    def cog_unload(self):
+        self.open_collective_forecast.cancel()
+        self.stats_loop.cancel()
 
     @tasks.loop(minutes=1)
     async def stats_loop(self) -> None:
         await self.update_stats()
 
-    async def startup_checks(self) -> bool:
-        channel = self.dictator.get_channel(STATS_CHANNEL_ID)
-
-        if channel is None:
-            logger.warning("Unable to find channel, disabling stats extension.")
-            await self.dictator.unload_extension("cogs.stats")
-            return False
-
-        async for msg in channel.history(limit=2):
+    async def reset_stats_channel(
+        self, channel: discord.TextChannel
+    ) -> discord.Message:
+        async for msg in channel.history(limit=1):
             if msg.author == self.dictator.user:
                 await msg.delete()
 
-        embed = discord.Embed(title="Loading stats...", colour=0xFFBB35)
-        self.stats_message = await channel.send(embed=embed)
-        return True
+        return await channel.send(
+            embed=discord.Embed(
+                title="Live server stats loading...", colour=MAIN_COLOUR
+            )
+        )
 
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
-        embed = discord.Embed(title="Stats", colour=0xFFBB35)
+        embed = discord.Embed(title="Stats", colour=MAIN_COLOUR)
         embed.timestamp = discord.utils.utcnow()
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(
             name="Families", value=f"{family_count} total\n{families}", inline=False
         )
         embed.set_footer(text=f"Server v{server_info[1]}")
-        await self.stats_message.edit(embed=embed)
+        await self.STATS_MESSAGE.edit(embed=embed)
 
     async def get_server_stats(self) -> str:
         result = await self.player_list_request()
@@ -228,7 +248,7 @@ class Stats(commands.Cog):
             return
 
         embed = await self.open_collective_forecast_embed()
-        await channel.send(embed=embed)
+        await self.OC_CHANNEL.send(embed=embed)
 
     @app_commands.checks.has_role(MOD_ROLE_ID)
     @app_commands.command()
