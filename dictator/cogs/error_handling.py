@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from logger_config import logger
 
 
 class Error_Handling(commands.Cog):
@@ -90,7 +91,7 @@ class Error_Handling(commands.Cog):
         await ctx.send(
             f"{ctx.author.mention}, Uh oh... an error has occurred. We'll be right on it!"
         )
-        print(
+        logger.error(
             f"\n\nCOMMAND ERROR:\nAuthor: {ctx.author}\nChannel: {ctx.channel}\nCommand: {ctx.message.content}\n{error}\n\n"
         )
 

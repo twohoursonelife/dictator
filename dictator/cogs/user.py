@@ -8,6 +8,7 @@ from constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
 from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
+from logger_config import logger
 
 
 class User(commands.Cog):
@@ -40,7 +41,7 @@ class User(commands.Cog):
                 f"{interaction.user.mention} You don't have an account, I'm creating one for you now. I'll send you a message soon!",
                 ephemeral=True,
             )
-            print(
+            logger.info(
                 f"{interaction.user} attempted to retrieve their key but didn't have an account, we'll create them one."
             )
             await self.create_user(interaction.user)
@@ -52,7 +53,7 @@ class User(commands.Cog):
                 f"Hey {interaction.user.mention}! Here is your login information:\n**Username:** `{username}`\n**Key:** `{key}`",
                 ephemeral=True,
             )
-            print(f"Supplied username and key to {interaction.user}")
+            logger.success(f"Supplied username and key to {interaction.user}")
 
     @app_commands.guild_only()
     @app_commands.command()
@@ -90,7 +91,7 @@ class User(commands.Cog):
             # User already has an account
             username = check_user[0]
             key = check_user[1]
-            print(
+            logger.info(
                 f"We tried to create an account for {user} but they already had one, so we'll send them their login information."
             )
             await user.send(
@@ -143,8 +144,8 @@ class User(commands.Cog):
             )
 
         except Exception as e:
-            print(e)
             notify_user = False
+            logger.exception(e)
 
         else:
             notify_user = True
@@ -178,7 +179,7 @@ class User(commands.Cog):
         )
         await debug_log_channel.send(embed=embed)
 
-        print(
+        logger.success(
             f"Successfully created an account for {user.name} using the username {username}."
         )
 
@@ -256,7 +257,7 @@ class User(commands.Cog):
             reply = await self.dictator.wait_for("message", timeout=60.0, check=check)
 
         except Exception as e:
-            print(e)
+            logger.exception(e)
             return
 
         else:

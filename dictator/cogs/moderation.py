@@ -6,6 +6,7 @@ from constants import GAME_MOD_ROLE_ID, LOG_CHANNEL_ID, MOD_ROLE_ID
 from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
+from logger_config import logger
 
 
 class Admin(commands.Cog):
@@ -43,7 +44,7 @@ class Admin(commands.Cog):
             return
 
         if row[0] == 1:
-            print(
+            logger.info(
                 f"{interaction.user} tried to ban {discord_user.name} ({discord_user.id}) but they're already banned."
             )
             await interaction.edit_original_response(
@@ -57,7 +58,7 @@ class Admin(commands.Cog):
                 f"UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(
+        logger.success(
             f"{interaction.user} banned {discord_user.name} ({discord_user.id}) for: {reason}"
         )
 
@@ -72,7 +73,7 @@ class Admin(commands.Cog):
         except Exception as e:
             # Message can fail if the user does not allow messages from anyone
             notify_user = False
-            print(e)
+            logger.exception(e)
 
         else:
             notify_user = True
@@ -126,7 +127,7 @@ class Admin(commands.Cog):
             return
 
         if row[0] == 0:
-            print(
+            logger.info(
                 f"{interaction.user} tried to unban {discord_user.name} ({discord_user.id}) but they're not banned."
             )
             await interaction.edit_original_response(
@@ -140,7 +141,7 @@ class Admin(commands.Cog):
                 f"UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = '{discord_user.id}'"
             )
 
-        print(
+        logger.success(
             f"{interaction.user} unbanned {discord_user.name} ({discord_user.id}) for: {reason}"
         )
 
@@ -155,7 +156,7 @@ class Admin(commands.Cog):
         except Exception as e:
             # Message can fail if the user does not allow messages from anyone
             notify_user = False
-            print(e)
+            logger.exception(e)
 
         else:
             notify_user = True
@@ -207,7 +208,7 @@ class Admin(commands.Cog):
 
         except Exception as e:
             notify_user = False
-            print(e)
+            logger.exception(e)
 
         else:
             notify_user = True

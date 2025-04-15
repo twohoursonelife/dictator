@@ -12,6 +12,7 @@ from constants import (
 )
 from discord import app_commands
 from discord.ext import commands, tasks
+from logger_config import logger
 from open_collective import ForecastOpenCollective
 
 
@@ -22,19 +23,22 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        if await self.prepare_stats():
+        self.OC_CHANNEL = self.dictator.get_channel(OC_CHANNEL_ID)
+
+        self.open_collective_forecast.start()
+
+        if await self.startup_checks():
             self.stats_loop.start()
-            self.open_collective_forecast.start()
 
     @tasks.loop(minutes=1)
     async def stats_loop(self) -> None:
         await self.update_stats()
 
-    async def prepare_stats(self) -> bool:
+    async def startup_checks(self) -> bool:
         channel = self.dictator.get_channel(STATS_CHANNEL_ID)
 
         if channel is None:
-            print("Unable to find channel, disabling stats extension.")
+            logger.warning("Unable to find channel, disabling stats extension.")
             await self.dictator.unload_extension("cogs.stats")
             return False
 
@@ -223,7 +227,6 @@ class Stats(commands.Cog):
         if date.today().day != OC_FORECAST_MONTH_DAY:
             return
 
-        channel = self.dictator.get_channel(OC_CHANNEL_ID)
         embed = await self.open_collective_forecast_embed()
         await channel.send(embed=embed)
 

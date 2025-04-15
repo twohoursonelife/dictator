@@ -9,6 +9,7 @@ from constants import (
     SENTRY_ENVIRONMENT,
 )
 from discord.ext import commands
+from logger_config import logger
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,
@@ -29,7 +30,7 @@ dictator = Dictator(command_prefix=BOT_PREFIX, case_insensitive=True, intents=in
 
 @dictator.event
 async def on_ready() -> None:
-    print("The 2HOL Dictator has risen!")
+    logger.info("The 2HOL Dictator has risen!")
 
 
 dictator.run(BOT_TOKEN)
