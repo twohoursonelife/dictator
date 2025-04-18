@@ -24,8 +24,6 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        # TODO: Check loops arent active
-
         self.OC_CHANNEL: discord.TextChannel = self.dictator.get_channel(OC_CHANNEL_ID)
 
         if self.OC_CHANNEL:
@@ -41,17 +39,28 @@ class Stats(commands.Cog):
 
         if self.STATS_CHANNEL:
             if not self.stats_loop.is_running():
+                # TODO: Use a before loop call instead of manual setup
                 self.STATS_MESSAGE = await self.reset_stats_channel(self.STATS_CHANNEL)
                 self.stats_loop.start()
             else:
                 logger.info("Stats loop already running!")
-
         else:
             logger.warning("Unable to find Stats Channel, not starting player stats.")
+
+        self.loop_checker.start()
 
     def cog_unload(self):
         self.open_collective_forecast.cancel()
         self.stats_loop.cancel()
+        self.loop_checker.cancel()
+
+    @tasks.loop(hours=1)
+    async def loop_checker(self) -> None:
+        if self.stats_loop.is_running():
+            logger.debug("Stats loop running successfully!")
+        else:
+            logger.error("Stats loop not running, trying to start it!")
+            self.stats_loop.start()
 
     @tasks.loop(minutes=1)
     async def stats_loop(self) -> None:
