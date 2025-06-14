@@ -1,6 +1,6 @@
-FROM python:3.11-alpine
+FROM python:3.13-alpine
 
-COPY --from=ghcr.io/astral-sh/uv:0.5.20 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.13 /uv /uvx /bin/
 
 WORKDIR /app
 COPY pyproject.toml uv.lock ./

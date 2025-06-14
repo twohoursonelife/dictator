@@ -242,7 +242,7 @@ class Stats(commands.Cog):
             f"\n- assuming we receive **no future income**, we have funding until **{forecast['forecast_no_income']}**"
             f"\n- assuming **average donations continue**, we have funding until **{forecast['forecast_continued_income']}**"
             f"\n\n**Current balance: {forecast['current_balance']}**"
-            f"\n\n*\*Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
+            f"\n\n**Data time period: past {forecast['analysis_period_months']} months. This is only a forecast and is likely to change. Forecast is up to a max of 5 years.*"
         )
 
         return discord.Embed(
