@@ -13,7 +13,6 @@ class Admin(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
-    
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
@@ -382,10 +381,8 @@ class Admin(commands.Cog):
         )
         embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
 
-        
         found_user = await self.dictator.fetch_user(life[0])
 
-    
         death_time = life[1].replace(tzinfo=timezone.utc)
         embed.add_field(name="Game username:", value=life[2], inline=True)
         embed.add_field(name="Discord user:", value=found_user, inline=True)
@@ -458,6 +455,20 @@ class Admin(commands.Cog):
         embed.add_field(name="User ID:", value=f"{user.id}", inline=True)
 
         await interaction.followup.send(embed=embed)
+
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.is_owner()
+    async def update_username(
+        self,
+        interaction: discord.Interaction,
+        discord_user: discord.User,
+    ) -> None:
+        await interaction.response.send_message(
+            "You did it!",
+            ephemeral=True,
+            delete_after=10,
+        )
 
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""
