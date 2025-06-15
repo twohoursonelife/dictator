@@ -23,7 +23,7 @@ class Roles(commands.Cog):
         """Claims the NCL role if you have 10 or more hours in game. Grants you more access to the server."""
         await interaction.response.defer()
 
-        if self.already_has_role(interaction, ROLE_1["name"]):
+        if self.already_has_role(interaction.user, ROLE_1["name"]):
             await interaction.followup.send(
                 f"{interaction.user.mention}, you already have this role!",
                 ephemeral=True,
@@ -49,7 +49,7 @@ class Roles(commands.Cog):
 
         EXP_CHANNEL = self.dictator.get_channel(EXP_CHANNEL_ID)
 
-        if self.already_has_role(interaction, ROLE_2["name"]):
+        if self.already_has_role(interaction.user, ROLE_2["name"]):
             await interaction.followup.send(
                 f"{interaction.user.mention}, you already have this role!",
                 ephemeral=True,
@@ -76,7 +76,7 @@ class Roles(commands.Cog):
 
         VET_CHANNEL = self.dictator.get_channel(VET_CHANNEL_ID)
 
-        if self.already_has_role(interaction, ROLE_3["name"]):
+        if self.already_has_role(interaction.user, ROLE_3["name"]):
             await interaction.followup.send(
                 f"{interaction.user.mention}, you already have this role!",
                 ephemeral=True,
@@ -103,7 +103,7 @@ class Roles(commands.Cog):
 
         VET_CHANNEL = self.dictator.get_channel(VET_CHANNEL_ID)
 
-        if self.already_has_role(interaction, ROLE_4["name"]):
+        if self.already_has_role(interaction.user, ROLE_4["name"]):
             await interaction.followup.send(
                 f"{interaction.user.mention}, you already have this role! Doh!",
                 ephemeral=True,
@@ -123,8 +123,8 @@ class Roles(commands.Cog):
         )
         await interaction.followup.send(f"You now have the {ROLE_4['name']} role.")
 
-    def already_has_role(self, interaction: discord.Interaction, role) -> bool:
-        role_object = discord.utils.get(interaction.user.roles, name=role)
+    def already_has_role(self, member: discord.Member, role) -> bool:
+        role_object = discord.utils.get(member.roles, name=role)
         if role_object is not None:
             return True
         return False
