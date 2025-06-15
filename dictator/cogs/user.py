@@ -29,7 +29,6 @@ class User(commands.Cog):
         await ctx.send("The new command is /account")
 
     @app_commands.command()
-    @app_commands.guild_only()
     async def account(self, interaction: discord.Interaction) -> None:
         """Get or create your game log in information."""
         await interaction.response.defer(ephemeral=True)
