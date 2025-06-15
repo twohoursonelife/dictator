@@ -24,10 +24,6 @@ class User(commands.Cog):
             await self.create_user(after)
         return
 
-    @commands.hybrid_command(brief="Placeholder for old key command.")
-    async def key(self, ctx: commands.Context) -> None:
-        await ctx.send("The new command is /account")
-
     @app_commands.command()
     async def account(self, interaction: discord.Interaction) -> None:
         """Get or create your game log in information."""
