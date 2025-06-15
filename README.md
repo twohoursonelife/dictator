@@ -11,6 +11,14 @@ The Dictator of 2HOL. Taking care of displaying user and player information abou
 - Mods can ban and unban members from the game
 - Mods can regenerate a members game access key
 
+# Release and deploy
+We run on Fly.io. See `.github/workflows/deploy.yml` for release and deploy trigger on each push to `main`
+
+## Rolling back (oops)
+- `fly releases --image`
+- `fly deploy -i <image-name>`
+- As per [here](https://community.fly.io/t/how-to-do-rollback-releases-3-different-ways/16347).
+
 # Development
 You need:
 - Database
