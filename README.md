@@ -11,20 +11,6 @@ The Dictator of 2HOL. Taking care of displaying user and player information abou
 - Mods can ban and unban members from the game
 - Mods can regenerate a members game access key
 
-## Commands
-Commands must begin with the configured prefix. By default this is `-` (hyphen)
-
-- help
-- key
-- ping
-- rtfm
-- whowas
-- whowasext
-- unban
-- ban
-- info
-- regenerate
-
 # Development
 You need:
 - Database
