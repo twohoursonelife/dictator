@@ -11,10 +11,11 @@ from constants import (
 from discord.ext import commands
 from logger_config import logger
 
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    environment=SENTRY_ENVIRONMENT,
-)
+if SENTRY_ENVIRONMENT == "prod":
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=SENTRY_ENVIRONMENT,
+    )
 
 
 class Dictator(commands.Bot):
