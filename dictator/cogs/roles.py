@@ -19,6 +19,7 @@ class Roles(commands.Cog):
         self.dictator = dictator
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def ncl(self, interaction: discord.Interaction) -> None:
         """Claims the NCL role if you have 10 or more hours in game. Grants you more access to the server."""
         await interaction.response.defer()
@@ -43,6 +44,7 @@ class Roles(commands.Cog):
         )
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def exp(self, interaction: discord.Interaction) -> None:
         """Claims the EXP role if you have 50 or more hours in game. Grants you more access to the server."""
         await interaction.response.defer(ephemeral=True)
@@ -70,6 +72,7 @@ class Roles(commands.Cog):
         await interaction.followup.send(f"You now have the {ROLE_2['name']} role.")
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def vet(self, interaction: discord.Interaction) -> None:
         """Claims the VET role if you have 375 or more hours in game. Grants you more access to the server."""
         await interaction.response.defer(ephemeral=True)
@@ -97,6 +100,7 @@ class Roles(commands.Cog):
         await interaction.followup.send(f"You now have the {ROLE_3['name']} role.")
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def wil(self, interaction: discord.Interaction) -> None:
         """Claims the WIL role if you have 1,000 or more hours in game. Grants you more access to the server."""
         await interaction.response.defer(ephemeral=True)

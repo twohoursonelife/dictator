@@ -22,6 +22,7 @@ class System(commands.Cog):
         await message.edit(suppress=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def ping(self, interaction: discord.Interaction) -> None:
         """Check the latency between Discord and Dictator."""
 
@@ -35,12 +36,11 @@ class System(commands.Cog):
             ephemeral=True,
         )
 
+    @commands.command(brief="Sync Dictators app commands globally.")
     @commands.guild_only()
     @commands.has_role(MOD_ROLE_ID)
-    @commands.command(brief="Sync Dictators app commands globally.")
     async def sync(self, ctx: commands.Context) -> None:
-        synced = await ctx.bot.tree.sync()
-        await ctx.send(f"Synced `{len(synced)}` commands globally.")
+        await ctx.send(f"Synced `{len(await ctx.bot.tree.sync())}` commands globally.")
 
 
 async def setup(dictator: commands.Bot) -> None:

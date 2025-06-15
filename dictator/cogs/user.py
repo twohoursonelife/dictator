@@ -28,8 +28,8 @@ class User(commands.Cog):
     async def key(self, ctx: commands.Context) -> None:
         await ctx.send("The new command is /account")
 
-    @app_commands.guild_only()
     @app_commands.command()
+    @app_commands.guild_only()
     async def account(self, interaction: discord.Interaction) -> None:
         """Get or create your game log in information."""
         await interaction.response.defer(ephemeral=True)
@@ -55,7 +55,6 @@ class User(commands.Cog):
             )
             logger.success(f"Supplied username and key to {interaction.user}")
 
-    @app_commands.guild_only()
     @app_commands.command()
     async def test(self, interaction: discord.Interaction) -> None:
         await interaction.response.send_message

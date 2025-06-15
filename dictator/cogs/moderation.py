@@ -13,8 +13,10 @@ class Admin(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     async def ban(
         self,
         interaction: discord.Interaction,
@@ -96,8 +98,9 @@ class Admin(commands.Cog):
         )
         await log_channel.send(embed=embed)
 
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     async def unban(
         self,
         interaction: discord.Interaction,
@@ -179,8 +182,9 @@ class Admin(commands.Cog):
         )
         await log_channel.send(embed=embed)
 
-    @app_commands.checks.has_role(MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(MOD_ROLE_ID)
     async def regenerate(
         self, interaction: discord.Interaction, user: discord.User
     ) -> None:
@@ -228,8 +232,9 @@ class Admin(commands.Cog):
         )
         await log_channel.send(embed=embed)
 
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     async def whowas(
         self, interaction: discord.Interaction, character_name: str
     ) -> None:
@@ -327,8 +332,9 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     async def whowasext(
         self,
         interaction: discord.Interaction,
@@ -411,8 +417,9 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
     async def getuser(
         self, interaction: discord.Interaction, game_username: str
     ) -> None:

@@ -259,8 +259,9 @@ class Stats(commands.Cog):
         embed = await self.open_collective_forecast_embed()
         await self.OC_CHANNEL.send(embed=embed)
 
-    @app_commands.checks.has_role(MOD_ROLE_ID)
     @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(MOD_ROLE_ID)
     async def open_collective(self, interaction: discord.Interaction) -> None:
         """Generates and sends Open Collective forecast to the current channel."""
         await interaction.response.defer()
