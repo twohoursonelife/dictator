@@ -456,19 +456,19 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.is_owner()
-    async def update_username(
-        self,
-        interaction: discord.Interaction,
-        discord_user: discord.User,
-    ) -> None:
-        await interaction.response.send_message(
-            "You did it!",
-            ephemeral=True,
-            delete_after=10,
-        )
+    # @app_commands.command()
+    # @app_commands.guild_only()
+    # @app_commands.checks.is_owner()
+    # async def update_username(
+    #     self,
+    #     interaction: discord.Interaction,
+    #     discord_user: discord.User,
+    # ) -> None:
+    #     await interaction.response.send_message(
+    #         "You did it!",
+    #         ephemeral=True,
+    #         delete_after=10,
+    #     )
 
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""
