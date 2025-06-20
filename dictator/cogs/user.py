@@ -9,6 +9,7 @@ from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
 from logger_config import logger
+from utils.utils import search_user
 
 
 class User(commands.Cog):
@@ -29,7 +30,7 @@ class User(commands.Cog):
         """Get or create your game log in information."""
         await interaction.response.defer(ephemeral=True)
 
-        user = await self.search_user(interaction.user.id)
+        user = search_user(interaction.user.id)
 
         if user is None:
             await interaction.followup.send(
@@ -74,7 +75,7 @@ class User(commands.Cog):
                 return
 
         # Check if user already has an account before creating one
-        check_user = await self.search_user(user.id)
+        check_user = search_user(user.id)
 
         if check_user is not None:
             # User already has an account
@@ -217,15 +218,6 @@ class User(commands.Cog):
         key_chunks = wrap(key, 5)
         key = "-".join(key_chunks)
         return key
-
-    # Search whether a user exists, return username and key if they do
-    async def search_user(self, user_id: int):
-        with db_conn() as db:
-            db.execute(
-                f"SELECT email, login_key FROM ticketServer_tickets WHERE discord_id = '{user_id}'"
-            )
-            row = db.fetchone()
-            return row
 
     # Search whether a username already exists
     async def search_username(self, user: discord.User):
