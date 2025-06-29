@@ -1,17 +1,26 @@
-import random
 import re
-from datetime import timedelta
-from textwrap import wrap
 
 import discord
 from constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
 from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
+from exceptions import (
+    UserAlreadyRegisteredError,
+    UsernameAlreadyExistsError,
+    UsernameValidationError,
+)
 from logger_config import logger
-from utils.utils import get_user_by_discord_id, get_user_by_username
+from utils.utils import (
+    generate_login_key,
+    get_user_by_discord_id,
+    is_new_discord_user,
+    is_unique_username,
+    is_user_already_registered,
+    is_valid_username,
+)
 
-
+# TODO: If user sends a DM, respond with info.
 class User(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
@@ -65,109 +74,94 @@ class User(commands.Cog):
             f"Hey {interaction.user.mention}! Here is your login information:\n**Username:** `{username}`\n**Key:** `{key}`",
             ephemeral=True,
         )
-        logger.success(f"Supplied username and key to {interaction.user}")
+        logger.success(f"Supplied username and key to {interaction.user}.")
 
-    async def create_user(self, user: discord.User, username: str = None) -> None:
+    async def create_user(
+        self,
+        discord_user: discord.User,
+        username: str = None,
+    ) -> None:
+        """Create a new 2HOL user account."""
         if username is None:
-            username = user.name
+            username = discord_user.name
 
-        # Filter username, can't have any nasty characters
-        # Then replaces any non whitlisted (regex) characters with empty string
-        username = re.sub("[^a-zA-Z0-9]", "", username)
+        # Validation
+        try:
+            is_user_already_registered(discord_user.id)
+            is_valid_username(username)
+            is_unique_username(username)
 
-        if len(username) < 3:
-            # Username was only made up of special chracters, prompt for one
-            chosen_username = await self.prompt_user(
-                user,
-                f"Hey {user.mention}, your username doesn't contain enough valid characters. What should I use instead?",
+        except UserAlreadyRegisteredError:
+            logger.debug(
+                f"User {discord_user.name} ({discord_user.id}) is already registered."
             )
-
-            if chosen_username is None:
-                await user.send("You didn't tell me what to use instead.")
-                return
-
-            else:
-                await self.create_user(user, chosen_username)
-                return
-
-        # Check if user already has an account before creating one
-        check_user = get_user_by_discord_id(user.id)
-
-        if check_user is not None:
-            # User already has an account
-            username = check_user[0]
-            key = check_user[1]
-            logger.info(
-                f"We tried to create an account for {user} but they already had one, so we'll send them their login information."
-            )
-            await user.send(
-                f"Hey {user.mention}, you already have an account! Here is your login information:\n**Username:** {username}\n**Key:** {key}"
-            )
+            
+            # TODO: Message the user with account information.
             return
 
-        if len(username) > 32:
-            username = username[0:32]
-
-        # Check if username is already in use
-        check_name = get_user_by_username(username)
-
-        if check_name is not None:
-            # Username is already in use, prompt for one
+        except UsernameValidationError as e:
             chosen_username = await self.prompt_user(
-                user,
-                f"Hey {user.mention}, your username is already in use. What should I use instead?",
+                discord_user,
+                f"Hey {discord_user.mention}, there was an error when creating your 2HOL account:\n> {str(e)}\n\nPlease reply with a valid username.",
             )
 
             if chosen_username is None:
-                await user.send("You didn't tell me what to use instead.")
-                return
+                return await discord_user.send(
+                    "You didn't tell me what to use instead. Use the command again when you're ready!"
+                )
 
-            else:
-                await self.create_user(user, chosen_username)
-                return
+            return await self.create_user(discord_user, chosen_username)
 
-        # Create the users accounnt, calling on create_key for a key
-        key = str(await self.create_key())
-        user_id = int(user.id)
-        username = str(username)
+        except UsernameAlreadyExistsError:
+            chosen_username = await self.prompt_user(
+                discord_user,
+                f"Hey {discord_user.mention}, the username `{username}` is already in use. Please reply with another valid username.",
+            )
+
+            if chosen_username is None:
+                return await discord_user.send(
+                    "You didn't tell me what to use instead. Use the command again when you're ready!"
+                )
+
+            return await self.create_user(discord_user, chosen_username)
+
+        # Creation
+        login_key = generate_login_key()
 
         with db_conn() as db:
             db.execute(
-                f"INSERT INTO ticketServer_tickets (email, discord_id, login_key) VALUES ('{username}', '{user_id}', '{key}')"
+                f"INSERT INTO ticketServer_tickets (email, discord_id, login_key) VALUES ('{username}', '{discord_user.id}', '{login_key}')"
             )
 
-        # Notify the user
+        # Notification
+        # TODO: offload the user to the /account flow
         try:
-            await user.send(
-                f"Welcome to 2HOL {user.mention}!\n"
-                "\nPlease know that 2HOL is a moderated community."
-                "\nWe only ask that you be kind to all players, as you would to a friend."
-                "\nAll actions are recorded, please make a mod report in Discord if you have issues."
-                "\nYou can read more on how to start playing [here](<https://twohoursonelife.com/first-time-playing?ref=create_acc>).\n"
-                "\nWhen you're ready, you can use the details below to log in to the game:"
-                f"\n**Username:** {username}"
-                f"\n**Key:** {key}"
+            await discord_user.send(
+                f"Welcome to 2HOL {discord_user.mention}!"
+                "\n\nPlease know that 2HOL is a moderated community."
+                "\nWe ask that you be kind to all players, as you would to a friend."
+                "\nAll actions are recorded, please make a ticket in our Discord server if you have a bad experience."
+                "\nYou can read more on how to start playing [here](<https://twohoursonelife.com/first-time-playing?ref=create_acc>)."
+                "\n\nWhen you're ready, you can use the details below to log in to the game:"
+                f"\n**Username:** `{username}`"
+                f"\n**Key:** `{login_key}`"
             )
 
-        except Exception as e:
+        # TODO: Extract into generic handler
+        except discord.Forbidden:
             notify_user = False
-            logger.exception(e)
 
         else:
             notify_user = True
 
-        one_week_ago = discord.utils.utcnow() - timedelta(weeks=1)
-        new_discord_account = False
-        if user.created_at > one_week_ago:
-            new_discord_account = True
-
+        # Audit
+        # TODO: Extract audit log message into generic function
         debug_log_channel = self.dictator.get_channel(DEBUG_CHANNEL_ID)
 
-        # Embed log
         embed = discord.Embed(
             title="New game account created", colour=discord.Colour.green()
         )
-        embed.add_field(name="Member:", value=f"{user.mention}", inline=True)
+        embed.add_field(name="Member:", value=f"{discord_user.mention}", inline=True)
         embed.add_field(name="Username:", value=f"{username}", inline=True)
         embed.add_field(
             name="User notification:",
@@ -178,7 +172,7 @@ class User(commands.Cog):
             name="User account age:",
             value=(
                 "New discord account"
-                if new_discord_account
+                if is_new_discord_user(discord_user)
                 else "Existing discord account"
             ),
             inline=True,
@@ -186,72 +180,29 @@ class User(commands.Cog):
         await debug_log_channel.send(embed=embed)
 
         logger.success(
-            f"Successfully created an account for {user.name} using the username {username}."
+            f"Successfully created an account for {discord_user.name} using the username {username}."
         )
 
-    # Generate a string consisting of 20 random chars, split into 4 chunks of 5 and seperated by -
-    async def create_key(self) -> str:
-        readable_base_32_digit_array = [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-        ]
-        key = ""
-        while len(key) != 20:
-            key += readable_base_32_digit_array[
-                random.randint(0, len(readable_base_32_digit_array) - 1)
-            ]
+    async def prompt_user(self, discord_member: discord.Member, message: str) -> str:
+        """Prompt user to respond to a question via private message"""
+        await discord_member.send(f"{message}")
 
-        key_chunks = wrap(key, 5)
-        key = "-".join(key_chunks)
-        return key
-
-    # Prompt user to respond to a question via private message
-    async def prompt_user(self, user: discord.User, msg: str):
-        await user.send(f"{msg}")
         try:
 
             def check(m):
                 # Make sure we're only listening for a message from the relevant user via DM
-                return m.author == user and isinstance(m.channel, discord.DMChannel)
+                return m.author == discord_member and isinstance(
+                    m.channel, discord.DMChannel
+                )
 
-            reply = await self.dictator.wait_for("message", timeout=60.0, check=check)
+            message: discord.Message = await self.dictator.wait_for("message", timeout=60.0, check=check)
 
-        except Exception as e:
-            logger.exception(e)
-            return
+        except TimeoutError:
+            logger.info(f"Timed out awaiting reply from {discord_member.name}.")
 
         else:
-            return reply.content
+            await message.add_reaction("👍")
+            return message.content
 
     @commands.command(
         brief="Create multiple bot accounts",
@@ -259,7 +210,7 @@ class User(commands.Cog):
         usage="<user>",
     )
     @commands.guild_only()
-    @commands.has_role(GAME_MOD_ROLE_ID)
+    @commands.has_role(GAME_MOD_ROLE_ID)  # TODO: Admin
     async def create_bot(self, ctx, prefix, amount: int):
         await ctx.message.delete()
 
@@ -268,7 +219,7 @@ class User(commands.Cog):
 
         for i in range(amount):
             username = f"{prefix}-{i}"
-            key = await self.create_key()
+            key = generate_login_key()
 
             with db_conn() as db:
                 db.execute(
