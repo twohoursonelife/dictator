@@ -34,7 +34,7 @@ class User(commands.Cog):
     ) -> None:
         """Trigger account creation after member verification (rules acceptance)."""
         if member_before.pending and not member_after.pending:
-            logger.debug(f"{member_after.named} pending state changed.")
+            logger.debug(f"{member_after.name} pending state changed.")
             await self.create_user(member_after)
 
     @commands.Cog.listener()
