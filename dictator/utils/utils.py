@@ -22,7 +22,9 @@ def get_user_by_discord_id(discord_id: int):
 
 def get_user_by_username(username: str):
     with db_conn() as db:
-        db.execute(f"SELECT email FROM ticketServer_tickets WHERE email = '{username}' LIMIT 1")
+        db.execute(
+            f"SELECT email FROM ticketServer_tickets WHERE email = '{username}' LIMIT 1"
+        )
         return db.fetchone()
 
 

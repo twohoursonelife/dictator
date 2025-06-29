@@ -20,6 +20,7 @@ from utils.utils import (
     is_valid_username,
 )
 
+
 # TODO: If user sends a DM, respond with info.
 class User(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
@@ -95,7 +96,7 @@ class User(commands.Cog):
             logger.debug(
                 f"User {discord_user.name} ({discord_user.id}) is already registered."
             )
-            
+
             # TODO: Message the user with account information.
             return
 
@@ -195,7 +196,9 @@ class User(commands.Cog):
                     m.channel, discord.DMChannel
                 )
 
-            message: discord.Message = await self.dictator.wait_for("message", timeout=60.0, check=check)
+            message: discord.Message = await self.dictator.wait_for(
+                "message", timeout=60.0, check=check
+            )
 
         except TimeoutError:
             logger.info(f"Timed out awaiting reply from {discord_member.name}.")
