@@ -133,7 +133,7 @@ class Admin(commands.Cog):
                 f"{interaction.user} tried to unban {discord_user.name} ({discord_user.id}) but they're not banned."
             )
             await interaction.edit_original_response(
-                f"{discord_user.name} ({discord_user.id}) is not already banned."
+                content=f"{discord_user.name} ({discord_user.id}) is not already banned."
             )
             return
 
