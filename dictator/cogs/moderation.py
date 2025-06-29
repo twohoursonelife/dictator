@@ -1,8 +1,9 @@
 import re
 from datetime import timezone
+from hashlib import sha1
 
 import discord
-from constants import GAME_MOD_ROLE_ID, LOG_CHANNEL_ID, MOD_ROLE_ID
+from constants import GAME_MOD_ROLE_ID, LOG_CHANNEL_ID, MOD_ROLE_ID, ADMIN_ROLE_ID
 from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
@@ -463,19 +464,46 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
-    # @app_commands.command()
-    # @app_commands.guild_only()
-    # @app_commands.checks.is_owner()
-    # async def update_username(
-    #     self,
-    #     interaction: discord.Interaction,
-    #     discord_user: discord.User,
-    # ) -> None:
-    #     await interaction.response.send_message(
-    #         "You did it!",
-    #         ephemeral=True,
-    #         delete_after=10,
-    #     )
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(ADMIN_ROLE_ID)
+    async def update_username(
+        self,
+        interaction: discord.Interaction,
+        discord_user: discord.User,
+        new_username: str,
+    ) -> None:
+        # TODO parse new username for validity
+
+        # TODO check new name is not in use
+
+        # TODO email sha field?
+        email = "Colin-9391"
+        logger.info(self.generate_sha1(email))
+
+        for table in [
+            "ticketServer_tickets",
+            "reviewServer_user_stats",
+            "photoServer_users",
+            "lifeTokenServer_users",
+            "fitnessServer_users",
+            "curseServer_users",
+        ]:
+            # with db_conn() as db:
+            #     db.execute(f"UPDATE {table} SET email = {abc} WHERE email = {xyz}")
+
+            pass
+
+        # TODO specialc ase for linege
+        # "lineageServer_users" must also insert sha
+
+        # TODO big audit log pls
+
+        await interaction.response.send_message(
+            "You did it!",
+            ephemeral=True,
+            delete_after=10,
+        )
 
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""
@@ -503,6 +531,9 @@ class Admin(commands.Cog):
     def is_int(self, string: str) -> bool:
         """Takes a string and returns a True if it only contains numbers, else False."""
         return bool(re.search("^[0-9]*$", string))
+
+    def generate_sha1(self, string: str) -> str:
+        return sha1(string.lower().encode("utf-8")).hexdigest()
 
 
 async def setup(dictator: commands.Bot) -> None:
