@@ -140,10 +140,11 @@ class Roles(commands.Cog):
     def playtime_less_than(self, discord_id: int, less_than_minutes: int) -> bool:
         with db_conn() as db:
             db.execute(
-                f"SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = {discord_id}"
+                "SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = %s",
+                (discord_id,),
             )
             time_played = db.fetchone()
-            
+
         if time_played is None:
             return False
 

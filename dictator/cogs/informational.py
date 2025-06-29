@@ -30,7 +30,8 @@ class Informational(commands.Cog):
 
         with db_conn() as db:
             db.execute(
-                f"SELECT ticketServer_tickets.email, blocked, game_count, last_game_date, game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = '{discord_user.id}'"
+                "SELECT ticketServer_tickets.email, blocked, game_count, last_game_date, game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = %s",
+                (discord_user.id,),
             )
             user_info = db.fetchone()
 

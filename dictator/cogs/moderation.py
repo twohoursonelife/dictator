@@ -34,7 +34,8 @@ class Admin(commands.Cog):
         # Is user already banned?
         with db_conn() as db:
             db.execute(
-                f"SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = '{discord_user.id}'"
+                "SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = %s",
+                (discord_user.id,),
             )
             row = db.fetchone()
 
@@ -56,7 +57,8 @@ class Admin(commands.Cog):
         # Ban the user
         with db_conn() as db:
             db.execute(
-                f"UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = '{discord_user.id}'"
+                "UPDATE ticketServer_tickets SET blocked = 1 WHERE discord_id = %s",
+                (discord_user.id,),
             )
 
         logger.success(
@@ -118,7 +120,8 @@ class Admin(commands.Cog):
         # Check that user is banned
         with db_conn() as db:
             db.execute(
-                f"SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = '{discord_user.id}'"
+                "SELECT blocked, email FROM ticketServer_tickets WHERE discord_id = %s",
+                (discord_user.id,),
             )
             row = db.fetchone()
 
@@ -140,7 +143,8 @@ class Admin(commands.Cog):
         # Unban the user
         with db_conn() as db:
             db.execute(
-                f"UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = '{discord_user.id}'"
+                "UPDATE ticketServer_tickets SET blocked = 0 WHERE discord_id = %s",
+                (discord_user.id,),
             )
 
         logger.success(
@@ -198,7 +202,8 @@ class Admin(commands.Cog):
 
         with db_conn() as db:
             db.execute(
-                f"UPDATE ticketServer_tickets SET login_key = '{key}' WHERE discord_id = '{user.id}'"
+                "UPDATE ticketServer_tickets SET login_key = %s WHERE discord_id = %s",
+                (key, user.id),
             )
 
         # Notify the user
@@ -259,7 +264,8 @@ class Admin(commands.Cog):
                 This is achieved with 'ORDER BY death_time DESC LIMIT 1'
                 """
                 db.execute(
-                    f"SELECT lineageServer_lives.name FROM lineageServer_lives WHERE player_id = {character_name} ORDER BY death_time DESC LIMIT 1"
+                    "SELECT lineageServer_lives.name FROM lineageServer_lives WHERE player_id = %s ORDER BY death_time DESC LIMIT 1",
+                    (character_name,),
                 )
                 character_name = db.fetchone()
 
@@ -274,7 +280,6 @@ class Admin(commands.Cog):
                 character_name = character_name[0]
 
         with db_conn() as db:
-            # I don't understand why I need to use %s instead of F strings. But it doesn't work otherwise.
             db.execute(
                 """
                 SELECT
@@ -346,7 +351,7 @@ class Admin(commands.Cog):
 
         with db_conn() as db:
             db.execute(
-                f"""
+                """
                 SELECT
                     ticketServer_tickets.discord_id,
                     lineageServer_lives.death_time,
@@ -356,14 +361,15 @@ class Admin(commands.Cog):
                     lineageServer_lives.id,
                     lineageServer_lives.player_id,
                     ticketServer_tickets.blocked,
-                    lineageServer_lives.user_id,
+                    lineageServer_lives.user_id
                 FROM lineageServer_lives
                 INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id
                 INNER JOIN ticketServer_tickets ON lineageServer_users.email = ticketServer_tickets.email
-                WHERE name = '{character_name}'
+                WHERE name = %s
                 ORDER BY death_time DESC
                 LIMIT 1
-                """
+                """,
+                (character_name,),
             )
             life = db.fetchone()
 
@@ -431,7 +437,8 @@ class Admin(commands.Cog):
 
         with db_conn() as db:
             db.execute(
-                f"SELECT ticketServer_tickets.discord_id FROM ticketServer_tickets WHERE email = '{game_username}'"
+                "SELECT ticketServer_tickets.discord_id FROM ticketServer_tickets WHERE email = %s",
+                (game_username,),
             )
             result = db.fetchone()
 
@@ -480,7 +487,8 @@ class Admin(commands.Cog):
             This is achieved with 'ORDER BY death_time DESC LIMIT 1'
             """
             db.execute(
-                f"SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = {player_id} ORDER BY death_time DESC LIMIT 1"
+                "SELECT lineageServer_users.email FROM lineageServer_lives INNER JOIN lineageServer_users ON lineageServer_lives.user_id = lineageServer_users.id WHERE player_id = %s ORDER BY death_time DESC LIMIT 1",
+                (player_id,),
             )
             username = db.fetchone()
 

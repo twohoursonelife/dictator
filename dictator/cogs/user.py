@@ -75,7 +75,7 @@ class User(commands.Cog):
             f"Hey {interaction.user.mention}! Here is your login information:\n**Username:** `{username}`\n**Key:** `{key}`",
             ephemeral=True,
         )
-        logger.success(f"Supplied username and key to {interaction.user}.")
+        logger.debug(f"Supplied username and key to {interaction.user}.")
 
     async def create_user(
         self,
@@ -131,7 +131,8 @@ class User(commands.Cog):
 
         with db_conn() as db:
             db.execute(
-                f"INSERT INTO ticketServer_tickets (email, discord_id, login_key) VALUES ('{username}', '{discord_user.id}', '{login_key}')"
+                "INSERT INTO ticketServer_tickets (email, discord_id, login_key) VALUES (%s, %s, %s)",
+                (username, discord_user.id, login_key),
             )
 
         # Notification
@@ -226,7 +227,8 @@ class User(commands.Cog):
 
             with db_conn() as db:
                 db.execute(
-                    f"INSERT INTO ticketServer_tickets (email, login_key) VALUES ('{username}', '{key}')"
+                    "INSERT INTO ticketServer_tickets (email, login_key) VALUES (%s, %s)",
+                    (username, key),
                 )
 
             await ctx.author.send(f"{username} :: {key}")

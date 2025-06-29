@@ -15,7 +15,8 @@ from exceptions import (
 def get_user_by_discord_id(discord_id: int):
     with db_conn() as db:
         db.execute(
-            f"SELECT email, login_key FROM ticketServer_tickets WHERE discord_id = '{discord_id}' LIMIT 1"
+            "SELECT email, login_key FROM ticketServer_tickets WHERE discord_id = %s LIMIT 1",
+            (discord_id,),
         )
         return db.fetchone()
 
@@ -23,7 +24,8 @@ def get_user_by_discord_id(discord_id: int):
 def get_user_by_username(username: str):
     with db_conn() as db:
         db.execute(
-            f"SELECT email FROM ticketServer_tickets WHERE email = '{username}' LIMIT 1"
+            "SELECT email FROM ticketServer_tickets WHERE email = %s LIMIT 1",
+            (username,),
         )
         return db.fetchone()
 
