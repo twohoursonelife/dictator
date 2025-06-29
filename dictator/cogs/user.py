@@ -16,14 +16,30 @@ class User(commands.Cog):
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
 
-    # Trigger account creation after member passes guild rules screening
     @commands.Cog.listener()
     async def on_member_update(
-        self, before: discord.Member, after: discord.Member
+        self,
+        member_before: discord.Member,
+        member_after: discord.Member,
     ) -> None:
-        if before.pending and not after.pending:
-            await self.create_user(after)
-        return
+        """Trigger account creation after member verification (rules acceptance)."""
+        if member_before.pending and not member_after.pending:
+            logger.debug(f"{member_after.named} pending state changed.")
+            await self.create_user(member_after)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member) -> None:
+        """
+        Trigger account creation if member verification (rules acceptance) is disabled.
+        This is applicable during development or future configuration changes.
+        """
+
+        if member.pending:
+            logger.debug(f"{member.name} joined the server, in pending state.")
+            return
+
+        logger.info(f"{member.name} joined the server, not in pending state.")
+        await self.create_user(member)
 
     @app_commands.command()
     async def account(self, interaction: discord.Interaction) -> None:
