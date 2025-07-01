@@ -64,18 +64,27 @@ class User(commands.Cog):
 
     async def send_user_account_details(
         self,
-        user: discord.User,
-        interaction: discord.Interaction = None,
+        discord_user: discord.User,
+        remove_greeting: bool = False,
     ):
-        """Send a Discord user their 2HOL account details."""
+        """
+        Send a Discord user their 2HOL account details.
 
-        account_details = get_user_by_discord_id(user.id)
+        Greeting optional for cases where we just want the details, such as initial creation.
+        """
+
+        account_details = get_user_by_discord_id(discord_user.id)
 
         if account_details is None:
-            return await self.create_user(interaction.user)
+            return await self.create_user(discord_user)
 
-        await user.send(
-            f"Hey {user.mention}! Here are your account details:\n**Username:** `{account_details[0]}`\n**Key:** `{account_details[1]}`",
+        message_greeting = f"Hey {discord_user.mention}! Here are your account details:"
+        message_details = (
+            f"\n**Username:** `{account_details[0]}`\n**Key:** `{account_details[1]}`"
+        )
+
+        await discord_user.send(
+            message_details if remove_greeting else message_greeting + message_details,
             delete_after=300,
         )
 
@@ -138,18 +147,17 @@ class User(commands.Cog):
             )
 
         # Notification
-        # TODO: offload the user to the /account flow
         try:
             await discord_user.send(
                 f"Welcome to 2HOL {discord_user.mention}!"
                 "\n\nPlease know that 2HOL is a moderated community."
                 "\nWe ask that you be kind to all players, as you would to a friend."
-                "\nAll actions are recorded, please make a ticket in our Discord server if you have a bad experience."
+                "\nAll actions are recorded, please make a [ticket](https://discord.com/channels/423293333864054833/1051420513559392266) in our Discord server if you have a bad experience."
                 "\nYou can read more on how to start playing [here](<https://twohoursonelife.com/first-time-playing?ref=create_acc>)."
-                "\n\nWhen you're ready, you can use the details below to log in to the game:"
-                f"\n**Username:** `{username}`"
-                f"\n**Key:** `{login_key}`"
+                "\n\nWhen you're ready, you can use the details below to play the game:"
             )
+
+            await self.send_user_account_details(discord_user, True)
 
         # TODO: Extract into generic handler
         except discord.Forbidden:
