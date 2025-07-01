@@ -60,7 +60,14 @@ class User(commands.Cog):
             delete_after=15,
         )
 
-        return await self.send_user_account_details(interaction.user)
+        await self.send_user_account_details(interaction.user)
+
+    # Legacy sadness <3
+    @commands.command(brief="Legacy account details command.")
+    async def key(self, ctx: commands.Context) -> None:
+        await ctx.message.delete()
+        logger.info(f"{ctx.author} used the legacy -key command.")
+        await self.send_user_account_details(ctx.author)
 
     async def send_user_account_details(
         self,
