@@ -111,12 +111,7 @@ class User(commands.Cog):
             is_unique_username(username)
 
         except UserAlreadyRegisteredError:
-            logger.debug(
-                f"User {discord_user.name} ({discord_user.id}) is already registered."
-            )
-
-            # TODO: Message the user with account information.
-            return
+            return await self.send_user_account_details(discord_user)
 
         except UsernameValidationError as e:
             chosen_username = await self.prompt_user(
