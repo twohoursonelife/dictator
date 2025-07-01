@@ -54,28 +54,30 @@ class User(commands.Cog):
     @app_commands.command()
     async def account(self, interaction: discord.Interaction) -> None:
         """Get or create your game log in information."""
-        await interaction.response.defer(ephemeral=True)
-
-        user = get_user_by_discord_id(interaction.user.id)
-
-        if user is None:
-            await interaction.followup.send(
-                f"{interaction.user.mention} You don't have an account, I'm creating one for you now. I'll send you a message soon!",
-                ephemeral=True,
-            )
-            logger.info(
-                f"{interaction.user} attempted to retrieve their key but didn't have an account, we'll create them one."
-            )
-            await self.create_user(interaction.user)
-            return
-
-        username = user[0]
-        key = user[1]
-        await interaction.followup.send(
-            f"Hey {interaction.user.mention}! Here is your login information:\n**Username:** `{username}`\n**Key:** `{key}`",
+        await interaction.response.send_message(
+            "I'll send you a message with your account details!",
             ephemeral=True,
+            delete_after=15,
         )
-        logger.debug(f"Supplied username and key to {interaction.user}.")
+
+        return await self.send_user_account_details(interaction.user)
+
+    async def send_user_account_details(
+        self,
+        user: discord.User,
+        interaction: discord.Interaction = None,
+    ):
+        """Send a Discord user their 2HOL account details."""
+
+        account_details = get_user_by_discord_id(user.id)
+
+        if account_details is None:
+            return await self.create_user(interaction.user)
+
+        await user.send(
+            f"Hey {user.mention}! Here are your account details:\n**Username:** `{account_details[0]}`\n**Key:** `{account_details[1]}`",
+            delete_after=300,
+        )
 
     async def create_user(
         self,
