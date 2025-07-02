@@ -2,9 +2,10 @@ import math
 from datetime import timezone
 
 import discord
-from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
+
+from dictator.db_manager import db_connection as db_conn
 
 
 class Informational(commands.Cog):

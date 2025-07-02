@@ -3,18 +3,19 @@ from datetime import date
 
 import discord
 import inflect
-from constants import (
+from discord import app_commands
+from discord.ext import commands, tasks
+
+from dictator.constants import (
+    MAIN_COLOUR,
     MOD_ROLE_ID,
     OC_CHANNEL_ID,
     OC_FORECAST_MONTH_DAY,
     PLAYER_LIST_PASSWORD,
     STATS_CHANNEL_ID,
-    MAIN_COLOUR,
 )
-from discord import app_commands
-from discord.ext import commands, tasks
-from logger_config import logger
-from open_collective import ForecastOpenCollective
+from dictator.logger_config import logger
+from dictator.open_collective import ForecastOpenCollective
 
 
 class Stats(commands.Cog):

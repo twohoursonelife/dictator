@@ -4,8 +4,9 @@ from datetime import timedelta
 from itertools import batched
 
 import discord
-from db_manager import db_connection as db_conn
-from exceptions import (
+
+from dictator.db_manager import db_connection as db_conn
+from dictator.exceptions import (
     UserAlreadyRegisteredError,
     UsernameAlreadyExistsError,
     UsernameValidationError,

@@ -2,14 +2,14 @@ import os
 
 import discord
 import sentry_sdk
-from constants import (
+from dictator.constants import (
     BOT_PREFIX,
     BOT_TOKEN,
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
 )
 from discord.ext import commands
-from logger_config import logger
+from dictator.logger_config import logger
 
 if SENTRY_ENVIRONMENT == "prod":
     sentry_sdk.init(
@@ -22,7 +22,7 @@ class Dictator(commands.Bot):
     async def setup_hook(self) -> None:
         for filename in os.listdir("dictator/cogs"):
             if filename.endswith(".py"):
-                await dictator.load_extension(f"cogs.{filename[:-3]}")
+                await dictator.load_extension(f"dictator.cogs.{filename[:-3]}")
 
 
 intents = discord.Intents.all()

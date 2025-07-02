@@ -1,9 +1,10 @@
 import random
 
 import discord
-from constants import MOD_ROLE_ID, OC_CHANNEL_ID
 from discord import app_commands
 from discord.ext import commands
+
+from dictator.constants import MOD_ROLE_ID, OC_CHANNEL_ID
 
 
 class System(commands.Cog):

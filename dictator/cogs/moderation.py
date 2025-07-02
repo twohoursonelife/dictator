@@ -2,11 +2,20 @@ import re
 from datetime import timezone
 
 import discord
-from constants import GAME_MOD_ROLE_ID, LOG_CHANNEL_ID, MOD_ROLE_ID
-from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
-from logger_config import logger
+
+from dictator.constants import (
+    GAME_MOD_ROLE_ID,
+    LOG_CHANNEL_ID,
+    MOD_ROLE_ID,
+)
+from dictator.db_manager import db_connection as db_conn
+
+from dictator.logger_config import logger
+
+
+
 
 
 class Admin(commands.Cog):

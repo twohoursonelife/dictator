@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
-from logger_config import logger
+
+from dictator.logger_config import logger
+
 
 # TODO: Need a fair bit of love here.
 class Error_Handling(commands.Cog):

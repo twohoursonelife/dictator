@@ -1,17 +1,18 @@
 import re
 
 import discord
-from constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
-from db_manager import db_connection as db_conn
 from discord import app_commands
 from discord.ext import commands
-from exceptions import (
+
+from dictator.constants import DEBUG_CHANNEL_ID, GAME_MOD_ROLE_ID
+from dictator.db_manager import db_connection as db_conn
+from dictator.exceptions import (
     UserAlreadyRegisteredError,
     UsernameAlreadyExistsError,
     UsernameValidationError,
 )
-from logger_config import logger
-from utils.utils import (
+from dictator.logger_config import logger
+from dictator.utils.utils import (
     generate_login_key,
     get_user_by_discord_id,
     is_new_discord_user,
@@ -57,7 +58,7 @@ class User(commands.Cog):
         await interaction.response.send_message(
             "I'll send you a message with your account details!",
             ephemeral=True,
-            delete_after=15,
+            delete_after=10,
         )
 
         await self.send_user_account_details(interaction.user)

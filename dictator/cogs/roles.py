@@ -1,11 +1,12 @@
 import discord
-from constants import (
+from discord import app_commands
+from discord.ext import commands
+
+from dictator.constants import (
     EXP_CHANNEL_ID,
     VET_CHANNEL_ID,
 )
-from db_manager import db_connection as db_conn
-from discord import app_commands
-from discord.ext import commands
+from dictator.db_manager import db_connection as db_conn
 
 # Roles ["Role name, must match Discord", Required hours]
 ROLE_1 = {"name": "Not Completely Lost", "hours": 10}
