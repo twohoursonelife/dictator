@@ -1,6 +1,7 @@
 import random
 import re
 from datetime import timedelta
+from hashlib import sha1
 from itertools import batched
 
 import discord
@@ -51,13 +52,17 @@ def is_valid_username(username: str) -> None:
 
 
 def is_user_already_registered(discord_id: int) -> None:
+    """Raises UserAlreadyRegisteredError if there is already an account associated with the provided discord.User.id."""
     if get_user_by_discord_id(discord_id):
-        raise UserAlreadyRegisteredError()
+        # TODO: Declare error message with the error declaration
+        raise UserAlreadyRegisteredError("The user already has an account.")
 
 
 def is_unique_username(username: str) -> None:
+    """Raises UsernameAlreadyExistsError if there is already an account with the provided username."""
     if get_user_by_username(username):
-        raise UsernameAlreadyExistsError()
+        # TODO: Declare error message with the error declaration
+        raise UsernameAlreadyExistsError("The username is already in use.")
 
 
 def generate_login_key() -> str:
@@ -79,3 +84,7 @@ def is_new_discord_user(discord_user: discord.User) -> bool:
 
     # If created after (greater than) new_point, they're wihtin the new period
     return discord_user.created_at > new_point
+
+
+def generate_sha1(input: str) -> str:
+    return sha1(input.lower().encode("utf-8")).hexdigest()
