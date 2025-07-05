@@ -125,7 +125,7 @@ class User(commands.Cog):
 
             if chosen_username is None:
                 return await discord_user.send(
-                    "You didn't tell me what to use instead. Use the /account command when you're ready!"
+                    "You ran out of time. Use the /account command when you're ready!"
                 )
 
             return await self.create_user(discord_user, chosen_username)
@@ -138,7 +138,7 @@ class User(commands.Cog):
 
             if chosen_username is None:
                 return await discord_user.send(
-                    "You didn't tell me what to use instead. Use the /account command when you're ready!"
+                    "You ran out of time. Use the /account command when you're ready!"
                 )
 
             return await self.create_user(discord_user, chosen_username)
