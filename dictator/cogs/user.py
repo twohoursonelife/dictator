@@ -115,6 +115,9 @@ class User(commands.Cog):
             return await self.send_user_account_details(discord_user)
 
         except UsernameValidationError as e:
+            logger.info(
+                f"Tried creating account for {discord_user}, username {username}, error {str(e)}."
+            )
             chosen_username = await self.prompt_user(
                 discord_user,
                 f"Hey {discord_user.mention}, there was an error when creating your 2HOL account:\n> {str(e)}\n\nPlease reply with a valid username.",
