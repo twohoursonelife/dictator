@@ -11,11 +11,8 @@ from dictator.constants import (
     MOD_ROLE_ID,
 )
 from dictator.db_manager import db_connection as db_conn
-
 from dictator.logger_config import logger
-
-
-
+from dictator.utils.utils import generate_login_key
 
 
 class Admin(commands.Cog):
@@ -207,7 +204,7 @@ class Admin(commands.Cog):
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
 
-        key = await self.dictator.get_cog("User").create_key()
+        key = generate_login_key()
 
         with db_conn() as db:
             db.execute(
