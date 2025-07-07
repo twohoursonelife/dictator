@@ -1,14 +1,36 @@
-name: Deploy Dictator
+name: Test, release and deploy Dictator
 
 on:
   push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
+  test: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv run sync
+
+      - name: Run pytest
+        run: uv run pytest
+        # TODO: See constants.py.
+        env:
+          BOT_TOKEN: ""
+          DB_PASS: ""
+          OC_GRAPHQL_KEY: ""
+          PLAYER_LIST_PASSWORD: ""
+
+
   release:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4

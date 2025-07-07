@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# TODO: Refresh. Avoid declaring in global space to avoid testing needing to stub.
+
 # Required environment variables
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 DB_PASSWORD = os.environ["DB_PASS"]
