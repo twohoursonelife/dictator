@@ -2,17 +2,30 @@ import re
 from datetime import timezone
 
 import discord
+import mysql.connector
 from discord import app_commands
 from discord.ext import commands
 
 from dictator.constants import (
+    ADMIN_ROLE_ID,
     GAME_MOD_ROLE_ID,
     LOG_CHANNEL_ID,
     MOD_ROLE_ID,
 )
 from dictator.db_manager import db_connection as db_conn
+from dictator.exceptions import (
+    UsernameAlreadyExistsError,
+    UsernameValidationError,
+)
 from dictator.logger_config import logger
-from dictator.utils.utils import generate_login_key
+from dictator.utilities import (
+    generate_login_key,
+    generate_sha1,
+    get_user_by_discord_id,
+    is_unique_username,
+    is_valid_username,
+    send_user_account_details,
+)
 
 
 class Admin(commands.Cog):
@@ -118,7 +131,7 @@ class Admin(commands.Cog):
         await interaction.response.send_message(
             f"Unbanning {discord_user.name} ({discord_user.id}) for `{reason}`...",
             ephemeral=True,
-            delete_after=15,
+            delete_after=10,
         )
 
         log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
@@ -191,6 +204,7 @@ class Admin(commands.Cog):
         )
         await log_channel.send(embed=embed)
 
+    # TODO: Modernise the user notification.
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.has_role(MOD_ROLE_ID)
@@ -469,19 +483,128 @@ class Admin(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
-    # @app_commands.command()
-    # @app_commands.guild_only()
-    # @app_commands.checks.is_owner()
-    # async def update_username(
-    #     self,
-    #     interaction: discord.Interaction,
-    #     discord_user: discord.User,
-    # ) -> None:
-    #     await interaction.response.send_message(
-    #         "You did it!",
-    #         ephemeral=True,
-    #         delete_after=10,
-    #     )
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_role(ADMIN_ROLE_ID)
+    async def update_username(
+        self,
+        interaction: discord.Interaction,
+        discord_user: discord.User,
+        new_username: str,
+        reason: str,
+    ) -> None:
+        """
+        Update a users game username.
+
+        For restricted administrator use only.
+        """
+        await interaction.response.defer(ephemeral=True)
+
+        # Get user
+        user = get_user_by_discord_id(discord_user.id)
+
+        # TODO create validator function
+        if user is None:
+            return await interaction.followup.send(
+                "User has no account.",
+                ephemeral=True,
+            )
+
+        old_username = user[0]
+
+        # Validation
+        try:
+            is_valid_username(new_username)
+            is_unique_username(new_username)
+
+        except (UsernameValidationError, UsernameAlreadyExistsError) as e:
+            logger.info(
+                f"{interaction.user} attempted to update username for {discord_user}: {e}"
+            )
+            return await interaction.followup.send(
+                f"Unable to update username: {str(e)}",
+                ephemeral=True,
+            )
+
+        new_username_sha1 = generate_sha1(new_username)
+
+        user_tables = [
+            "ticketServer_tickets",
+            "reviewServer_user_stats",
+            "photoServer_users",
+            "lifeTokenServer_users",
+            "fitnessServer_users",
+            "curseServer_users",
+        ]
+
+        with db_conn() as db:
+            try:
+                db.execute("START TRANSACTION")
+                db.execute(
+                    "UPDATE lineageServer_users SET email = %s, email_sha1 = %s WHERE email = %s",
+                    (new_username, new_username_sha1, old_username),
+                )
+                for table in user_tables:
+                    db.execute(
+                        f"UPDATE {table} SET email = %s WHERE email = %s",
+                        (new_username, old_username),
+                    )
+                db.execute("COMMIT")
+
+            except mysql.connector.Error as e:
+                db.execute("ROLLBACK")
+                logger.error(
+                    f"{interaction.user} attempted to update username for {discord_user}: {e}"
+                )
+                return await interaction.followup.send(
+                    "Error! Unable to update username.",
+                    ephemeral=True,
+                )
+
+        await interaction.followup.send("Username updated.", ephemeral=True)
+
+        # Notify
+        try:
+            embed = discord.Embed(
+                title="Your username for 2HOL was changed by an admin.",
+                colour=discord.Colour.green(),
+            )
+            embed.add_field(name="Old username:", value=old_username, inline=True)
+            embed.add_field(name="New username:", value=new_username, inline=True)
+            embed.add_field(name="Reason:", value=reason, inline=True)
+            await discord_user.send(embed=embed)
+            await send_user_account_details(self.dictator, discord_user)
+
+        except discord.Forbidden:
+            notify_user = False
+
+        else:
+            notify_user = True
+
+        # Audit
+        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+
+        embed = discord.Embed(
+            title="Updated a users username:", colour=discord.Colour.green()
+        )
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
+        embed.add_field(name="Member:", value=discord_user.name, inline=True)
+        embed.add_field(name="Old username:", value=old_username, inline=True)
+        embed.add_field(name="New username:", value=new_username, inline=True)
+        embed.add_field(name="Reason:", value=reason, inline=True)
+        embed.add_field(
+            name="Notification:",
+            value="Successful" if notify_user else "Failed",
+            inline=True,
+        )
+        embed.set_footer(
+            text=f"Member ID: {discord_user.id}", icon_url=discord_user.avatar
+        )
+
+        logger.success(
+            f"{interaction.user} updated username for {discord_user}. Old: {old_username}. New: {new_username}."
+        )
+        await log_channel.send(embed=embed)
 
     def username_from_player_id(self, player_id: int) -> str:
         """Takes an int as a players life ID and returns the associated username."""
