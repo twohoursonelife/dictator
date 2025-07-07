@@ -1,10 +1,13 @@
 class UsernameValidationError(Exception):
-    pass
+    def __init__(self, message="Invalid username."):
+        super().__init__(message)
 
 
 class UsernameAlreadyExistsError(Exception):
-    pass
+    def __init__(self, message="The username is already in use."):
+        super().__init__(message)
 
 
 class UserAlreadyRegisteredError(Exception):
-    pass
+    def __init__(self, message="The user already has an account."):
+        super().__init__(message)
