@@ -34,4 +34,5 @@ async def on_ready() -> None:
     logger.info("The 2HOL Dictator has risen!")
 
 
-dictator.run(BOT_TOKEN)
+if __name__ == "main":
+    dictator.run(BOT_TOKEN)
