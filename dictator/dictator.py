@@ -11,7 +11,7 @@ from dictator.constants import (
 from discord.ext import commands
 from dictator.logger_config import logger
 
-if SENTRY_ENVIRONMENT == "prod":
+if SENTRY_ENVIRONMENT == "production":
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         environment=SENTRY_ENVIRONMENT,

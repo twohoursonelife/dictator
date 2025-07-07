@@ -12,4 +12,4 @@ primary_region = 'iad'
   DB_HOST="db.twohoursonelife.com"
   DB_DB="PROD_2HOL"
   DB_USER="dictator"
-  SENTRY_ENVIRONMENT="prod"
+  SENTRY_ENVIRONMENT="production"
