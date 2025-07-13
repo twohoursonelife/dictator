@@ -14,6 +14,7 @@ PLAYER_LIST_PASSWORD = os.environ["PLAYER_LIST_PASSWORD"]
 
 # Optional environment variables, setting defaults
 BOT_PREFIX = os.environ.get("BOT_PREFIX", "-")
+DICTATOR_VERSION = os.environ.get("DICTATOR_VERSION", "HEAD")
 
 ADMIN_ROLE_ID = int(os.environ.get("ADMIN_ROLE_ID", 604284386556510209))
 MOD_ROLE_ID = int(os.environ.get("MOD_ROLE_ID", 578867113817800715))

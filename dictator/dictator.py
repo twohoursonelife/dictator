@@ -2,18 +2,21 @@ import os
 
 import discord
 import sentry_sdk
+from discord.ext import commands
+
 from dictator.constants import (
     BOT_PREFIX,
     BOT_TOKEN,
+    DICTATOR_VERSION,
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
 )
-from discord.ext import commands
 from dictator.logger_config import logger
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     environment=SENTRY_ENVIRONMENT,
+    release=DICTATOR_VERSION,
     traces_sample_rate=1.0,
 )
 

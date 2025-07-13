@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 
 from dictator.constants import (
+    DICTATOR_VERSION,
     MAIN_COLOUR,
     MOD_ROLE_ID,
     OC_CHANNEL_ID,
@@ -82,13 +83,22 @@ class Stats(commands.Cog):
 
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
+        bot_version = (
+            DICTATOR_VERSION if not len(DICTATOR_VERSION) >= 6 else DICTATOR_VERSION[:6]
+        )
+
         embed = discord.Embed(title="Stats", colour=MAIN_COLOUR)
-        embed.timestamp = discord.utils.utcnow()
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(
             name="Families", value=f"{family_count} total\n{families}", inline=False
         )
-        embed.set_footer(text=f"Server v{server_info[1]}")
+        embed.add_field(
+            name="",
+            value=f"-# `Server v{server_info[1]}`\n-# `Dictator v{bot_version}`",
+            inline=False,
+        )
+        embed.timestamp = discord.utils.utcnow()
+
         await self.STATS_MESSAGE.edit(embed=embed)
 
     async def get_server_stats(self) -> str:
