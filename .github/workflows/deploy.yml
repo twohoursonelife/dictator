@@ -49,4 +49,4 @@ jobs:
           SENTRY_ORG: twohoursonelife
           SENTRY_PROJECT: dictator
         with:
-          environment: prod
+          environment: production
