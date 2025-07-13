@@ -18,7 +18,7 @@ class Informational(commands.Cog):
         """Sends basic information about playing for the first time."""
 
         await interaction.response.send_message(
-            'How do I play?\nHow do I download?\n\n<[Click here](https://twohoursonelife.com/first-time-playing/?ref=rtfm)> for the manual to play for the first time.\n\nUse the "/account" command to get your username and key.'
+            'How do I play?\nHow do I download?\n\n[Click here](<https://twohoursonelife.com/first-time-playing/?ref=rtfm>) for the manual to play for the first time.\n\nUse the "/account" command to get your username and key.'
         )
 
     @app_commands.command()
