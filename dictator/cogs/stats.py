@@ -94,7 +94,7 @@ class Stats(commands.Cog):
         )
         embed.add_field(
             name="",
-            value=f"-# `Server v{server_info[1]}`\n-# `Dictator v{bot_version}`",
+            value=f"-# `Server v{server_info[1]}`\n-# `Dictator v{bot_version.upper()}`",
             inline=False,
         )
         embed.timestamp = discord.utils.utcnow()
