@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dictator.constants import GAME_MOD_ROLE_ID
+from dictator.constants import ADMIN_ROLE_ID
 from dictator.db_manager import db_connection as db_conn
 from dictator.logger_config import logger
 from dictator.utilities import (
@@ -68,7 +68,7 @@ class User(commands.Cog):
         usage="<user>",
     )
     @commands.guild_only()
-    @commands.has_role(GAME_MOD_ROLE_ID)  # TODO: Admin
+    @commands.has_role(ADMIN_ROLE_ID)
     async def create_bot(self, ctx, prefix, amount: int):
         await ctx.message.delete()
 
