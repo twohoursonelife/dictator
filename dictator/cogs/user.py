@@ -41,6 +41,10 @@ class User(commands.Cog):
             logger.debug(f"{member.name} joined the server, in pending state.")
             return
 
+        # Bots bypass verification, we also don't want to create accounts for them.
+        if member.bot:
+            return
+
         logger.info(f"{member.name} joined the server, not in pending state.")
         await create_user(self.dictator, member)
 
@@ -55,7 +59,7 @@ class User(commands.Cog):
 
         await send_user_account_details(self.dictator, interaction.user)
 
-    # Legacy sadness <3
+    # Support users who continue to find mention of -key in online resources.
     @commands.command(brief="Legacy account details command.")
     async def key(self, ctx: commands.Context) -> None:
         await ctx.message.delete()
