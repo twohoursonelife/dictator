@@ -15,10 +15,10 @@ class Informational(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     async def rtfm(self, interaction: discord.Interaction) -> None:
-        """Sends basic infoamtion about playing for the first time."""
+        """Sends basic information about playing for the first time."""
 
         await interaction.response.send_message(
-            'How do I play?\nHow do I download?\n\nHeres the manual to play for the first time\n<https://twohoursonelife.com/first-time-playing/?ref=rtfm>\n\nCheck your messages from me to find your username and password.\n*Can\'t find the message? Use the "/account" command.*'
+            'How do I play?\nHow do I download?\n\n<[Click here](https://twohoursonelife.com/first-time-playing/?ref=rtfm)> for the manual to play for the first time.\n\nUse the "/account" command to get your username and key.'
         )
 
     @app_commands.command()
