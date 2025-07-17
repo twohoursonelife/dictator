@@ -60,9 +60,11 @@ class User(commands.Cog):
         await send_user_account_details(self.dictator, interaction.user)
 
     # Support users who continue to find mention of -key in online resources.
-    @commands.command(brief="Legacy account details command.")
+    @commands.command(brief="Legacy account details command. Use /account instead.")
     async def key(self, ctx: commands.Context) -> None:
-        await ctx.message.delete()
+        if not isinstance(ctx.channel, discord.channel.DMChannel):
+            await ctx.message.delete()
+
         logger.info(f"{ctx.author} used the legacy -key command.")
         await send_user_account_details(self.dictator, ctx.author)
 
