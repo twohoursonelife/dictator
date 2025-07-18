@@ -255,5 +255,4 @@ async def send_user_account_details(
 
     await discord_user.send(
         message_details if remove_greeting else message_greeting + message_details,
-        delete_after=300,
     )
