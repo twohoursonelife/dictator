@@ -34,7 +34,6 @@ class RoleData:
     hours: int
     failure_message: str
     announcement_channel_id: int
-    announcement_message: str
     success_message: str
 
 
@@ -99,7 +98,7 @@ class Roles(commands.Cog):
             name=ROLE_2.name,
             hours=ROLE_2.hours,
             announcement_channel_id=EXP_CHANNEL_ID,
-            announcement_message=f"Congratulations, {interaction.user.mention}! You have claimed the '{ROLE_2.name}' role, for playing {ROLE_2.hours} or more hours in game! *Go take a break!*",
+            success_message=f"Congratulations, {interaction.user.mention}! You have claimed the '{ROLE_2.name}' role, for playing {ROLE_2.hours} or more hours in game! *Go take a break!*",
             failure_message="Keep on playin'!",
         )
         await self._handle_role_claim(interaction, role_info)
@@ -112,7 +111,7 @@ class Roles(commands.Cog):
             name=ROLE_3.name,
             hours=ROLE_3.hours,
             announcement_channel_id=VET_CHANNEL_ID,
-            announcement_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_3.name}' role, for playing {ROLE_3.hours} or more hours in game! *Your a part of the furniture now*",
+            success_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_3.name}' role, for playing {ROLE_3.hours} or more hours in game! *Your a part of the furniture now*",
             failure_message="Surely just a few more to go...!",
         )
         await self._handle_role_claim(interaction, role_info)
@@ -125,7 +124,7 @@ class Roles(commands.Cog):
             name=ROLE_4.name,
             hours=ROLE_4.hours,
             announcement_channel_id=VET_CHANNEL_ID,
-            announcement_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_4.name}' role, for playing {ROLE_4.hours} or more hours in game! *I suppose you can go now*",
+            success_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_4.name}' role, for playing {ROLE_4.hours} or more hours in game! *I suppose you can go now*",
             failure_message="Just around the corner, *right?*",
         )
         await self._handle_role_claim(interaction, role_info)
