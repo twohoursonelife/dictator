@@ -17,6 +17,33 @@ from dictator.exceptions import (
 from dictator.logger_config import logger
 
 
+def already_has_role(member: discord.Member, role_name: str) -> bool:
+    return discord.utils.get(member.roles, name=role_name) is not None
+
+
+async def assign_role(
+    interaction: discord.Interaction, role_name: str, reason: str
+) -> None:
+    role_object = discord.utils.get(interaction.guild.roles, name=role_name)
+    await interaction.user.add_roles(role_object, reason=reason)
+
+
+def get_playtime_hours(discord_id: int) -> int:
+    """Fetches the total playtime for a user in hours."""
+    with db_conn() as db:
+        db.execute(
+            "SELECT game_total_seconds FROM ticketServer_tickets INNER JOIN reviewServer_user_stats ON reviewServer_user_stats.email = ticketServer_tickets.email WHERE discord_id = %s",
+            (discord_id,),
+        )
+        time_played = db.fetchone()
+
+    if time_played is None:
+        return 0
+
+    time_played_hours = time_played[0] // 3600
+    return time_played_hours
+
+
 def get_user_by_discord_id(discord_id: int):
     with db_conn() as db:
         db.execute(
@@ -96,6 +123,7 @@ def generate_sha1(input: str) -> str:
 # TODO: The below commands are higher level than above.
 # TODO: Consider somewhere else for them to live.
 ##
+
 
 # TODO: refactor to remove bot parameter
 async def create_user(
@@ -253,6 +281,13 @@ async def send_user_account_details(
         f"\n**Username:** `{account_details[0]}`\n**Key:** `{account_details[1]}`"
     )
 
-    await discord_user.send(
-        message_details if remove_greeting else message_greeting + message_details,
-    )
+    try:
+        await discord_user.send(
+            message_details if remove_greeting else message_greeting + message_details
+        )
+
+    except discord.Forbidden:
+        # TODO: Does this still raise for cases calling this function?
+        # TODO: Some nice handling for the
+
+        pass
