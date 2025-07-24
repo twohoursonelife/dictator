@@ -564,14 +564,15 @@ class Admin(commands.Cog):
         await interaction.followup.send("Username updated.", ephemeral=True)
 
         # Notify
+        embed = discord.Embed(
+            title="Your username for 2HOL was changed by an admin.",
+            colour=discord.Colour.green(),
+        )
+        embed.add_field(name="Old username:", value=old_username, inline=True)
+        embed.add_field(name="New username:", value=new_username, inline=True)
+        embed.add_field(name="Reason:", value=reason, inline=True)
+
         try:
-            embed = discord.Embed(
-                title="Your username for 2HOL was changed by an admin.",
-                colour=discord.Colour.green(),
-            )
-            embed.add_field(name="Old username:", value=old_username, inline=True)
-            embed.add_field(name="New username:", value=new_username, inline=True)
-            embed.add_field(name="Reason:", value=reason, inline=True)
             await discord_user.send(embed=embed)
             await send_user_account_details(self.dictator, discord_user)
 
