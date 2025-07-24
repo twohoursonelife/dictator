@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dictator.constants import EXP_CHANNEL_ID, VET_CHANNEL_ID
+from dictator.constants import EXP_CHANNEL_ID, GENERAL_CHANNEL_ID, VET_CHANNEL_ID
 from dictator.utilities import (
     already_has_role,
     assign_role,
@@ -65,18 +65,12 @@ class Roles(commands.Cog):
             interaction, role_data.name, "User claimed role via Dictator command."
         )
 
-        # Send the public announcement if one is provided
-        if role_data.announcement_channel_id and role_data.announcement_message:
-            channel = self.dictator.get_channel(role_data.announcement_channel_id)
-            await channel.send(role_data.announcement_message)
+        channel = self.dictator.get_channel(role_data.announcement_channel_id)
+        await channel.send(role_data.success_message)
 
-        # Send the appropriate confirmation message to the user
-        if role_data.success_message:
-            await interaction.followup.send(role_data.success_message, ephemeral=True)
-        else:
-            await interaction.followup.send(
-                f"You now have the {role_data.name} role.", ephemeral=True
-            )
+        await interaction.followup.send(
+            f"You now have the {role_data.name} role.", ephemeral=True
+        )
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -86,6 +80,7 @@ class Roles(commands.Cog):
             name=ROLE_1.name,
             hours=ROLE_1.hours,
             failure_message="Nearly!",
+            announcement_channel_id=GENERAL_CHANNEL_ID,
             success_message=f"Woohoo, {interaction.user.mention}! You have claimed the '{ROLE_1.name}' role, for playing {ROLE_1.hours} or more hours in game! *You're starting to know your way around!*",
         )
         await self._handle_role_claim(interaction, role_info)
@@ -97,9 +92,9 @@ class Roles(commands.Cog):
         role_info = RoleData(
             name=ROLE_2.name,
             hours=ROLE_2.hours,
+            failure_message="Keep on playin'!",
             announcement_channel_id=EXP_CHANNEL_ID,
             success_message=f"Congratulations, {interaction.user.mention}! You have claimed the '{ROLE_2.name}' role, for playing {ROLE_2.hours} or more hours in game! *Go take a break!*",
-            failure_message="Keep on playin'!",
         )
         await self._handle_role_claim(interaction, role_info)
 
@@ -110,9 +105,9 @@ class Roles(commands.Cog):
         role_info = RoleData(
             name=ROLE_3.name,
             hours=ROLE_3.hours,
+            failure_message="Surely just a few more to go...!",
             announcement_channel_id=VET_CHANNEL_ID,
             success_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_3.name}' role, for playing {ROLE_3.hours} or more hours in game! *Your a part of the furniture now*",
-            failure_message="Surely just a few more to go...!",
         )
         await self._handle_role_claim(interaction, role_info)
 
@@ -123,9 +118,9 @@ class Roles(commands.Cog):
         role_info = RoleData(
             name=ROLE_4.name,
             hours=ROLE_4.hours,
+            failure_message="Just around the corner, *right?*",
             announcement_channel_id=VET_CHANNEL_ID,
             success_message=f"Woah, {interaction.user.mention}! You have claimed the '{ROLE_4.name}' role, for playing {ROLE_4.hours} or more hours in game! *I suppose you can go now*",
-            failure_message="Just around the corner, *right?*",
         )
         await self._handle_role_claim(interaction, role_info)
 
