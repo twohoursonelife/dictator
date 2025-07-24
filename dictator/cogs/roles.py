@@ -146,10 +146,13 @@ class Roles(commands.Cog):
             )
             time_played = db.fetchone()
 
+        # User may not have lived any lives, we're certain they do not meet the requirement.
         if time_played is None:
-            return False
+            return True
 
-        return True if int(time_played[0] / 60) < less_than_minutes else False
+        time_played_minutes = time_played[0] / 60
+
+        return time_played_minutes < less_than_minutes
 
 
 async def setup(dictator: commands.Bot) -> None:
