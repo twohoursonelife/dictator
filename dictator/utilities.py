@@ -7,7 +7,7 @@ from itertools import batched
 import discord
 from discord.ext import commands
 
-from dictator.constants import DEBUG_CHANNEL_ID
+from dictator.constants import ACCOUNT_LOG_CHANNEL_ID
 from dictator.db_manager import db_connection as db_conn
 from dictator.exceptions import (
     UserAlreadyRegisteredError,
@@ -175,7 +175,7 @@ async def create_user(
 
     # Audit
     # TODO: Extract audit log message into generic function
-    debug_log_channel = bot.get_channel(DEBUG_CHANNEL_ID)
+    debug_log_channel = bot.get_channel(ACCOUNT_LOG_CHANNEL_ID)
 
     embed = discord.Embed(
         title="New game account created", colour=discord.Colour.green()

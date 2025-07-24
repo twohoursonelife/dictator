@@ -24,8 +24,10 @@ DB_HOST = os.environ.get("DB_HOST", "db.twohoursonelife.com")
 DB_DATABASE = os.environ.get("DB_DB", "PROD_2HOL")
 DB_USER = os.environ.get("DB_USER", "dictator")
 
-LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID", 620375198251745282))
-DEBUG_CHANNEL_ID = int(os.environ.get("DEBUG_CHANNEL_ID", 973930931456987206))
+ACTION_LOG_CHANNEL_ID = int(os.environ.get("ACTION_LOG_CHANNEL_ID", 620375198251745282))
+ACCOUNT_LOG_CHANNEL_ID = int(
+    os.environ.get("ACCOUNT_LOG_CHANNEL_ID", 973930931456987206)
+)
 STATS_CHANNEL_ID = int(os.environ.get("STATS_CHANNEL_ID", 744031336448393328))
 OC_CHANNEL_ID = int(os.environ.get("OC_CHANNEL_ID", 948569156217892944))
 EXP_CHANNEL_ID = int(os.environ.get("EXP_CHANNEL_ID", 623147077269979166))

@@ -9,7 +9,7 @@ from discord.ext import commands
 from dictator.constants import (
     ADMIN_ROLE_ID,
     GAME_MOD_ROLE_ID,
-    LOG_CHANNEL_ID,
+    ACTION_LOG_CHANNEL_ID,
     MOD_ROLE_ID,
 )
 from dictator.db_manager import db_connection as db_conn
@@ -48,7 +48,7 @@ class Admin(commands.Cog):
             delete_after=10,
         )
 
-        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
 
         # Is user already banned?
         with db_conn() as db:
@@ -134,7 +134,7 @@ class Admin(commands.Cog):
             delete_after=10,
         )
 
-        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
 
         # Check that user is banned
         with db_conn() as db:
@@ -216,7 +216,7 @@ class Admin(commands.Cog):
             f"Regenerating key for {user.mention}.", ephemeral=True, delete_after=15
         )
 
-        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
 
         key = generate_login_key()
 
@@ -582,7 +582,7 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Audit
-        log_channel = self.dictator.get_channel(LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
 
         embed = discord.Embed(
             title="Updated a users username:", colour=discord.Colour.green()
