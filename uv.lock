@@ -386,16 +386,16 @@ wheels = [
 
 [[package]]
 name = "mysql-connector-python"
-version = "9.3.0"
+version = "9.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/82/5e/55b265cb95938e271208e5692d7e615c53f2aeea894ab72a9f14ab198e9a/mysql-connector-python-9.3.0.tar.gz", hash = "sha256:8b16d51447e3603f18478fb5a19b333bfb73fb58f872eb055a105635f53d2345", size = 942579, upload-time = "2025-05-07T18:50:34.339Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/02/77/2b45e6460d05b1f1b7a4c8eb79a50440b4417971973bb78c9ef6cad630a6/mysql_connector_python-9.4.0.tar.gz", hash = "sha256:d111360332ae78933daf3d48ff497b70739aa292ab0017791a33e826234e743b", size = 12185532, upload-time = "2025-07-22T08:02:05.788Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/16/5762061505a0d0d3a333613b6f5d7b8eb3222a689aa32f71ed15f1532ad1/mysql_connector_python-9.3.0-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:9516a4cdbaee3c9200f0e7d9aafb31057692f45c202cdcb43a3f9b37c94e7c84", size = 15151425, upload-time = "2025-04-15T18:43:35.573Z" },
-    { url = "https://files.pythonhosted.org/packages/db/40/22de86e966e648ea0e3e438ad523c86d0cf4866b3841e248726fb4afded8/mysql_connector_python-9.3.0-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:495798dd34445d749991fb3a2aa87b4205100676939556d8d4aab5d5558e7a1f", size = 15967663, upload-time = "2025-04-15T18:43:38.248Z" },
-    { url = "https://files.pythonhosted.org/packages/4c/19/36983937347b6a58af546950c88a9403cdce944893850e80ffb7f602a099/mysql_connector_python-9.3.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:be0ef15f6023ae2037347498f005a4471f694f8a6b8384c3194895e153120286", size = 33457288, upload-time = "2025-04-15T18:43:41.901Z" },
-    { url = "https://files.pythonhosted.org/packages/18/12/7ccbc678a130df0f751596b37eddb98b2e40930d0ebc9ee41965ffbf0b92/mysql_connector_python-9.3.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:4364d3a37c449f1c0bb9e52fd4eddc620126b9897b6b9f2fd1b3f33dacc16356", size = 33853838, upload-time = "2025-04-15T18:43:45.505Z" },
-    { url = "https://files.pythonhosted.org/packages/c2/5e/c361caa024ce14ffc1f5b153d90f0febf5e9483a60c4b5c84e1e012363cc/mysql_connector_python-9.3.0-cp313-cp313-win_amd64.whl", hash = "sha256:2a5de57814217077a8672063167b616b1034a37b614b93abcb602cc0b8c6fade", size = 16358561, upload-time = "2025-04-15T18:43:49.176Z" },
-    { url = "https://files.pythonhosted.org/packages/23/1d/8c2c6672094b538f4881f7714e5332fdcddd05a7e196cbc9eb4a9b5e9a45/mysql_connector_python-9.3.0-py2.py3-none-any.whl", hash = "sha256:8ab7719d614cf5463521082fab86afc21ada504b538166090e00eeaa1ff729bc", size = 399302, upload-time = "2025-04-15T18:44:10.046Z" },
+    { url = "https://files.pythonhosted.org/packages/79/e2/13036479cd1070d1080cee747de6c96bd6fbb021b736dd3ccef2b19016c8/mysql_connector_python-9.4.0-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:fde3bbffb5270a4b02077029914e6a9d2ec08f67d8375b4111432a2778e7540b", size = 17503749, upload-time = "2025-07-22T07:58:33.649Z" },
+    { url = "https://files.pythonhosted.org/packages/31/df/b89e6551b91332716d384dcc3223e1f8065902209dcd9e477a3df80154f7/mysql_connector_python-9.4.0-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:25f77ad7d845df3b5a5a3a6a8d1fed68248dc418a6938a371d1ddaaab6b9a8e3", size = 18372145, upload-time = "2025-07-22T07:58:37.384Z" },
+    { url = "https://files.pythonhosted.org/packages/07/bd/af0de40a01d5cb4df19318cc018e64666f2b7fa89bffa1ab5b35337aae2c/mysql_connector_python-9.4.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:227dd420c71e6d4788d52d98f298e563f16b6853577e5ade4bd82d644257c812", size = 33516503, upload-time = "2025-07-22T07:58:41.987Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/9b/712053216fcbe695e519ecb1035ffd767c2de9f51ccba15078537c99d6fa/mysql_connector_python-9.4.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:5163381a312d38122eded2197eb5cd7ccf1a5c5881d4e7a6de10d6ea314d088e", size = 33918904, upload-time = "2025-07-22T07:58:46.796Z" },
+    { url = "https://files.pythonhosted.org/packages/64/15/cbd996d425c59811849f3c1d1b1dae089a1ae18c4acd4d8de2b847b772df/mysql_connector_python-9.4.0-cp313-cp313-win_amd64.whl", hash = "sha256:c727cb1f82b40c9aaa7a15ab5cf0a7f87c5d8dce32eab5ff2530a4aa6054e7df", size = 16392566, upload-time = "2025-07-22T07:58:50.223Z" },
+    { url = "https://files.pythonhosted.org/packages/36/34/b6165e15fd45a8deb00932d8e7d823de7650270873b4044c4db6688e1d8f/mysql_connector_python-9.4.0-py2.py3-none-any.whl", hash = "sha256:56e679169c704dab279b176fab2a9ee32d2c632a866c0f7cd48a8a1e2cf802c4", size = 406574, upload-time = "2025-07-22T07:59:08.394Z" },
 ]
 
 [[package]]
@@ -629,15 +629,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.33.0"
+version = "2.33.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/09/0b/6139f589436c278b33359845ed77019cd093c41371f898283bbc14d26c02/sentry_sdk-2.33.0.tar.gz", hash = "sha256:cdceed05e186846fdf80ceea261fe0a11ebc93aab2f228ed73d076a07804152e", size = 335233, upload-time = "2025-07-15T12:07:42.413Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/82/dfe4a91fd38e048fbb55ca6c072710408e8802015aa27cde18e8684bb1e9/sentry_sdk-2.33.2.tar.gz", hash = "sha256:e85002234b7b8efac9b74c2d91dbd4f8f3970dc28da8798e39530e65cb740f94", size = 335804, upload-time = "2025-07-22T10:41:18.578Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/e5/f24e9f81c9822a24a2627cfcb44c10a3971382e67e5015c6e068421f5787/sentry_sdk-2.33.0-py2.py3-none-any.whl", hash = "sha256:a762d3f19a1c240e16c98796f2a5023f6e58872997d5ae2147ac3ed378b23ec2", size = 356397, upload-time = "2025-07-15T12:07:40.729Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/dc/4d825d5eb6e924dfcc6a91c8185578a7b0a5c41fd2416a6f49c8226d6ef9/sentry_sdk-2.33.2-py2.py3-none-any.whl", hash = "sha256:8d57a3b4861b243aa9d558fda75509ad487db14f488cbdb6c78c614979d77632", size = 356692, upload-time = "2025-07-22T10:41:16.531Z" },
 ]
 
 [[package]]
