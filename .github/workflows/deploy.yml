@@ -26,6 +26,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
+    concurrency: deploy-group
     if: github.ref_name == 'main'
     needs: test
     steps:
