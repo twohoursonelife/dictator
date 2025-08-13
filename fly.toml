@@ -1,5 +1,5 @@
-app = 'dictator'
-primary_region = 'iad'
+app = "dictator"
+primary_region = "ewr"
 
 [[restart]]
   policy = "on-failure"
