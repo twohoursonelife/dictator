@@ -55,6 +55,9 @@ def get_user_by_discord_id(discord_id: int):
 
 def get_user_by_username(username: str):
     with db_conn() as db:
+        
+        # MySQL performs a case insensitive search.
+        # tahtekcub === tahTEKcub
         db.execute(
             "SELECT email FROM ticketServer_tickets WHERE email = %s LIMIT 1",
             (username,),
