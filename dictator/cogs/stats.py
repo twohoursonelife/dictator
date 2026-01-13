@@ -226,6 +226,7 @@ class Stats(commands.Cog):
                 unnamed_families += 1
                 unnamed_family_players += len(family)
                 continue
+
             formatted_families += f"{len(family)} in {family_name}\n"
 
         if len(family_list):
