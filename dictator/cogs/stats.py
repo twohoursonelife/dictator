@@ -198,6 +198,8 @@ class Stats(commands.Cog):
             # where we loop the family until we find a surname
             # and apply other relevant naming rules
 
+            # For each family, we peek into the first member
+            # and infer some information about the family.
             first_player = family[0]
             (
                 player_id,
