@@ -3,6 +3,15 @@ import asyncio
 from unittest.mock import MagicMock
 from dictator.cogs.stats import Stats
 
+# Protocol:
+# SN
+# current_players/max_players
+# challenge_string
+# required_version_number
+# #num_players
+# p_id,eve_id,parent_id,gender,age,delcaredInfertile,isTutorial,name,familyName
+# ...
+# #
 SAMPLE_PLAYER_LIST = (
     "SN\n"
     "4/200\n"
@@ -76,7 +85,7 @@ def test_format_family_list(stats_cog):
 
     result = asyncio.run(stats_cog.format_family_list(families))
 
-    assert "1 in Standard" in result
+    assert "1 in Standard (1 fertile)" in result
     assert "1 playing the tutorial" in result
     assert "1 playing as solo Eves" in result
 
@@ -92,6 +101,21 @@ def test_format_family_list_real_data(stats_cog):
     # 353900 is STAR family
     # 353901 is unnamed family of 1
 
-    assert "1 in Star" in result
+    assert "1 in Star (1 fertile)" in result
     assert "1 playing as solo Eves" in result
     assert "2 in 2 unnamed families" in result
+
+
+def test_format_family_list_fertility(stats_cog):
+    # Validates correct fertility count
+    family_complex = [
+        ["50", "50", "-1", "F", "20", "0", "0", "EVE", "WINTERSTEIN"],  # Fertile
+        ["54", "50", "50", "F", "2", "1", "0", "NATASHA", "WINTERSTEIN"],  # Infertile
+        ["51", "50", "50", "M", "15", "0", "0", "TANYA", "WINTERSTEIN"],  # Male
+    ]
+
+    families = [family_complex]
+
+    result = asyncio.run(stats_cog.format_family_list(families))
+
+    assert "3 in Winterstein (1 fertile)" in result

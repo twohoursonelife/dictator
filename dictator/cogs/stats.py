@@ -114,6 +114,18 @@ class Stats(commands.Cog):
         return server_info, formatted_families, family_count
 
     async def player_list_request(self) -> str:
+        """
+        A successful response will be formatted like so:
+
+        SN
+        current_players/max_players
+        challenge_string
+        required_version_number
+        #num_players
+        player_id,eve_id,parent_id,gender,age,declaredInfertile,isTutorial,name,family_name
+        ...
+        #
+        """
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(2)
             s.connect(("play.twohoursonelife.com", 8005))
@@ -225,12 +237,21 @@ class Stats(commands.Cog):
                     solo_eves += 1
                     continue
 
+            fertile_count = 0
+            for player in family:
+                logger.debug(player)
+                # Must be a female not declared infertile.
+                if player[3] == "F" and player[5] == "0":
+                    fertile_count += 1
+
             if not family_name:
                 unnamed_families += 1
                 unnamed_family_players += len(family)
                 continue
 
-            formatted_families += f"{len(family)} in {family_name}\n"
+            formatted_families += (
+                f"{len(family)} in {family_name} ({fertile_count} fertile)\n"
+            )
 
         if len(family_list):
             formatted_families += "――――――――――\n"
