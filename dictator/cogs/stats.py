@@ -154,20 +154,19 @@ class Stats(commands.Cog):
 
         return True
 
-    async def parse_player_list(self, player_list: str) -> tuple:
+    async def parse_player_list(
+        self, player_list: str
+    ) -> tuple[list[str], list[list[str]]]:
         # Convert to list and remove trailing hash char
-        player_list = player_list.split("\n")[:-1]
+        player_data = player_list.split("\n")[:-1]
 
         # "#23" -> "23"
-        player_list[4] = player_list[4][1:]
+        player_data[4] = player_data[4][1:]
 
-        # Remove irrelevant data
-        player_list.pop(2)
-        player_list.pop(0)
+        server_info = [player_data[1], player_data[3], player_data[4]]
+        players = [player.split(",") for player in player_data[5:]]
 
-        players = [player.split(",") for player in player_list[3:]]
-
-        return player_list[:3], players
+        return server_info, players
 
     async def group_families(self, parsed_player_list: str) -> str:
         grouped_families = {}
