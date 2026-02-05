@@ -101,7 +101,7 @@ class Stats(commands.Cog):
 
         await self.STATS_MESSAGE.edit(embed=embed)
 
-    async def get_server_stats(self) -> str:
+    async def get_server_stats(self) -> tuple[list[str], str, int]:
         result = await self.player_list_request()
         await self.verify_player_list(result)
         server_info, parsed_player_list = await self.parse_player_list(result)
@@ -168,7 +168,9 @@ class Stats(commands.Cog):
 
         return server_info, players
 
-    async def group_families(self, parsed_player_list: str) -> str:
+    async def group_families(
+        self, parsed_player_list: list[list[str]]
+    ) -> list[list[list[str]]]:
         grouped_families = {}
         for player in parsed_player_list:
             eve_id = int(player[1])
@@ -178,7 +180,7 @@ class Stats(commands.Cog):
 
         return list(grouped_families.values())
 
-    async def format_family_list(self, family_list: str) -> str:
+    async def format_family_list(self, family_list: list[list[list[str]]]) -> str:
         # TODO
         # What if formatted_families was a list?
         # Then we can sort() it descending before
