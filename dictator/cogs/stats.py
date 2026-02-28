@@ -228,6 +228,13 @@ class Stats(commands.Cog):
 
             family_name = family_name.title()
 
+            fertile_count = 0
+            for player in family:
+                logger.debug(player)
+                # Must be a female not declared infertile.
+                if player[3] == "F" and player[5] == "0":
+                    fertile_count += 1
+
             if len(family) == 1:
                 if isTutorial == "1":
                     tutorial_players += 1
@@ -236,13 +243,6 @@ class Stats(commands.Cog):
                 if player_id == eve_id and declaredInfertile == "1":
                     solo_eves += 1
                     continue
-
-            fertile_count = 0
-            for player in family:
-                logger.debug(player)
-                # Must be a female not declared infertile.
-                if player[3] == "F" and player[5] == "0":
-                    fertile_count += 1
 
             if not family_name:
                 unnamed_families += 1
