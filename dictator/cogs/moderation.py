@@ -263,6 +263,12 @@ class Admin(commands.Cog):
         self, interaction: discord.Interaction, character_name: str
     ) -> None:
         """Look up who a player was in the game."""
+        if interaction.channel_id != ACTION_LOG_CHANNEL_ID:
+            return await interaction.response.send_message(
+                f"This command can only be used in <#{ACTION_LOG_CHANNEL_ID}>.",
+                ephemeral=True,
+            )
+
         await interaction.response.defer()
 
         # Result limt, due to embed length limitations, the maxium is 8.
@@ -365,6 +371,12 @@ class Admin(commands.Cog):
         character_name: str,
     ) -> None:
         """Lookup detailed information of a single players life."""
+        if interaction.channel_id != ACTION_LOG_CHANNEL_ID:
+            return await interaction.response.send_message(
+                f"This command can only be used in <#{ACTION_LOG_CHANNEL_ID}>.",
+                ephemeral=True,
+            )
+
         await interaction.response.defer()
 
         character_name = re.sub(("[^a-zA-Z0-9 ]"), "", character_name)
