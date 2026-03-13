@@ -127,6 +127,16 @@ def generate_sha1(input: str) -> str:
 ##
 
 
+def sanitise_username(username: str) -> str:
+    """
+    Attempt to format a Discord username to fit within our game username parameters.
+    Replaces underscores and periods with hyphens, removes invalid characters, and truncates to 32 characters.
+    """
+    username = re.sub(r"[_.]", "-", username)
+    username = re.sub(r"[^a-zA-Z0-9-]", "", username)
+    return username[:32]
+
+
 # TODO: refactor to remove bot parameter
 async def create_user(
     bot: commands.bot,
@@ -135,7 +145,7 @@ async def create_user(
 ) -> None:
     """Create a new 2HOL user account."""
     if username is None:
-        username = discord_user.name
+        username = sanitise_username(discord_user.name)
 
     # Validation
     try:
