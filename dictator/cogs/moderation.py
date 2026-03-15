@@ -10,6 +10,7 @@ from dictator.constants import (
     ADMIN_ROLE_ID,
     GAME_MOD_ROLE_ID,
     ACTION_LOG_CHANNEL_ID,
+    MOD_LOG_CHANNEL_ID,
     MOD_ROLE_ID,
 )
 from dictator.db_manager import db_connection as db_conn
@@ -263,9 +264,9 @@ class Admin(commands.Cog):
         self, interaction: discord.Interaction, character_name: str
     ) -> None:
         """Look up who a player was in the game."""
-        if interaction.channel_id != ACTION_LOG_CHANNEL_ID:
+        if interaction.channel_id != MOD_LOG_CHANNEL_ID:
             return await interaction.response.send_message(
-                f"This command can only be used in <#{ACTION_LOG_CHANNEL_ID}>.",
+                f"This command can only be used in <#{MOD_LOG_CHANNEL_ID}>.",
                 ephemeral=True,
             )
 
@@ -371,9 +372,9 @@ class Admin(commands.Cog):
         character_name: str,
     ) -> None:
         """Lookup detailed information of a single players life."""
-        if interaction.channel_id != ACTION_LOG_CHANNEL_ID:
+        if interaction.channel_id != MOD_LOG_CHANNEL_ID:
             return await interaction.response.send_message(
-                f"This command can only be used in <#{ACTION_LOG_CHANNEL_ID}>.",
+                f"This command can only be used in <#{MOD_LOG_CHANNEL_ID}>.",
                 ephemeral=True,
             )
 

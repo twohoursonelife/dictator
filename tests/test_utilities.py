@@ -1,4 +1,3 @@
-
 from dictator.utilities import sanitise_username
 
 
