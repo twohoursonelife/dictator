@@ -41,8 +41,6 @@ class Stats(commands.Cog):
 
         if self.STATS_CHANNEL:
             if not self.stats_loop.is_running():
-                # TODO: Use a before loop call instead of manual setup
-                self.STATS_MESSAGE = await self.reset_stats_channel(self.STATS_CHANNEL)
                 self.stats_loop.start()
             else:
                 logger.info("Stats loop already running!")
@@ -67,6 +65,11 @@ class Stats(commands.Cog):
     @tasks.loop(minutes=1)
     async def stats_loop(self) -> None:
         await self.update_stats()
+
+    @stats_loop.before_loop
+    async def before_stats_loop(self) -> None:
+        await self.dictator.wait_until_ready()
+        self.STATS_MESSAGE = await self.reset_stats_channel(self.STATS_CHANNEL)
 
     async def reset_stats_channel(
         self, channel: discord.TextChannel
