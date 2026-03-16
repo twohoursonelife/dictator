@@ -4,19 +4,13 @@ import discord
 import sentry_sdk
 from discord.ext import commands
 
-from dictator.constants import (
-    BOT_PREFIX,
-    BOT_TOKEN,
-    DICTATOR_VERSION,
-    SENTRY_DSN,
-    SENTRY_ENVIRONMENT,
-)
+from dictator.settings import config
 from dictator.logger_config import logger
 
 sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    environment=SENTRY_ENVIRONMENT,
-    release=DICTATOR_VERSION,
+    dsn=config.SENTRY_DSN,
+    environment=config.SENTRY_ENVIRONMENT,
+    release=config.DICTATOR_VERSION,
     traces_sample_rate=1.0,
 )
 
@@ -29,7 +23,9 @@ class Dictator(commands.Bot):
 
 
 intents = discord.Intents.all()
-dictator = Dictator(command_prefix=BOT_PREFIX, case_insensitive=True, intents=intents)
+dictator = Dictator(
+    command_prefix=config.BOT_PREFIX, case_insensitive=True, intents=intents
+)
 
 
 @dictator.event
@@ -37,4 +33,4 @@ async def on_ready() -> None:
     logger.info("The 2HOL Dictator has risen!")
 
 
-dictator.run(BOT_TOKEN)
+dictator.run(config.BOT_TOKEN)

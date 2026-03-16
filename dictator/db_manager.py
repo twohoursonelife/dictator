@@ -1,14 +1,14 @@
 import mysql.connector
-from dictator.constants import DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER
+from dictator.settings import config
 
 
 class db_connection:
     def __init__(self):
         self.db = mysql.connector.connect(
-            host=DB_HOST,
-            database=DB_DATABASE,
-            user=DB_USER,
-            password=DB_PASSWORD,
+            host=config.DB_HOST,
+            database=config.DB_DATABASE,
+            user=config.DB_USER,
+            password=config.DB_PASSWORD,
             autocommit=True,
         )
 

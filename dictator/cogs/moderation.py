@@ -6,13 +6,7 @@ import mysql.connector
 from discord import app_commands
 from discord.ext import commands
 
-from dictator.constants import (
-    ADMIN_ROLE_ID,
-    GAME_MOD_ROLE_ID,
-    ACTION_LOG_CHANNEL_ID,
-    MOD_LOG_CHANNEL_ID,
-    MOD_ROLE_ID,
-)
+from dictator.settings import config
 from dictator.db_manager import db_connection as db_conn
 from dictator.exceptions import (
     UsernameAlreadyExistsError,
@@ -35,7 +29,7 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.GAME_MOD_ROLE_ID)
     async def ban(
         self,
         interaction: discord.Interaction,
@@ -49,7 +43,7 @@ class Admin(commands.Cog):
             delete_after=10,
         )
 
-        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(config.ACTION_LOG_CHANNEL_ID)
 
         # Is user already banned?
         with db_conn() as db:
@@ -121,7 +115,7 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.GAME_MOD_ROLE_ID)
     async def unban(
         self,
         interaction: discord.Interaction,
@@ -135,7 +129,7 @@ class Admin(commands.Cog):
             delete_after=10,
         )
 
-        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(config.ACTION_LOG_CHANNEL_ID)
 
         # Check that user is banned
         with db_conn() as db:
@@ -208,7 +202,7 @@ class Admin(commands.Cog):
     # TODO: Modernise the user notification.
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.MOD_ROLE_ID)
     async def regenerate(
         self, interaction: discord.Interaction, user: discord.User
     ) -> None:
@@ -217,7 +211,7 @@ class Admin(commands.Cog):
             f"Regenerating key for {user.mention}.", ephemeral=True, delete_after=15
         )
 
-        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(config.ACTION_LOG_CHANNEL_ID)
 
         key = generate_login_key()
 
@@ -259,14 +253,14 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.GAME_MOD_ROLE_ID)
     async def whowas(
         self, interaction: discord.Interaction, character_name: str
     ) -> None:
         """Look up who a player was in the game."""
-        if interaction.channel_id != MOD_LOG_CHANNEL_ID:
+        if interaction.channel_id != config.MOD_LOG_CHANNEL_ID:
             return await interaction.response.send_message(
-                f"This command can only be used in <#{MOD_LOG_CHANNEL_ID}>.",
+                f"This command can only be used in <#{config.MOD_LOG_CHANNEL_ID}>.",
                 ephemeral=True,
             )
 
@@ -365,16 +359,16 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.GAME_MOD_ROLE_ID)
     async def whowasext(
         self,
         interaction: discord.Interaction,
         character_name: str,
     ) -> None:
         """Lookup detailed information of a single players life."""
-        if interaction.channel_id != MOD_LOG_CHANNEL_ID:
+        if interaction.channel_id != config.MOD_LOG_CHANNEL_ID:
             return await interaction.response.send_message(
-                f"This command can only be used in <#{MOD_LOG_CHANNEL_ID}>.",
+                f"This command can only be used in <#{config.MOD_LOG_CHANNEL_ID}>.",
                 ephemeral=True,
             )
 
@@ -455,7 +449,7 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(GAME_MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.GAME_MOD_ROLE_ID)
     async def getuser(
         self, interaction: discord.Interaction, game_username: str
     ) -> None:
@@ -498,7 +492,7 @@ class Admin(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(ADMIN_ROLE_ID)
+    @app_commands.checks.has_role(config.ADMIN_ROLE_ID)
     async def update_username(
         self,
         interaction: discord.Interaction,
@@ -596,7 +590,7 @@ class Admin(commands.Cog):
             notify_user = True
 
         # Audit
-        log_channel = self.dictator.get_channel(ACTION_LOG_CHANNEL_ID)
+        log_channel = self.dictator.get_channel(config.ACTION_LOG_CHANNEL_ID)
 
         embed = discord.Embed(
             title="Updated a users username:", colour=discord.Colour.green()

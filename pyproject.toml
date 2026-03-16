@@ -8,6 +8,7 @@ dependencies = [
     "loguru>=0.7.3",
     "mysql-connector-python>=9.1.0",
     "pandas>=2.2.3",
+    "pydantic-settings>=2.13.1",
     "python-dateutil>=2.9.0.post0",
     "python-dotenv>=1.0.1",
     "requests>=2.32.3",

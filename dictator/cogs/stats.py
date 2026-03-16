@@ -6,15 +6,7 @@ import inflect
 from discord import app_commands
 from discord.ext import commands, tasks
 
-from dictator.constants import (
-    DICTATOR_VERSION,
-    MAIN_COLOUR,
-    MOD_ROLE_ID,
-    OC_CHANNEL_ID,
-    OC_FORECAST_MONTH_DAY,
-    PLAYER_LIST_PASSWORD,
-    STATS_CHANNEL_ID,
-)
+from dictator.settings import config
 from dictator.logger_config import logger
 from dictator.open_collective import ForecastOpenCollective
 
@@ -26,7 +18,9 @@ class Stats(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        self.OC_CHANNEL: discord.TextChannel = self.dictator.get_channel(OC_CHANNEL_ID)
+        self.OC_CHANNEL: discord.TextChannel = self.dictator.get_channel(
+            config.OC_CHANNEL_ID
+        )
 
         if self.OC_CHANNEL:
             if not self.open_collective_forecast.is_running():
@@ -36,7 +30,7 @@ class Stats(commands.Cog):
             logger.warning("Unable to find OC Channel, not starting OC stats.")
 
         self.STATS_CHANNEL: discord.TextChannel = self.dictator.get_channel(
-            STATS_CHANNEL_ID
+            config.STATS_CHANNEL_ID
         )
 
         if self.STATS_CHANNEL:
@@ -80,17 +74,19 @@ class Stats(commands.Cog):
 
         return await channel.send(
             embed=discord.Embed(
-                title="Live server stats loading...", colour=MAIN_COLOUR
+                title="Live server stats loading...", colour=config.MAIN_COLOUR
             )
         )
 
     async def update_stats(self) -> None:
         server_info, families, family_count = await self.get_server_stats()
         bot_version = (
-            DICTATOR_VERSION if not len(DICTATOR_VERSION) >= 6 else DICTATOR_VERSION[:6]
+            config.DICTATOR_VERSION
+            if not len(config.DICTATOR_VERSION) >= 6
+            else config.DICTATOR_VERSION[:6]
         )
 
-        embed = discord.Embed(title="Stats", colour=MAIN_COLOUR)
+        embed = discord.Embed(title="Stats", colour=config.MAIN_COLOUR)
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(
             name="Families", value=f"{family_count} total\n{families}", inline=False
@@ -132,8 +128,8 @@ class Stats(commands.Cog):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(2)
             s.connect(("play.twohoursonelife.com", 8005))
-            if PLAYER_LIST_PASSWORD:
-                s.sendall(f"PLAYER_LIST {PLAYER_LIST_PASSWORD}#".encode("utf-8"))
+            if config.PLAYER_LIST_PASSWORD:
+                s.sendall(f"PLAYER_LIST {config.PLAYER_LIST_PASSWORD}#".encode("utf-8"))
             else:
                 s.sendall(
                     "PLAYER_LIST#".encode("utf-8")
@@ -292,7 +288,7 @@ class Stats(commands.Cog):
 
     @tasks.loop(hours=24)
     async def open_collective_forecast(self) -> None:
-        if date.today().day != OC_FORECAST_MONTH_DAY:
+        if date.today().day != config.OC_FORECAST_MONTH_DAY:
             return
 
         embed = await self.open_collective_forecast_embed()
@@ -300,7 +296,7 @@ class Stats(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.checks.has_role(MOD_ROLE_ID)
+    @app_commands.checks.has_role(config.MOD_ROLE_ID)
     async def open_collective(self, interaction: discord.Interaction) -> None:
         """Generates and sends Open Collective forecast to the current channel."""
         await interaction.response.defer()

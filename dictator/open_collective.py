@@ -4,11 +4,7 @@ from datetime import date, datetime, time
 import requests
 from dateutil.relativedelta import relativedelta
 
-from dictator.constants import (
-    OC_ANALYSIS_PERIOD_MONTHS,
-    OC_GRAPHQL_ENDPOINT,
-    OC_GRAPHQL_KEY,
-)
+from dictator.settings import config
 
 
 class ForecastOpenCollective:
@@ -59,9 +55,11 @@ class ForecastOpenCollective:
 
         payload = {"query": query, "varibles": varibles}
 
-        headers = {"Content-Type": "application/json", "Api-key": OC_GRAPHQL_KEY}
+        headers = {"Content-Type": "application/json", "Api-key": config.OC_GRAPHQL_KEY}
 
-        response = requests.post(OC_GRAPHQL_ENDPOINT, json=payload, headers=headers)
+        response = requests.post(
+            config.OC_GRAPHQL_ENDPOINT, json=payload, headers=headers
+        )
 
         response.raise_for_status()
 
@@ -96,9 +94,9 @@ class ForecastOpenCollective:
 
     @classmethod
     def forecast(self) -> dict[str:datetime]:
-        time_period = self.__get_data_time_period(OC_ANALYSIS_PERIOD_MONTHS)
+        time_period = self.__get_data_time_period(config.OC_ANALYSIS_PERIOD_MONTHS)
         data = self.__get_open_collective_data(time_period)
-        cash_flow = self.__get_average_cash_flow(OC_ANALYSIS_PERIOD_MONTHS, data)
+        cash_flow = self.__get_average_cash_flow(config.OC_ANALYSIS_PERIOD_MONTHS, data)
         balance = self.__get_balance(data)
 
         return {
@@ -109,5 +107,5 @@ class ForecastOpenCollective:
                 balance, sum(cash_flow.values())
             ).strftime("%B %Y"),
             "current_balance": "$" + str(balance),
-            "analysis_period_months": OC_ANALYSIS_PERIOD_MONTHS,
+            "analysis_period_months": config.OC_ANALYSIS_PERIOD_MONTHS,
         }

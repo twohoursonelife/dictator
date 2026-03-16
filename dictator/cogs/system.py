@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dictator.constants import MOD_ROLE_ID, OC_CHANNEL_ID
+from dictator.settings import config
 
 
 class System(commands.Cog):
@@ -14,7 +14,7 @@ class System(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         # Suppress all webhooks in the OC channel
-        if not message.channel.id == OC_CHANNEL_ID:
+        if not message.channel.id == config.OC_CHANNEL_ID:
             return
 
         if not message.webhook_id:
@@ -39,7 +39,7 @@ class System(commands.Cog):
 
     @commands.command(brief="Sync Dictators app commands globally.")
     @commands.guild_only()
-    @commands.has_role(MOD_ROLE_ID)
+    @commands.has_role(config.MOD_ROLE_ID)
     async def sync(self, ctx: commands.Context) -> None:
         await ctx.send(f"Synced `{len(await ctx.bot.tree.sync())}` commands globally.")
 
