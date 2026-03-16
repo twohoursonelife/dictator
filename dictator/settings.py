@@ -7,10 +7,10 @@ class Settings(BaseSettings):
     )
 
     # Required config
-    BOT_TOKEN: str
-    DB_PASSWORD: str
-    OC_GRAPHQL_KEY: str
-    PLAYER_LIST_PASSWORD: str
+    BOT_TOKEN: str = ""
+    DB_PASSWORD: str = ""
+    OC_GRAPHQL_KEY: str = ""
+    PLAYER_LIST_PASSWORD: str = ""
 
     # Optional config
     BOT_PREFIX: str = "-"
