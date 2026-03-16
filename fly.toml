@@ -7,9 +7,3 @@ primary_region = "ewr"
 [[vm]]
   size = "shared-cpu-1x"
   memory = "512mb"
-
-[env]
-  DB_HOST="db.twohoursonelife.com"
-  DB_DB="PROD_2HOL"
-  DB_USER="dictator"
-  SENTRY_ENVIRONMENT="production"

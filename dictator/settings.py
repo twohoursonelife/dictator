@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     OC_FORECAST_MONTH_DAY: int = 7
 
     SENTRY_DSN: str = "https://d273912626b930e863089cd16baff50f@o4508150301065216.ingest.us.sentry.io/4508430421262336"
-    SENTRY_ENVIRONMENT: str = "dev"
+    SENTRY_ENVIRONMENT: str = "production"
 
     MAIN_COLOUR: int = 0xFFBB35
 
