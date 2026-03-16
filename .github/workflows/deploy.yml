@@ -16,12 +16,6 @@ jobs:
 
       - name: Run pytest
         run: uv run pytest
-        # TODO: See constants.py.
-        env:
-          BOT_TOKEN: ""
-          DB_PASS: ""
-          OC_GRAPHQL_KEY: ""
-          PLAYER_LIST_PASSWORD: ""
 
 
   release:
