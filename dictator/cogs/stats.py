@@ -231,7 +231,7 @@ class Stats(commands.Cog):
             for player in family:
                 logger.debug(player)
                 # Must be a female not declared infertile.
-                if player[3] == "F" and player[5] == "0":
+                if player[3] == "F" and player[5] == "0" and 15 < player[4] < 105:
                     fertile_count += 1
 
             if len(family) == 1:
