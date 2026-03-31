@@ -191,6 +191,19 @@ class Stats(commands.Cog):
 
         return list(grouped_families.values())
 
+    def is_fertile(self, player: list[str]) -> bool:
+        """
+        A player is fertile if they are female, not declared infertile, and
+        under 105 years old.
+
+        A young player counts towards the fertile count as we explicitly follow
+        the logic of the game clients HUD implementation here.
+        """
+        gender = player[3]
+        age = float(player[4])
+        declared_infertile = player[5]
+        return gender == "F" and declared_infertile == "0" and age < 105
+
     async def format_family_list(self, family_list: list[list[list[str]]]) -> str:
         # TODO
         # What if formatted_families was a list?
@@ -230,8 +243,7 @@ class Stats(commands.Cog):
             fertile_count = 0
             for player in family:
                 logger.debug(player)
-                # Must be a female not declared infertile.
-                if player[3] == "F" and player[5] == "0" and player[4] < 105:
+                if self.is_fertile(player):
                     fertile_count += 1
 
             if len(family) == 1:
