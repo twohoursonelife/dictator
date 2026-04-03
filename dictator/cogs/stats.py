@@ -202,7 +202,7 @@ class Stats(commands.Cog):
         gender = player[3]
         age = float(player[4])
         declared_infertile = player[5]
-        return gender == "F" and declared_infertile == "0" and age < 105
+        return gender == "F" and declared_infertile == "0" and age < 104
 
     async def format_family_list(self, family_list: list[list[list[str]]]) -> str:
         # TODO
