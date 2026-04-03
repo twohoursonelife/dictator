@@ -194,7 +194,7 @@ class Stats(commands.Cog):
     def is_fertile(self, player: list[str]) -> bool:
         """
         A player is fertile if they are female, not declared infertile, and
-        under 105 years old.
+        under 104 years old.
 
         A young player counts towards the fertile count as we explicitly follow
         the logic of the game clients HUD implementation here.
