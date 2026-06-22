@@ -40,6 +40,11 @@ def test_verify_player_list_real_data(stats_cog):
     asyncio.run(stats_cog.verify_player_list(SAMPLE_PLAYER_LIST))
 
 
+def test_verify_player_list_empty(stats_cog):
+    with pytest.raises(Exception, match="PLAYER_LIST message is incomplete!"):
+        asyncio.run(stats_cog.verify_player_list(""))
+
+
 def test_parse_player_list(stats_cog):
     server_info, players = asyncio.run(stats_cog.parse_player_list(SAMPLE_PLAYER_LIST))
 

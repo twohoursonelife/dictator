@@ -79,7 +79,17 @@ class Stats(commands.Cog):
         )
 
     async def update_stats(self) -> None:
-        server_info, families, family_count = await self.get_server_stats()
+        try:
+            server_info, families, family_count = await self.get_server_stats()
+        except Exception as e:
+            logger.error(f"Failed to get server stats: {e}")
+            embed = discord.Embed(
+                title="Server is offline", colour=discord.Colour.red()
+            )
+            embed.timestamp = discord.utils.utcnow()
+            await self.STATS_MESSAGE.edit(embed=embed)
+            return
+
         bot_version = (
             config.DICTATOR_VERSION
             if not len(config.DICTATOR_VERSION) >= 6
@@ -157,7 +167,7 @@ class Stats(commands.Cog):
         return player_list
 
     async def verify_player_list(self, player_list: str) -> bool:
-        if "#" != player_list[-1]:
+        if not player_list or "#" != player_list[-1]:
             raise Exception("PLAYER_LIST message is incomplete!")
 
         if "REJECTED" in player_list:
