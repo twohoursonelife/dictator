@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -34,6 +35,9 @@ class Settings(BaseSettings):
     GENERAL_CHANNEL_ID: int = 423293333864054837
 
     OC_GRAPHQL_ENDPOINT: str = "https://api.opencollective.com/graphql/v2"
+
+    # Set to 0 to allow Discord accounts of any age to create a game account.
+    MIN_DISCORD_ACCOUNT_AGE_DAYS: int = Field(default=0, ge=0)
 
     # Number of previous months to analyse for future forecasting
     OC_ANALYSIS_PERIOD_MONTHS: int = 6

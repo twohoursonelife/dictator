@@ -3,11 +3,11 @@ import re
 from datetime import timedelta
 from hashlib import sha1
 from itertools import batched
+from typing import cast
 
 import discord
 from discord.ext import commands
 
-from dictator.settings import config
 from dictator.db_manager import db_connection as db_conn
 from dictator.exceptions import (
     UserAlreadyRegisteredError,
@@ -15,6 +15,7 @@ from dictator.exceptions import (
     UsernameValidationError,
 )
 from dictator.logger_config import logger
+from dictator.settings import config
 
 
 def already_has_role(member: discord.Member, role_name: str) -> bool:
@@ -64,6 +65,8 @@ def get_user_by_username(username: str):
         return db.fetchone()
 
 
+# TODO: Refactor exception-based is_* validation helpers into boolean predicates
+# and update create_user to handle each validation outcome explicitly.
 # TODO: more closely follow discords standard
 def is_valid_username(username: str) -> None:
     """
@@ -110,11 +113,22 @@ def generate_login_key() -> str:
     return "-".join(chunks)
 
 
-def is_new_discord_user(discord_user: discord.User) -> bool:
+def is_new_discord_user(discord_user: discord.User | discord.Member) -> bool:
     new_point = discord.utils.utcnow() - timedelta(weeks=1)
 
     # If created after (greater than) new_point, they're wihtin the new period
     return discord_user.created_at > new_point
+
+
+def is_discord_account_old_enough(
+    discord_user: discord.User | discord.Member, minimum_age_days: int
+) -> bool:
+    """Return whether a Discord account satisfies an account-age restriction."""
+    if minimum_age_days <= 0:
+        return True
+
+    eligible_at = discord_user.created_at + timedelta(days=minimum_age_days)
+    return discord.utils.utcnow() >= eligible_at
 
 
 def generate_sha1(input: str) -> str:
@@ -139,28 +153,36 @@ def sanitise_username(username: str) -> str:
 
 # TODO: refactor to remove bot parameter
 async def create_user(
-    bot: commands.bot,
-    discord_user: discord.User,
-    username: str = None,
+    bot: commands.Bot,
+    discord_user: discord.User | discord.Member,
+    username: str | None = None,
 ) -> None:
     """Create a new 2HOL user account."""
     if username is None:
         username = sanitise_username(discord_user.name)
 
-    # Validation
+    # Onboarding events may call create_user more than once for the same member.
+    # Preserve the existing idempotent behavior before applying restrictions
+    # intended only for new game accounts.
     try:
         is_user_already_registered(discord_user.id)
-        is_valid_username(username)
-        is_unique_username(username)
-
     except UserAlreadyRegisteredError:
         return await send_user_account_details(bot, discord_user)
+
+    minimum_age_days = config.MIN_DISCORD_ACCOUNT_AGE_DAYS
+    if not is_discord_account_old_enough(discord_user, minimum_age_days):
+        return await deny_account_creation_for_age(bot, discord_user, minimum_age_days)
+
+    # Validation
+    try:
+        is_valid_username(username)
+        is_unique_username(username)
 
     except UsernameValidationError as e:
         chosen_username = await prompt_user(
             bot,
             discord_user,
-            f"Hey {discord_user.mention}, there was an error when creating your 2HOL account:\n> {str(e)}\n\nPlease reply with a valid username.",
+            f"Hey {discord_user.mention}, there was an error when creating your 2HOL account:\n> {e!s}\n\nPlease reply with a valid username.",
         )
 
         if chosen_username is None:
@@ -215,7 +237,9 @@ async def create_user(
 
     # Audit
     # TODO: Extract audit log message into generic function
-    debug_log_channel = bot.get_channel(config.ACCOUNT_LOG_CHANNEL_ID)
+    debug_log_channel = cast(
+        discord.abc.Messageable, bot.get_channel(config.ACCOUNT_LOG_CHANNEL_ID)
+    )
 
     embed = discord.Embed(
         title="New game account created", colour=discord.Colour.green()
@@ -243,11 +267,75 @@ async def create_user(
     )
 
 
+async def deny_account_creation_for_age(
+    bot: commands.Bot,
+    discord_user: discord.User | discord.Member,
+    minimum_age_days: int,
+) -> None:
+    """Notify a user and audit an account creation denied due to account age."""
+    minimum_age = f"{minimum_age_days} day{'s' if minimum_age_days != 1 else ''}"
+    eligible_at = discord_user.created_at + timedelta(days=minimum_age_days)
+    eligible_timestamp = int(eligible_at.timestamp())
+
+    try:
+        await discord_user.send(
+            f"Sorry, {discord_user.mention}, your 2HOL account could not be created "
+            f"because Discord accounts must be at least {minimum_age} old. "
+            f"You can try again <t:{eligible_timestamp}:R>."
+        )
+    except discord.HTTPException:
+        notify_user = False
+    else:
+        notify_user = True
+
+    account_log_channel = cast(
+        discord.abc.Messageable | None,
+        bot.get_channel(config.ACCOUNT_LOG_CHANNEL_ID),
+    )
+    embed = discord.Embed(
+        title="Game account creation denied", colour=discord.Colour.red()
+    )
+    embed.add_field(name="Member:", value=discord_user.mention, inline=True)
+    embed.add_field(
+        name="Discord account created:",
+        value=f"<t:{int(discord_user.created_at.timestamp())}:F>",
+        inline=True,
+    )
+    embed.add_field(
+        name="Minimum account age:",
+        value=minimum_age,
+        inline=True,
+    )
+    embed.add_field(
+        name="Eligible to retry:",
+        value=f"<t:{eligible_timestamp}:F> (<t:{eligible_timestamp}:R>)",
+        inline=True,
+    )
+    embed.add_field(
+        name="User notification:",
+        value="Successful" if notify_user else "Failed",
+        inline=True,
+    )
+
+    if account_log_channel is None:
+        logger.error(
+            "Could not audit an age-denied account creation because the account "
+            f"log channel ({config.ACCOUNT_LOG_CHANNEL_ID}) was not found."
+        )
+    else:
+        await account_log_channel.send(embed=embed)
+
+    logger.info(
+        f"Denied account creation for {discord_user.name} ({discord_user.id}): "
+        f"Discord account is younger than {minimum_age}."
+    )
+
+
 async def prompt_user(
     bot: commands.Bot,
-    discord_member: discord.Member,
+    discord_member: discord.User | discord.Member,
     message: str,
-) -> str:
+) -> str | None:
     """Prompt user to respond to a question via private message"""
     await discord_member.send(f"{message}")
 
@@ -272,8 +360,8 @@ async def prompt_user(
 
 
 async def send_user_account_details(
-    bot: commands.bot,
-    discord_user: discord.User,
+    bot: commands.Bot,
+    discord_user: discord.User | discord.Member,
     remove_greeting: bool = False,
 ):
     """
