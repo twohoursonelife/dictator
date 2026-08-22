@@ -113,11 +113,17 @@ def generate_login_key() -> str:
     return "-".join(chunks)
 
 
-def is_new_discord_user(discord_user: discord.User | discord.Member) -> bool:
-    new_point = discord.utils.utcnow() - timedelta(weeks=1)
+def get_discord_account_age_risk(
+    discord_user: discord.User | discord.Member,
+) -> str:
+    """Return a quick risk indicator based on the age of a Discord account."""
+    account_age = discord.utils.utcnow() - discord_user.created_at
 
-    # If created after (greater than) new_point, they're wihtin the new period
-    return discord_user.created_at > new_point
+    if account_age < timedelta(days=1):
+        return "🔴 Very high risk · <1 day old"
+    if account_age < timedelta(days=15):
+        return "🟠 High risk · 1-14 days old"
+    return "🟢 Low risk · 15+ days old"
 
 
 def is_discord_account_old_enough(
@@ -252,12 +258,8 @@ async def create_user(
         inline=True,
     )
     embed.add_field(
-        name="User account age:",
-        value=(
-            "New discord account"
-            if is_new_discord_user(discord_user)
-            else "Existing discord account"
-        ),
+        name="Discord account age risk:",
+        value=get_discord_account_age_risk(discord_user),
         inline=True,
     )
     await debug_log_channel.send(embed=embed)
@@ -299,6 +301,11 @@ async def deny_account_creation_for_age(
     embed.add_field(
         name="Discord account created:",
         value=f"<t:{int(discord_user.created_at.timestamp())}:F>",
+        inline=True,
+    )
+    embed.add_field(
+        name="Discord account age risk:",
+        value=get_discord_account_age_risk(discord_user),
         inline=True,
     )
     embed.add_field(
