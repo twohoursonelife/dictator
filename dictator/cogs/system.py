@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from dictator.decorators import admin_only
 from dictator.settings import config
 
 
@@ -34,6 +35,15 @@ class System(commands.Cog):
 
         await interaction.response.send_message(
             f"Pong! That took me {round(self.dictator.latency * 1000)}ms to get a response from Discord!",
+            ephemeral=True,
+        )
+
+    @app_commands.command()
+    @admin_only()
+    async def admin_example(self, interaction: discord.Interaction) -> None:
+        """Example command available only to configured administrators."""
+        await interaction.response.send_message(
+            "You can see and run this command because you are an administrator.",
             ephemeral=True,
         )
 
