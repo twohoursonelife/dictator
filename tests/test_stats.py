@@ -1,6 +1,8 @@
-import pytest
 import asyncio
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 from dictator.cogs.stats import Stats
 
 # Protocol:
@@ -56,6 +58,31 @@ def test_parse_player_list(stats_cog):
     assert players[2][8] == "STAR"
 
 
+def test_active_family_count(stats_cog):
+    stats_cog.player_list_request = AsyncMock(return_value=SAMPLE_PLAYER_LIST)
+
+    server_info, families, count = asyncio.run(stats_cog.get_server_stats())
+
+    assert count == 3
+    assert server_info[2] == "4"
+    assert "1 playing as solo Eve\n" in families
+
+
+def test_stats_message_active_families_excludes_tutorial(stats_cog):
+    player_list = SAMPLE_PLAYER_LIST.replace(
+        "353901,353901,-1,F,24.5,0,0,,",
+        "353901,353901,-1,F,24.5,0,1,,",
+    )
+    stats_cog.player_list_request = AsyncMock(return_value=player_list)
+    stats_cog.STATS_MESSAGE = AsyncMock()
+
+    asyncio.run(stats_cog.update_stats())
+
+    embed = stats_cog.STATS_MESSAGE.edit.call_args.kwargs["embed"]
+    assert embed.fields[1].value.startswith("2 active\n")
+    assert "1 playing the tutorial" in embed.fields[1].value
+
+
 def test_group_families(stats_cog):
     players = [
         ["0", "100", "0", "F", "20", "0", "0", "Eve", "One"],
@@ -92,7 +119,7 @@ def test_format_family_list(stats_cog):
 
     assert "1 in Standard (1 fertile)" in result
     assert "1 playing the tutorial" in result
-    assert "1 playing as solo Eves" in result
+    assert "1 playing as solo Eve\n" in result
 
 
 def test_format_family_list_real_data(stats_cog):
@@ -107,7 +134,7 @@ def test_format_family_list_real_data(stats_cog):
     # 353901 is unnamed family of 1
 
     assert "1 in Star (1 fertile)" in result
-    assert "1 playing as solo Eves" in result
+    assert "1 playing as solo Eve\n" in result
     assert "2 in 2 unnamed families" in result
 
 

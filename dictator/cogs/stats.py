@@ -6,9 +6,9 @@ import inflect
 from discord import app_commands
 from discord.ext import commands, tasks
 
-from dictator.settings import config
 from dictator.logger_config import logger
 from dictator.open_collective import ForecastOpenCollective
+from dictator.settings import config
 
 
 class Stats(commands.Cog):
@@ -99,7 +99,7 @@ class Stats(commands.Cog):
         embed = discord.Embed(title="Stats", colour=config.MAIN_COLOUR)
         embed.add_field(name="Players", value=server_info[2])
         embed.add_field(
-            name="Families", value=f"{family_count} total\n{families}", inline=False
+            name="Families", value=f"{family_count} active\n{families}", inline=False
         )
         embed.add_field(
             name="",
@@ -118,9 +118,18 @@ class Stats(commands.Cog):
         family_list = await self.group_families(parsed_player_list)
         formatted_families = await self.format_family_list(family_list)
 
-        family_count = len(family_list)
+        # An active family is a lineage with living players, excluding solo Eves
+        # and tutorial players. It does not need to have fertile members.
+        # An Eve alone counts if she has not declared infertility.
+        # This is a more accurate representation of currently living families.
+        active_family_count = sum(
+            1
+            for family in family_list
+            if not self.is_solo_eve(family)
+            and not (len(family) == 1 and family[0][6] == "1")
+        )
 
-        return server_info, formatted_families, family_count
+        return server_info, formatted_families, active_family_count
 
     async def player_list_request(self) -> str:
         """
@@ -201,6 +210,17 @@ class Stats(commands.Cog):
 
         return list(grouped_families.values())
 
+    def is_solo_eve(self, family: list[list[str]]) -> bool:
+        """
+        Identify an Eve who has declared infertility and is her lineage's only living player.
+        Eve may have had children who died; this checks current players, not birth history.
+        """
+        return (
+            len(family) == 1
+            and family[0][0] == family[0][1]
+            and family[0][5] == "1"
+        )
+
     def is_fertile(self, player: list[str]) -> bool:
         """
         A player is fertile if they are female, not declared infertile, and
@@ -261,7 +281,7 @@ class Stats(commands.Cog):
                     tutorial_players += 1
                     continue
 
-                if player_id == eve_id and declaredInfertile == "1":
+                if self.is_solo_eve(family):
                     solo_eves += 1
                     continue
 
@@ -281,7 +301,7 @@ class Stats(commands.Cog):
             formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
 
         if solo_eves:
-            formatted_families += f"{solo_eves} playing as solo Eves\n"
+            formatted_families += f"{solo_eves} playing as solo {self.p.plural('Eve', solo_eves)}\n"
 
         if tutorial_players:
             formatted_families += f"{tutorial_players} playing the tutorial\n"
