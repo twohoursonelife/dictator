@@ -1,9 +1,10 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
+import discord
 import pytest
 
-from dictator.cogs.stats import Stats
+from dictator.cogs.stats import Player, PlayerListError, Stats
 
 # Protocol:
 # SN
@@ -34,38 +35,28 @@ def stats_cog():
     return Stats(bot)
 
 
-def test_verify_player_list_valid(stats_cog):
-    asyncio.run(stats_cog.verify_player_list("SomeData#"))
+def test_player_list_response(stats_cog):
+    response = stats_cog.parse_player_list(SAMPLE_PLAYER_LIST)
+
+    assert response.required_version == "20325"
+    assert response.player_count == len(response.players) == 4
+    assert response.players[0] == Player(
+        353895, 353895, -1, "F", 84.7, True, False, "", ""
+    )
+    assert response.players[2].family_name == "STAR"
 
 
-def test_verify_player_list_real_data(stats_cog):
-    asyncio.run(stats_cog.verify_player_list(SAMPLE_PLAYER_LIST))
+def test_empty_server(stats_cog):
+    raw = SAMPLE_PLAYER_LIST.split("#")[0] + "#0\n#"
+    stats_cog.player_list_request = AsyncMock(
+        return_value=stats_cog.parse_player_list(raw)
+    )
 
+    server_version, player_count, families = asyncio.run(stats_cog.get_server_stats())
 
-def test_verify_player_list_empty(stats_cog):
-    with pytest.raises(Exception, match="PLAYER_LIST message is incomplete!"):
-        asyncio.run(stats_cog.verify_player_list(""))
-
-
-def test_parse_player_list(stats_cog):
-    server_info, players = asyncio.run(stats_cog.parse_player_list(SAMPLE_PLAYER_LIST))
-
-    assert server_info == ["4/200", "20325", "4"]
-
-    assert len(players) == 4
-    assert players[0][0] == "353895"
-    assert players[2][7] == "EVE STAR"
-    assert players[2][8] == "STAR"
-
-
-def test_active_family_count(stats_cog):
-    stats_cog.player_list_request = AsyncMock(return_value=SAMPLE_PLAYER_LIST)
-
-    server_info, families, count = asyncio.run(stats_cog.get_server_stats())
-
-    assert count == 3
-    assert server_info[2] == "4"
-    assert "1 playing as solo Eve\n" in families
+    assert player_count == 0
+    assert server_version == "20325"
+    assert families == "0 active\n――――――――――\n"
 
 
 def test_stats_message_active_families_excludes_tutorial(stats_cog):
@@ -73,82 +64,38 @@ def test_stats_message_active_families_excludes_tutorial(stats_cog):
         "353901,353901,-1,F,24.5,0,0,,",
         "353901,353901,-1,F,24.5,0,1,,",
     )
-    stats_cog.player_list_request = AsyncMock(return_value=player_list)
+    stats_cog.player_list_request = AsyncMock(
+        return_value=stats_cog.parse_player_list(player_list)
+    )
     stats_cog.STATS_MESSAGE = AsyncMock()
 
     asyncio.run(stats_cog.update_stats())
 
     embed = stats_cog.STATS_MESSAGE.edit.call_args.kwargs["embed"]
+    assert embed.fields[0].value == "4"
+    assert "Server v20325" in embed.fields[2].value
     assert embed.fields[1].value.startswith("2 active\n")
     assert "1 playing the tutorial" in embed.fields[1].value
 
 
-def test_group_families(stats_cog):
+def test_format_families(stats_cog):
     players = [
-        ["0", "100", "0", "F", "20", "0", "0", "Eve", "One"],
-        ["1", "100", "0", "M", "1", "0", "0", "Son", "One"],
-        ["2", "200", "0", "F", "20", "0", "0", "Eve", "Two"],
+        Player(40, 40, -1, "F", 20, False, False, "Eve", ""),
+        Player(10, 10, -1, "F", 103.9, False, False, "Eve", "Standard"),
+        Player(20, 20, -1, "F", 20, False, True, "Eve", "Tutorial"),
+        Player(30, 30, -1, "F", 20, True, False, "Eve", "Solo"),
+        Player(11, 10, 10, "F", 104, False, False, "Child", "Standard"),
+        Player(12, 10, 10, "M", 20, False, False, "Son", "Standard"),
+        Player(13, 10, 10, "F", 20, True, False, "Child", "Standard"),
     ]
 
-    families = asyncio.run(stats_cog.group_families(players))
-
-    assert len(families) == 2
-    # Family 100 has 2 members
-    assert len(families[0]) == 2
-    # Family 200 has 1 member
-    assert len(families[1]) == 1
-
-
-def test_format_family_list(stats_cog):
-    # 1. Standard Family
-    # player_id, eve_id, parent_id, gender, age, declaredInfertile, isTutorial, name, family_name
-    family_standard = [["10", "10", "0", "F", "20", "0", "0", "Eve", "Standard"]]
-
-    # 2. Tutorial
-    family_tutorial = [["20", "20", "0", "F", "20", "0", "1", "Eve", "Tutorial"]]
-
-    # 3. Solo Eve (Infertile)
-    family_solo = [["30", "30", "0", "F", "20", "1", "0", "Eve", "Solo"]]
-
-    # 4. Unnamed
-    family_unnamed = [["40", "40", "0", "F", "20", "0", "0", "Eve", ""]]
-
-    families = [family_standard, family_tutorial, family_solo, family_unnamed]
-
-    result = asyncio.run(stats_cog.format_family_list(families))
-
-    assert "1 in Standard (1 fertile)" in result
-    assert "1 in *Unnamed* (1 fertile)" in result
-    assert "1 playing the tutorial" in result
-    assert "1 playing as solo Eve\n" in result
-
-
-def test_format_family_list_real_data(stats_cog):
-    # Process the sample data through the actual pipeline steps
-    _, parsed_players = asyncio.run(stats_cog.parse_player_list(SAMPLE_PLAYER_LIST))
-    family_list = asyncio.run(stats_cog.group_families(parsed_players))
-    result = asyncio.run(stats_cog.format_family_list(family_list))
-
-    # 353895 is a solo Eve (infertile=1, len=1)
-    # 353898 is unnamed family of 1 (not solo eve as infertile=0)
-    # 353900 is STAR family
-    # 353901 is unnamed family of 1
-
-    assert "1 in Star (1 fertile)" in result
-    assert "1 playing as solo Eve\n" in result
-    assert result.count("1 in *Unnamed* (1 fertile)\n") == 2
-
-
-def test_format_family_list_fertility(stats_cog):
-    # Validates correct fertility count
-    family_complex = [
-        ["50", "50", "-1", "F", "20", "0", "0", "EVE", "WINTERSTEIN"],  # Fertile
-        ["54", "50", "50", "F", "2", "1", "0", "NATASHA", "WINTERSTEIN"],  # Infertile
-        ["51", "50", "50", "M", "15", "0", "0", "TANYA", "WINTERSTEIN"],  # Male
-    ]
-
-    families = [family_complex]
-
-    result = asyncio.run(stats_cog.format_family_list(families))
-
-    assert "3 in Winterstein (1 fertile)" in result
+    assert stats_cog.format_families(players) == (
+        "2 active\n"
+        "――――――――――\n"
+        "4 in Standard (1 fertile)\n"
+        "1 in *Unnamed* (1 fertile)\n"
+        "――――――――――\n"
+        "1 playing as solo Eve\n"
+        "1 playing the tutorial\n"
+        "――――――――――\n"
+    )

@@ -1,5 +1,7 @@
 import socket
+from dataclasses import dataclass
 from datetime import date
+from typing import cast
 
 import discord
 import inflect
@@ -11,15 +13,50 @@ from dictator.open_collective import ForecastOpenCollective
 from dictator.settings import config
 
 
+class PlayerListError(ValueError):
+    """Raised when the game server returns an invalid PLAYER_LIST message."""
+
+
+@dataclass(frozen=True, slots=True)
+class Player:
+    """A player record returned by the games PLAYER_LIST message."""
+
+    player_id: int
+    eve_id: int
+    parent_id: int
+    gender: str
+    age: float
+    declared_infertile: bool
+    is_tutorial: bool
+    name: str
+    family_name: str
+
+
+@dataclass(frozen=True, slots=True)
+class PlayerListResponse:
+    """Server version and players used by game stats."""
+
+    required_version: str
+    player_count: int
+    players: list[Player]
+
+
+type Family = list[Player]
+
+
 class Stats(commands.Cog):
+    FAMILY_SEPARATOR = "――――――――――"
+
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
         self.p = inflect.engine()
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        self.OC_CHANNEL: discord.TextChannel = self.dictator.get_channel(
-            config.OC_CHANNEL_ID
+        """Configure channels and start the appropriate background tasks."""
+        self.OC_CHANNEL = cast(
+            discord.TextChannel,
+            self.dictator.get_channel(config.OC_CHANNEL_ID),
         )
 
         if self.OC_CHANNEL:
@@ -29,8 +66,9 @@ class Stats(commands.Cog):
         else:
             logger.warning("Unable to find OC Channel, not starting OC stats.")
 
-        self.STATS_CHANNEL: discord.TextChannel = self.dictator.get_channel(
-            config.STATS_CHANNEL_ID
+        self.STATS_CHANNEL = cast(
+            discord.TextChannel,
+            self.dictator.get_channel(config.STATS_CHANNEL_ID),
         )
 
         if self.STATS_CHANNEL:
@@ -50,6 +88,7 @@ class Stats(commands.Cog):
 
     @tasks.loop(hours=1)
     async def loop_checker(self) -> None:
+        """Check that the live stats loop is still running and restart it if needed."""
         if self.stats_loop.is_running():
             logger.debug("Stats loop running successfully!")
         else:
@@ -68,6 +107,7 @@ class Stats(commands.Cog):
     async def reset_stats_channel(
         self, channel: discord.TextChannel
     ) -> discord.Message:
+        """Delete the previous bot stats message and create a loading message."""
         async for msg in channel.history(limit=1):
             if msg.author == self.dictator.user:
                 await msg.delete()
@@ -79,9 +119,10 @@ class Stats(commands.Cog):
         )
 
     async def update_stats(self) -> None:
+        """Fetch current game stats and update the live stats message."""
         try:
-            server_info, families, family_count = await self.get_server_stats()
-        except Exception as e:
+            server_version, player_count, family_message = await self.get_server_stats()
+        except Exception as e:  # noqa: BLE001 - failures should show offline state
             logger.error(f"Failed to get server stats: {e}")
             embed = discord.Embed(
                 title="Server is offline", colour=discord.Colour.red()
@@ -90,48 +131,29 @@ class Stats(commands.Cog):
             await self.STATS_MESSAGE.edit(embed=embed)
             return
 
-        bot_version = (
-            config.DICTATOR_VERSION
-            if not len(config.DICTATOR_VERSION) >= 6
-            else config.DICTATOR_VERSION[:6]
-        )
+        bot_version = config.DICTATOR_VERSION[:6]
 
         embed = discord.Embed(title="Stats", colour=config.MAIN_COLOUR)
-        embed.add_field(name="Players", value=server_info[2])
-        embed.add_field(
-            name="Families", value=f"{family_count} active\n{families}", inline=False
-        )
+        embed.add_field(name="Players", value=str(player_count))
+        embed.add_field(name="Families", value=family_message, inline=False)
         embed.add_field(
             name="",
-            value=f"-# `Server v{server_info[1]}`\n-# `Dictator v{bot_version.upper()}`",
+            value=f"-# `Server v{server_version}`\n-# `Dictator v{bot_version.upper()}`",
             inline=False,
         )
         embed.timestamp = discord.utils.utcnow()
 
         await self.STATS_MESSAGE.edit(embed=embed)
 
-    async def get_server_stats(self) -> tuple[list[str], str, int]:
-        result = await self.player_list_request()
-        await self.verify_player_list(result)
-        server_info, parsed_player_list = await self.parse_player_list(result)
+    async def get_server_stats(self) -> tuple[str, int, str]:
+        """Return the server version, player count, and complete family message."""
+        player_list = await self.player_list_request()
 
-        family_list = await self.group_families(parsed_player_list)
-        formatted_families = await self.format_family_list(family_list)
+        family_message = self.format_families(player_list.players)
 
-        # An active family is a lineage with living players, excluding solo Eves
-        # and tutorial players. It does not need to have fertile members.
-        # An Eve alone counts if she has not declared infertility.
-        # This is a more accurate representation of currently living families.
-        active_family_count = sum(
-            1
-            for family in family_list
-            if not self.is_solo_eve(family)
-            and not (len(family) == 1 and family[0][6] == "1")
-        )
+        return player_list.required_version, player_list.player_count, family_message
 
-        return server_info, formatted_families, active_family_count
-
-    async def player_list_request(self) -> str:
+    async def player_list_request(self) -> PlayerListResponse:
         """
         A successful response will be formatted like so:
 
@@ -148,11 +170,9 @@ class Stats(commands.Cog):
             s.settimeout(2)
             s.connect(("play.twohoursonelife.com", 8005))
             if config.PLAYER_LIST_PASSWORD:
-                s.sendall(f"PLAYER_LIST {config.PLAYER_LIST_PASSWORD}#".encode("utf-8"))
+                s.sendall(f"PLAYER_LIST {config.PLAYER_LIST_PASSWORD}#".encode())
             else:
-                s.sendall(
-                    "PLAYER_LIST#".encode("utf-8")
-                )  # format changes if no password
+                s.sendall(b"PLAYER_LIST#")
 
             data_bytes = []
             messages_received = 0
@@ -164,7 +184,7 @@ class Stats(commands.Cog):
                     break
 
                 else:
-                    if not chunk or chunk == b"":
+                    if not chunk:
                         break  # sudden disconnect
                     data_bytes.append(chunk)
                     messages_received += chunk.count(ord("#"))
@@ -173,55 +193,74 @@ class Stats(commands.Cog):
 
             player_list = b"".join(data_bytes).decode("utf-8")
 
-        return player_list
+        return self.parse_player_list(player_list)
 
-    async def verify_player_list(self, player_list: str) -> bool:
-        if not player_list or "#" != player_list[-1]:
-            raise Exception("PLAYER_LIST message is incomplete!")
+    def parse_player_list(self, player_list: str) -> PlayerListResponse:
+        """Validate the PLAYER_LIST response from the server and decode players."""
+        if not player_list.endswith("#"):
+            raise PlayerListError("PLAYER_LIST message is incomplete!")
 
-        if "REJECTED" in player_list:
-            raise Exception("PLAYER_LIST message returned REJECTED, check password!")
+        messages = player_list.split("#")[:-1]
+        if any(message.strip() == "REJECTED" for message in messages):
+            raise PlayerListError(
+                "PLAYER_LIST message returned REJECTED, check password!"
+            )
 
-        return True
+        try:
+            server_info, player_data = messages
+            message_type, _current_players, _challenge, required_version = (
+                server_info.splitlines()
+            )
+            if message_type != "SN":
+                raise ValueError("Expected SN message")
 
-    async def parse_player_list(
-        self, player_list: str
-    ) -> tuple[list[str], list[list[str]]]:
-        # Convert to list and remove trailing hash char
-        player_data = player_list.split("\n")[:-1]
+            count, *player_rows = player_data.splitlines()
+            player_count = int(count)
+            players = []
+            for row in player_rows:
+                (
+                    player_id,
+                    eve_id,
+                    parent_id,
+                    gender,
+                    age,
+                    declared_infertile,
+                    is_tutorial,
+                    name,
+                    family_name,
+                ) = row.split(",")
+                players.append(
+                    Player(
+                        player_id=int(player_id),
+                        eve_id=int(eve_id),
+                        parent_id=int(parent_id),
+                        gender=gender,
+                        age=float(age),
+                        declared_infertile=declared_infertile == "1",
+                        is_tutorial=is_tutorial == "1",
+                        name=name,
+                        family_name=family_name,
+                    )
+                )
+            if player_count != len(players):
+                raise ValueError("Player count does not match the response rows")
 
-        # "#23" -> "23"
-        player_data[4] = player_data[4][1:]
+            return PlayerListResponse(required_version, player_count, players)
+        except ValueError as error:
+            raise PlayerListError("PLAYER_LIST message is malformed!") from error
 
-        server_info = [player_data[1], player_data[3], player_data[4]]
-        players = [player.split(",") for player in player_data[5:]]
-
-        return server_info, players
-
-    async def group_families(
-        self, parsed_player_list: list[list[str]]
-    ) -> list[list[list[str]]]:
-        grouped_families = {}
-        for player in parsed_player_list:
-            eve_id = int(player[1])
-            if eve_id not in grouped_families:
-                grouped_families[eve_id] = []
-            grouped_families[eve_id] += [player]
-
-        return list(grouped_families.values())
-
-    def is_solo_eve(self, family: list[list[str]]) -> bool:
+    def is_solo_eve(self, family: Family) -> bool:
         """
         Identify an Eve who has declared infertility and is her lineage's only living player.
         Eve may have had children who died; this checks current players, not birth history.
         """
         return (
             len(family) == 1
-            and family[0][0] == family[0][1]
-            and family[0][5] == "1"
+            and family[0].player_id == family[0].eve_id
+            and family[0].declared_infertile
         )
 
-    def is_fertile(self, player: list[str]) -> bool:
+    def is_fertile(self, player: Player) -> bool:
         """
         A player is fertile if they are female, not declared infertile, and
         under 104 years old.
@@ -229,82 +268,63 @@ class Stats(commands.Cog):
         A young player counts towards the fertile count as we explicitly follow
         the logic of the game clients HUD implementation here.
         """
-        gender = player[3]
-        age = float(player[4])
-        declared_infertile = player[5]
-        return gender == "F" and declared_infertile == "0" and age < 104
+        return (
+            player.gender == "F" and not player.declared_infertile and player.age < 104
+        )
 
-    async def format_family_list(self, family_list: list[list[list[str]]]) -> str:
-        # TODO
-        # What if formatted_families was a list?
-        # Then we can sort() it descending before
-        # Returning a list comprhension, joining
-        # all items into a formatted string
-        # as shown by mig
-        formatted_families = []
-        formatted_families = "――――――――――\n"
+    def is_tutorial_family(self, family: Family) -> bool:
+        """Return whether a family is a single player in the tutorial."""
+        return len(family) == 1 and family[0].is_tutorial
+
+    def family_name(self, family: Family) -> str:
+        """Return the display name used for a family in the stats message."""
+        name = family[0].family_name.title()
+        return name or "*Unnamed*"
+
+    def format_families(self, players: list[Player]) -> str:
+        """Group players by Eve ID and render family stats in input order."""
+        grouped_families: dict[int, Family] = {}
+        for player in players:
+            grouped_families.setdefault(player.eve_id, []).append(player)
+        family_list = grouped_families.values()
+
+        active_families = []
         solo_eves = 0
         tutorial_players = 0
         for family in family_list:
-            # TODO
-            # We can extract family_name into a recursive function
-            # where we loop the family until we find a surname
-            # and apply other relevant naming rules
+            if self.is_tutorial_family(family):
+                tutorial_players += 1
+            elif self.is_solo_eve(family):
+                solo_eves += 1
+            else:
+                active_families.append(
+                    f"{len(family)} in {self.family_name(family)} "
+                    f"({sum(self.is_fertile(player) for player in family)} fertile)"
+                )
 
-            # For each family, we peek into the first member
-            # and infer some information about the family.
-            first_player = family[0]
-            (
-                player_id,
-                eve_id,
-                parent_id,
-                gender,
-                age,
-                declaredInfertile,
-                isTutorial,
-                name,
-                family_name,
-            ) = first_player
+        message_lines = [
+            f"{len(active_families)} active",
+            self.FAMILY_SEPARATOR,
+            *active_families,
+        ]
 
-            family_name = family_name.title()
-            
-            if not family_name:
-                family_name = "*Unnamed*"
-
-            fertile_count = 0
-            for player in family:
-                logger.debug(player)
-                if self.is_fertile(player):
-                    fertile_count += 1
-
-            if len(family) == 1:
-                if isTutorial == "1":
-                    tutorial_players += 1
-                    continue
-
-                if self.is_solo_eve(family):
-                    solo_eves += 1
-                    continue
-
-            formatted_families += (
-                f"{len(family)} in {family_name} ({fertile_count} fertile)\n"
-            )
-
-        if len(family_list):
-            formatted_families += "――――――――――\n"
+        if family_list:
+            message_lines.append(self.FAMILY_SEPARATOR)
 
         if solo_eves:
-            formatted_families += f"{solo_eves} playing as solo {self.p.plural('Eve', solo_eves)}\n"
+            message_lines.append(
+                f"{solo_eves} playing as solo {self.p.plural('Eve', solo_eves)}"
+            )
 
         if tutorial_players:
-            formatted_families += f"{tutorial_players} playing the tutorial\n"
+            message_lines.append(f"{tutorial_players} playing the tutorial")
 
         if solo_eves or tutorial_players:
-            formatted_families += "――――――――――\n"
+            message_lines.append(self.FAMILY_SEPARATOR)
 
-        return formatted_families
+        return "\n".join(message_lines) + "\n"
 
-    async def open_collective_forecast_embed(self) -> discord.Embed:
+    def open_collective_forecast_embed(self) -> discord.Embed:
         forecast = ForecastOpenCollective.forecast()
         description = (
             f"**TLDR:** Sufficient funding until **{forecast['forecast_continued_income']}**"
@@ -323,10 +343,11 @@ class Stats(commands.Cog):
 
     @tasks.loop(hours=24)
     async def open_collective_forecast(self) -> None:
-        if date.today().day != config.OC_FORECAST_MONTH_DAY:
+        """Send the Open Collective forecast on the configured calendar day."""
+        if date.today().day != config.OC_FORECAST_MONTH_DAY:  # noqa: DTZ011 - server-local calendar day
             return
 
-        embed = await self.open_collective_forecast_embed()
+        embed = self.open_collective_forecast_embed()
         await self.OC_CHANNEL.send(embed=embed)
 
     @app_commands.command()
@@ -336,7 +357,7 @@ class Stats(commands.Cog):
         """Generates and sends Open Collective forecast to the current channel."""
         await interaction.response.defer()
 
-        embed = await self.open_collective_forecast_embed()
+        embed = self.open_collective_forecast_embed()
         await interaction.followup.send(embed=embed)
 
 
