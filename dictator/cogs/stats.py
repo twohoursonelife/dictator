@@ -245,8 +245,6 @@ class Stats(commands.Cog):
         formatted_families = "――――――――――\n"
         solo_eves = 0
         tutorial_players = 0
-        unnamed_families = 0
-        unnamed_family_players = 0
         for family in family_list:
             # TODO
             # We can extract family_name into a recursive function
@@ -269,6 +267,9 @@ class Stats(commands.Cog):
             ) = first_player
 
             family_name = family_name.title()
+            
+            if not family_name:
+                family_name = "Unnamed"
 
             fertile_count = 0
             for player in family:
@@ -285,11 +286,6 @@ class Stats(commands.Cog):
                     solo_eves += 1
                     continue
 
-            if not family_name:
-                unnamed_families += 1
-                unnamed_family_players += len(family)
-                continue
-
             formatted_families += (
                 f"{len(family)} in {family_name} ({fertile_count} fertile)\n"
             )
@@ -297,16 +293,13 @@ class Stats(commands.Cog):
         if len(family_list):
             formatted_families += "――――――――――\n"
 
-        if unnamed_families:
-            formatted_families += f"{unnamed_family_players} in {unnamed_families} unnamed {self.p.plural('family', unnamed_families)}\n"
-
         if solo_eves:
             formatted_families += f"{solo_eves} playing as solo {self.p.plural('Eve', solo_eves)}\n"
 
         if tutorial_players:
             formatted_families += f"{tutorial_players} playing the tutorial\n"
 
-        if unnamed_families or solo_eves or tutorial_players:
+        if solo_eves or tutorial_players:
             formatted_families += "――――――――――\n"
 
         return formatted_families
