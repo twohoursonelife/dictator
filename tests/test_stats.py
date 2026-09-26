@@ -118,7 +118,7 @@ def test_format_family_list(stats_cog):
     result = asyncio.run(stats_cog.format_family_list(families))
 
     assert "1 in Standard (1 fertile)" in result
-    assert "1 in Unnamed (1 fertile)" in result
+    assert "1 in *Unnamed* (1 fertile)" in result
     assert "1 playing the tutorial" in result
     assert "1 playing as solo Eve\n" in result
 
@@ -136,7 +136,7 @@ def test_format_family_list_real_data(stats_cog):
 
     assert "1 in Star (1 fertile)" in result
     assert "1 playing as solo Eve\n" in result
-    assert result.count("1 in Unnamed (1 fertile)\n") == 2
+    assert result.count("1 in *Unnamed* (1 fertile)\n") == 2
 
 
 def test_format_family_list_fertility(stats_cog):
