@@ -269,7 +269,7 @@ class Stats(commands.Cog):
             family_name = family_name.title()
             
             if not family_name:
-                family_name = "Unnamed"
+                family_name = "*Unnamed*"
 
             fertile_count = 0
             for player in family:
