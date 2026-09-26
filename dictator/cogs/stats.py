@@ -282,11 +282,14 @@ class Stats(commands.Cog):
         return name or "*Unnamed*"
 
     def format_families(self, players: list[Player]) -> str:
-        """Group players by Eve ID and render family stats in input order."""
+        """Group players by Eve ID and render stats with unnamed families last."""
         grouped_families: dict[int, Family] = {}
         for player in players:
             grouped_families.setdefault(player.eve_id, []).append(player)
-        family_list = grouped_families.values()
+        family_list = sorted(
+            grouped_families.values(),
+            key=lambda family: not family[0].family_name,
+        )
 
         active_families = []
         solo_eves = 0
