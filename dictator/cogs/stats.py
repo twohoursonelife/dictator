@@ -45,7 +45,7 @@ type Family = list[Player]
 
 
 class Stats(commands.Cog):
-    FAMILY_SEPARATOR = "――――――――――"
+    FAMILY_SEPARATOR = "⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
 
     def __init__(self, dictator: commands.Bot) -> None:
         self.dictator = dictator
