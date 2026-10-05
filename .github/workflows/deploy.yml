@@ -2,6 +2,7 @@ name: Test, release and deploy Dictator
 
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -17,10 +18,11 @@ jobs:
       - name: Run pytest
         run: uv run pytest
 
-  release:
+  deploy:
     runs-on: ubuntu-latest
     concurrency: deploy-group
-    if: github.ref_name == 'main'
+    # Don't attempt deploy in a fork.
+    if: github.repository == 'twohoursonelife/dictator' && github.ref_name == 'main'
     needs: test
     steps:
       - name: Checkout
