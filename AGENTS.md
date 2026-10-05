@@ -10,4 +10,4 @@ various other utilities.
 - You must always use uv to run and manage Python environments, including Python
   tooling such as ruff, ty, pytest and others.
 - Always format with ruff and `ty check` for linting.
-- Add minimal tests that cover sufficient paths of any new functionality implemented.
+- Add tests when they catch a plausible regression in application logic. Avoid tests that merely repeat configuration or implementation details.
