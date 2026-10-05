@@ -47,6 +47,7 @@ class System(commands.Cog):
             ephemeral=True,
         )
 
+    # TODO: Replaced by sync_commands.py, removed when comfortable.
     @commands.command(brief="Sync Dictators app commands globally.")
     @commands.guild_only()
     @commands.has_role(config.MOD_ROLE_ID)

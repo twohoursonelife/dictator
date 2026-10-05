@@ -4,8 +4,8 @@ import discord
 import sentry_sdk
 from discord.ext import commands
 
-from dictator.settings import config
 from dictator.logger_config import logger
+from dictator.settings import config
 
 sentry_sdk.init(
     dsn=config.SENTRY_DSN,
@@ -19,7 +19,7 @@ class Dictator(commands.Bot):
     async def setup_hook(self) -> None:
         for filename in os.listdir("dictator/cogs"):
             if filename.endswith(".py"):
-                await dictator.load_extension(f"dictator.cogs.{filename[:-3]}")
+                await self.load_extension(f"dictator.cogs.{filename[:-3]}")
 
 
 intents = discord.Intents.all()
@@ -33,4 +33,5 @@ async def on_ready() -> None:
     logger.info("The 2HOL Dictator has risen!")
 
 
-dictator.run(config.BOT_TOKEN)
+if __name__ == "__main__":
+    dictator.run(config.BOT_TOKEN)

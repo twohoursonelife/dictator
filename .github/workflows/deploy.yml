@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test: 
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,7 +16,6 @@ jobs:
 
       - name: Run pytest
         run: uv run pytest
-
 
   release:
     runs-on: ubuntu-latest
@@ -34,6 +33,11 @@ jobs:
 
       - name: Deploy to Fly.io
         run: flyctl deploy --build-arg DICTATOR_VERSION=${{ github.sha }} --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Sync Discord application commands
+        run: flyctl ssh console --command "uv run -m dictator.sync_commands"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

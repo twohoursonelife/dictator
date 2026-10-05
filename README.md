@@ -30,7 +30,3 @@ You need:
 - Copy `example.env` to `.env`, update values.
 - Start or reload `docker compose up --build --force-recreate`
 - Stop `docker compose kill && docker compose rm -f`
-
-## Sync commands
-1. `-sync`
-2. Ctrl + R, reload Discord.
