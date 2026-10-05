@@ -23,9 +23,7 @@ class Dictator(commands.Bot):
 
 
 intents = discord.Intents.all()
-dictator = Dictator(
-    command_prefix=config.BOT_PREFIX, case_insensitive=True, intents=intents
-)
+dictator = Dictator(command_prefix=[], case_insensitive=True, intents=intents)
 
 
 @dictator.event

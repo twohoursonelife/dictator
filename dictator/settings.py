@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     PLAYER_LIST_PASSWORD: str
 
     # Optional config
-    BOT_PREFIX: str = "-"
     DICTATOR_VERSION: str = "HEAD"
 
     ADMIN_ROLE_ID: int = 604284386556510209

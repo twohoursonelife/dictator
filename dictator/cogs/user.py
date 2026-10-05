@@ -1,16 +1,13 @@
-import re
 from typing import cast
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dictator.db_manager import db_connection as db_conn
 from dictator.logger_config import logger
 from dictator.settings import config
 from dictator.utilities import (
     create_user,
-    generate_login_key,
     send_user_account_details,
 )
 
@@ -146,40 +143,6 @@ class User(commands.Cog):
             f"{interaction.user} changed the minimum Discord account age from "
             f"{current_age_days} to {minimum_age_days} days."
         )
-
-    # Support users who continue to find mention of -key in online resources.
-    @commands.command(brief="Legacy account details command. Use /account instead.")
-    async def key(self, ctx: commands.Context) -> None:
-        if not isinstance(ctx.channel, discord.channel.DMChannel):
-            await ctx.message.delete()
-
-        logger.info(f"{ctx.author} used the legacy -key command.")
-        await send_user_account_details(self.dictator, ctx.author)
-
-    @commands.command(
-        brief="Create multiple bot accounts",
-        help="Create a game account not attached to a Discord user",
-        usage="<user>",
-    )
-    @commands.guild_only()
-    @commands.has_role(config.ADMIN_ROLE_ID)
-    async def create_bot(self, ctx, prefix, amount: int):
-        await ctx.message.delete()
-
-        # Filter prefix
-        prefix = re.sub("[^a-zA-Z0-9]", "", prefix)
-
-        for i in range(amount):
-            username = f"{prefix}-{i}"
-            key = generate_login_key()
-
-            with db_conn() as db:
-                db.execute(
-                    "INSERT INTO ticketServer_tickets (email, login_key) VALUES (%s, %s)",
-                    (username, key),
-                )
-
-            await ctx.author.send(f"{username} :: {key}")
 
 
 async def setup(dictator: commands.Bot) -> None:

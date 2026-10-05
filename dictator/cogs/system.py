@@ -47,13 +47,6 @@ class System(commands.Cog):
             ephemeral=True,
         )
 
-    # TODO: Replaced by sync_commands.py, removed when comfortable.
-    @commands.command(brief="Sync Dictators app commands globally.")
-    @commands.guild_only()
-    @commands.has_role(config.MOD_ROLE_ID)
-    async def sync(self, ctx: commands.Context) -> None:
-        await ctx.send(f"Synced `{len(await ctx.bot.tree.sync())}` commands globally.")
-
 
 async def setup(dictator: commands.Bot) -> None:
     await dictator.add_cog(System(dictator))
