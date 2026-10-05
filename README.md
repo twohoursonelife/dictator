@@ -11,6 +11,17 @@ The Dictator of 2HOL. Taking care of displaying user and player information abou
 - Mods can ban and unban members from the game
 - Mods can regenerate a members game access key
 
+## Discord intents
+
+Dictator requires the following settings under **Bot -> Privileged Gateway Intents**
+in the [Discord Developer Portal](https://discord.com/developers/applications):
+
+- **Server Members Intent:** enabled
+- **Presence Intent:** disabled
+- **Message Content Intent:** disabled
+
+Gateway intents are configured in [dictator/dictator.py](dictator/dictator.py).
+
 # Release and deploy
 We run on Fly.io. See `.github/workflows/deploy.yml` for release and deploy trigger on each push to `main`
 

@@ -25,6 +25,14 @@ class Dictator(commands.Bot):
 intents = discord.Intents.all()
 dictator = Dictator(command_prefix=[], case_insensitive=True, intents=intents)
 
+intents = discord.Intents(
+    guilds=True,
+    members=True,  # Automatic account creation on joins/rules acceptance.
+    guild_messages=True,  # Webhook metadata for embed suppression.
+    dm_messages=True,  # Replies to account username prompts.
+)
+dictator = Dictator(command_prefix=[], help_command=None, intents=intents)
+
 
 @dictator.event
 async def on_ready() -> None:
