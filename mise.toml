@@ -6,4 +6,5 @@ python.uv_venv_auto = true
 
 [tasks]
 dev = "uv run -m dictator.dictator"
+test = "uv run pytest"
 upgrade = "uv lock --upgrade"

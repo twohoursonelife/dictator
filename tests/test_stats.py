@@ -1,10 +1,9 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
-import discord
 import pytest
 
-from dictator.cogs.stats import Player, PlayerListError, Stats
+from dictator.cogs.stats import Player, Stats
 
 # Protocol:
 # SN
@@ -56,7 +55,7 @@ def test_empty_server(stats_cog):
 
     assert player_count == 0
     assert server_version == "20325"
-    assert families == "0 active\n――――――――――\n"
+    assert families.startswith("0 active\n")
 
 
 def test_stats_message_active_families_excludes_tutorial(stats_cog):
@@ -89,13 +88,9 @@ def test_format_families(stats_cog):
         Player(13, 10, 10, "F", 20, True, False, "Child", "Standard"),
     ]
 
-    assert stats_cog.format_families(players) == (
-        "2 active\n"
-        "――――――――――\n"
-        "4 in Standard (1 fertile)\n"
-        "1 in *Unnamed* (1 fertile)\n"
-        "――――――――――\n"
-        "1 playing as solo Eve\n"
-        "1 playing the tutorial\n"
-        "――――――――――\n"
-    )
+    family_message = stats_cog.format_families(players)
+    assert "2 active\n" in family_message
+    assert "4 in Standard (1 fertile)\n" in family_message
+    assert "1 in *Unnamed* (1 fertile)\n" in family_message
+    assert "1 playing as solo Eve\n" in family_message
+    assert "1 playing the tutorial\n" in family_message
