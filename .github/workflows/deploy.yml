@@ -20,7 +20,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    concurrency: deploy-group
+    concurrency: deploy
+    environment: production
     # Don't attempt deploy in a fork.
     if: github.repository == 'twohoursonelife/dictator' && github.ref_name == 'main'
     needs: test
